@@ -1,0 +1,6 @@
+﻿  main.cpp
+C:\Users\hminh\Desktop\Project_Game\Project_Game\main.cpp(592,11): warning C4566: character represented by universal-character-name '\u1EA1' cannot be represented in the current code page (1252)
+C:\Users\hminh\Desktop\Project_Game\Project_Game\main.cpp(592,11): warning C4566: character represented by universal-character-name '\u0111' cannot be represented in the current code page (1252)
+C:\Users\hminh\Desktop\Project_Game\Project_Game\main.cpp(592,11): warning C4566: character represented by universal-character-name '\u01B0' cannot be represented in the current code page (1252)
+C:\Users\hminh\Desktop\Project_Game\Project_Game\main.cpp(592,11): warning C4566: character represented by universal-character-name '\u1EE3' cannot be represented in the current code page (1252)
+  Project_Game.vcxproj -> C:\Users\hminh\Desktop\Project_Game\Debug\Project_Game.exe
