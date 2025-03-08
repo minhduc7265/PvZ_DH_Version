@@ -9,6 +9,9 @@
 #include "card_plant.h"
 #include "zombie.h"
 #include "item.h"
+extern const std::map<std::string, int> body_bl;
+extern const std::map<std::string, int> armor1_bl;
+extern const std::map<std::string, int> armor2_bl;
 extern Cur_imf cur_imformation;
 class Element : public Bullet, public Texture_Storage, public Plant, public Zombie,public Item {
 protected:
@@ -66,14 +69,14 @@ public:
 
 
 
-	void call_zombie(std::string name, int x, int y, int armor_type_1_, int armor_typr_2_, int frame);
+	void call_zombie(std::string name, int x, int y, int frame);
 
 	void check_zombie();
 
 	void remote_frame_zombie();
 
 	void remote_func_zombie();
-
+	void remote_func_bullet(SDL_Renderer* ren);
 	void call_item(int type_, int x, int y, int frame);
 
 	void check_item();
@@ -83,7 +86,8 @@ public:
 
 
 
-
+	void reset_list_plant();
+	void reset_list_zombie();
 
 
 

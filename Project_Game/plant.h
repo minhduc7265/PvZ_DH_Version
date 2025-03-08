@@ -14,12 +14,6 @@ public:
 	void set_cur_blood(int bl) {
 		current_blood = bl;
 	}
-	/*int get_cd() const {
-		return count_down;
-	}
-	void set_cd(int cd) {
-		count_down = cd;
-	}*/
 	bool get_is_dead() const {
 		return is_dead;
 	}
@@ -53,49 +47,19 @@ public:
 	std::string get_name() const {
 		return name_plant;
 	}
-
-
-
-
 	int count_down;
-	std::string name_plant;//tên plant
-	int num_frame;//số frame max
-	int cur_frame;//frame hiện tại
-	/*Uint32 lastFrameTime;
-	Uint32 currentTime;*/
-
+	std::string name_plant;
+	int num_frame;
+	int cur_frame;
 	SDL_Rect* currentClip;
 	std::string status;
-
-
 	bool if_shoot;
 	int num_row;
 	int num_col;
 	bool if_effect;
-
-
 private:
-	int current_blood;//máu tối đa
-	//đếm thời gian CD
+	int current_blood;
 	bool is_dead;
 	bool if_can_eat;
-	
-//protected:
-	//std::string name_plant;//tên plant
-	//int num_frame;//số frame max
-	//int cur_frame;//frame hiện tại
-	//Uint32 lastFrameTime;
-	//Uint32 currentTime;
-
-	//SDL_Rect* currentClip;// = &gSpriteClips[frame / num_frame];
-
-
-
-
-
 };
-
-
-
-
-#endif // !PLANT_H_
+#endif

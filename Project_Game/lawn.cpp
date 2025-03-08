@@ -6,4 +6,5 @@ Lawn::Lawn() {
 	x_second = 0;
 	y_first = 0;
 	y_second = 0;
+	is_planted = false;
 }

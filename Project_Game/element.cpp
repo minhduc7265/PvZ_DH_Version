@@ -1,22 +1,43 @@
 ﻿#include "element.h"
 
+
+
+const std::map<std::string, int> body_bl{
+	{"zombie",270},
+	{"conezombie",270},
+	{"zomboni",750},
+	{"seafzombie",470},
+	{"exzombie",470}
+
+
+};
+const std::map<std::string, int> armor1_bl{
+	{"zombie",0},
+	{"conezombie",370},
+	{"zomboni",0},
+	{"seafzombie",0},
+	{"exzombie",0}
+};
+const std::map<std::string, int> armor2_bl{
+	{"zombie",0},
+	{"conezombie",0},
+	{"zomboni",0},
+	{"seafzombie",0},
+	{"exzombie",0}
+};
+
 const int BLOOD_DEAD = 50;
 Cur_imf cur_imformation;
 Element::Element() {
 	mHeight = 0;
 	mWidth = 0;
-	
 }
 Element::~Element() {
-	//giải phóng texture 
 	for (std::map<std::string, Texture_Storage*>::iterator it = list_texture.begin(); it!=list_texture.end(); ) {
 		delete it->second;
 		it = list_texture.erase(it);
 	}
-
 }
-
-
 void Element::call_bullet(SDL_Renderer *ren, int type, int mx, int my, int row,int col) {
 	//SDL_PollEvent(&event);
 	
@@ -37,6 +58,10 @@ void Element::call_bullet(SDL_Renderer *ren, int type, int mx, int my, int row,i
 			cre_bull->Set_Name_Path("projectiles/melon.png");
 			cre_bull->LoadImg("projectiles/melon.png", ren);
 		}
+		else if (type == 5) {
+			cre_bull->Set_Name_Path("projectiles/leaf.png");
+			cre_bull->LoadImg("projectiles/leaf.png", ren);
+		}
 		else {
 			cre_bull->Set_Name_Path("projectiles/pea.png");
 			cre_bull->LoadImg("projectiles/pea.png", ren);
@@ -49,31 +74,34 @@ void Element::call_bullet(SDL_Renderer *ren, int type, int mx, int my, int row,i
 		cre_bull->set_type(type);
 		cre_bull->set_vel(10, 0);
 		list_of_bullet.push_back(cre_bull);
-		std::cout << "Bullet created! Current count: " << std::endl;
+		std::cout << "Bullet created!" << std::endl;
 
 
 }
-
-
 void Element::check_bullet(SDL_Renderer* ren) {
-	for (int i = list_of_bullet.size() - 1; i >= 0; i--) {
-		Bullet* bull_ = list_of_bullet.at(i);
-		if (bull_ != NULL) {
-			if (bull_->is_out == false) {//bull_->is_out == false
-				bull_->HandleBullet(SCREEN_WID, SCREEN_HEI);
-				bull_->Render(ren, NULL);
+	for (std::vector<Bullet*>::iterator it = list_of_bullet.begin(); it != list_of_bullet.end();) {
+		if ((*it) != NULL) {
+			if ((*it)->is_out == false) {
+				(*it)->HandleBullet(SCREEN_WID, SCREEN_HEI);
+				it++;
 			}
 			else {
-				list_of_bullet.erase(list_of_bullet.begin() + i);
-				if (bull_ != NULL) {
-					delete bull_;
-					bull_ = NULL;
-				}
+				delete* it;
+				it = list_of_bullet.erase(it);
 			}
+		}
+		else {
+			it++;
 		}
 	}
 }
-
+void Element::remote_func_bullet(SDL_Renderer *ren) {//
+	for (std::vector<Bullet*>::iterator it = list_of_bullet.begin(); it != list_of_bullet.end(); it++) {
+		if ((*it) != NULL) {
+			(*it)->Render(ren, NULL);
+		}
+	}
+}
 bool Element::Load_Texture(std::string path, SDL_Renderer* screen, std::string name, std::string type) {
 	if (list_texture.find(name) != list_texture.end()) {
 		std::cout << "Tim thay " << name << " " << std::endl;
@@ -82,7 +110,6 @@ bool Element::Load_Texture(std::string path, SDL_Renderer* screen, std::string n
 	else {
 		Texture_Storage* new_ = new Texture_Storage();
 		SDL_Texture* newTexture = NULL;
-		//Load image at specified path
 		SDL_Surface* loadedSurface = IMG_Load(path.c_str());
 		if (loadedSurface == NULL)
 		{
@@ -91,10 +118,7 @@ bool Element::Load_Texture(std::string path, SDL_Renderer* screen, std::string n
 		}
 		else
 		{
-			//Color key image
 			SDL_SetColorKey(loadedSurface, SDL_TRUE, SDL_MapRGB(loadedSurface->format, 0, 0xFF, 0xFF));
-
-			//Create texture from surface pixels
 			newTexture = SDL_CreateTextureFromSurface(screen, loadedSurface);
 			if (newTexture == NULL)
 			{
@@ -102,15 +126,12 @@ bool Element::Load_Texture(std::string path, SDL_Renderer* screen, std::string n
 			}
 			mWidth = loadedSurface->w;
 			mHeight = loadedSurface->h;
-			//Get rid of old loaded surface
 			SDL_FreeSurface(loadedSurface);
 		}
 
 		new_->set_ptr(newTexture);
 		new_->set_name(name);
 		new_->set_type(type);
-
-		//Return success
 		list_texture[name] = new_;
 		return list_texture[name] != NULL;
 
@@ -127,6 +148,7 @@ void Element::call_plant(std::string name, int x, int y,int frame) {
 	new_plant->set_can_eat(true);
 	new_plant->set_cur_blood(400);
 	new_plant->status = "idle";
+	new_plant->count_down = 0;
 	new_plant->num_frame = frame;
 	if (new_plant->name_plant == "fire" || new_plant->name_plant == "zom_fire" || new_plant->name_plant == "explosion" || new_plant->name_plant == "light_red" || new_plant->name_plant == "melon_pro") {
 		new_plant->if_effect = true;
@@ -136,8 +158,6 @@ void Element::call_plant(std::string name, int x, int y,int frame) {
 	std::cout << "Created: " << name << std::endl;
 	std::cout << new_plant->get_num_col() << std::endl;
 }
-
-
 void Element::call_item(int type_, int x, int y, int frame) {
 	Item* new_item = new Item();
 	new_item->rect_.x = x;
@@ -149,130 +169,134 @@ void Element::call_item(int type_, int x, int y, int frame) {
 	std::cout << "created item" << std::endl;
 	
 }
-
 void Element::check_item() {
-	for (int i = list_item.size() - 1; i >= 0; i--) {
-		if (list_item.at(i) != NULL) {
-			Item* cur_item = list_item.at(i);
-			cur_item->cur_frame++;
-			if (cur_item->type_anim == 1) {
-				cur_item->time_anim++;
-				cur_item->rect_.y-=8;
-				if (cur_item->time_anim > 10 && cur_item->time_anim <=30) {
-					cur_item->rect_.y+=16;
+	for (std::vector<Item*>::iterator it = list_item.begin(); it != list_item.end();) {
+		if ((*it) != NULL) {
+			(*it)->cur_frame++;
+
+			if ((*it)->type_anim == 1) {
+				(*it)->time_anim++;
+				(*it)->rect_.y-=8;
+				if ((*it)->time_anim > 10 && (*it)->time_anim <=30) {
+					(*it)->rect_.y+=16;
 				}
-				else if (cur_item->time_anim > 30) {
-					cur_item->type_anim = 0;
+				else if ((*it)->time_anim > 30) {
+					(*it)->type_anim = 0;
 				}
 			}
-			if ((cur_item->cur_frame) >= (cur_item->num_frame - 1)) {
-				cur_item->cur_frame = 0;
+			if (((*it)->cur_frame) >= ((*it)->num_frame - 1)) {
+				(*it)->cur_frame = 0;
 
 			}
-			if (cur_item->rect_.x >= -20 && cur_item->rect_.x <= 10 && cur_item->rect_.y >= -20 && cur_item->rect_.y <= 15 && cur_item->get_collected() != true) {
+			if ((*it)->rect_.x >= -20 && (*it)->rect_.x <= 10 && (*it)->rect_.y >= -20 && (*it)->rect_.y <= 15 && (*it)->get_collected() != true) {
 				cur_imformation.cur_sun += 25;
-				cur_item->set_collected(true);
+				(*it)->set_collected(true);
 			}
 			
-			if (cur_item->animation == 1) {
-				if (cur_item->rect_.x >= 1) {
-					cur_item->rect_.x -= cur_item->rect_.x / 5;
+			if ((*it)->animation == 1) {
+				if ((*it)->rect_.x >= 1) {
+					(*it)->rect_.x -= (*it)->rect_.x / 5;
 
 				}
-				if (cur_item->rect_.y >= 1) {
-					cur_item->rect_.y -= cur_item->rect_.y / 5;
+				if ((*it)->rect_.y >= 1) {
+					(*it)->rect_.y -= (*it)->rect_.y / 5;
 				}
 			}
-			if (cur_item->get_collected() == true) {
-				delete cur_item;
-				cur_item = NULL;
-				list_item.erase(list_item.begin() + i);
+
+			if ((*it)->get_collected() == true) {
+				delete *it;
+				it = list_item.erase(it);
 				
 			}
+			else {
+				it++;
+			}
 
 
+		}
+
+		else {
+			it++;
 		}
 	}
 
 
 
 }
-
-void Element::call_zombie(std::string name, int x, int y, int armor_type_1_,int armor_typr_2_, int frame) {
+void Element::call_zombie(std::string name, int x, int y, int frame) {
 	Zombie* new_zombie = new Zombie();//con trỏ zombie
 	new_zombie->num_row = x;
 	new_zombie->num_col = y;
 	new_zombie->pos_x = new_zombie->num_col * 45 + 400;
 	new_zombie->pos_y = new_zombie->num_row * 100 + 45;
 	new_zombie->name_zombie = name;
-	new_zombie->zom_blood = 270;//270
+	new_zombie->zom_blood = body_bl.at(name);//270
 	new_zombie->status = "walk";
 	new_zombie->num_frame = frame;
-	new_zombie->armor_type_1 = armor_type_1_;
-	new_zombie->armor_typr_2 = armor_typr_2_;
+	new_zombie->armor_type_1 = armor1_bl.at(name);
+	new_zombie->armor_typr_2 = armor2_bl.at(name);
 	list_zombie.push_back(new_zombie);
-
 	std::cout << "Created: " << name << std::endl;
 }
-
-
 void Element::check_plant() {
-	for (int i = list_plant.size() - 1; i >= 0; i--) {
-		if (list_plant.at(i) != NULL) {
-			Plant* cur_plant = list_plant.at(i);
-			if (cur_plant->get_cur_blood() < 20) {
-				cur_plant->set_is_dead(true);
+	for (std::vector<Plant*>::iterator it = list_plant.begin(); it != list_plant.end();) {
+		if ((*it) != NULL) 
+		{
+			if ((*it)->get_cur_blood()<20) {
+				(*it)->set_is_dead(true);
 			}
-			if (cur_plant->get_is_dead() == true) {
-				delete cur_plant;
-				cur_plant = NULL;
-				list_plant.erase(list_plant.begin() + i);
+			if ((*it)->get_is_dead() == true) {
+				delete *it;
+				it = list_plant.erase(it);
 				
 			}
+			else {
+				it++;
+			}
+		}
+		else {
+			it++;
 		}
 
 	}
 
 }
 void Element::check_zombie() {
-	for (int i = list_zombie.size() - 1; i >= 0; i--) {
-		if (list_zombie.at(i) != NULL) {
-			Zombie* cur_zombie = list_zombie.at(i);
-			if (cur_zombie->zom_blood <= BLOOD_DEAD) {
-				cur_zombie->zom_blood--;
-				cur_zombie->status = "dead";
-				if (cur_zombie->is_dead != true) {
-					cur_zombie->cur_frame = 0;
-					cur_zombie->zom_blood = BLOOD_DEAD;
-					cur_zombie->is_dead = true;
+	for (std::vector<Zombie*>::iterator it = list_zombie.begin(); it != list_zombie.end();) {
+		if ((*it) != NULL) {
+			if ((*it)->zom_blood <= BLOOD_DEAD) {
+				(*it)->zom_blood--;
+				(*it)->status = "dead";
+				if ((*it)->is_dead != true) {
+					(*it)->cur_frame = 0;
+					(*it)->zom_blood = BLOOD_DEAD;
+					(*it)->is_dead = true;
 				}
 			}
-			if (cur_zombie->is_dead == true && cur_zombie->zom_blood<=2) {
-				delete cur_zombie;
-				cur_zombie = NULL;
-				list_zombie.erase(list_zombie.begin() + i);
+			if ((*it)->is_dead == true && (*it)->zom_blood<=2) {
+				delete *it;
+				it = list_zombie.erase(it);
 				
 			}
+			else {
+				it++;
+			}
+		}
+		else {
+			it++;
 		}
 
 	}
 
 }
-
-
-
 void Element::remote_frame_zombie() {
 	for (std::vector <Zombie*>::iterator it = list_zombie.begin(); it != list_zombie.end(); it++) {
 		Zombie* cur_zombie = *it;
-		if (cur_zombie != NULL) {
-			
+		if (cur_zombie != NULL) {		
 			int num_frame_ = cur_zombie->num_frame;
 			cur_zombie->cur_frame += 1;
 			if ((cur_zombie->cur_frame) >= (num_frame_ - 1)) {
 				cur_zombie->cur_frame = 0;
-
-
-
 			}
 		}
 		
@@ -281,7 +305,6 @@ void Element::remote_frame_zombie() {
 
 
 }
-
 void Element::remote_frame_plant() {
 	for (std::vector <Plant*>::iterator it = list_plant.begin(); it != list_plant.end(); it++) {
 		Plant* cur_plant = *it;
@@ -291,31 +314,8 @@ void Element::remote_frame_plant() {
 			if (cur_plant->name_plant == "sunflower" && cur_plant->status == "production") {
 				cur_plant->cur_frame += 1;
 			}
-			/*if (cur_plant->name_plant == "peashooter" && cur_plant->status == "shoot") {
-				cur_plant->cur_frame += 1;
-			}
-			if (cur_plant->name_plant == "snowpea" && cur_plant->status == "shoot") {
-				cur_plant->cur_frame += 1;
-			}*/
-			/*if (cur_plant->name_plant == "zom_fire") {
-				cur_plant->cur_frame += 2;
-			}*/
-			if (cur_plant->name_plant == "banana_tree") {
-				//cur_plant->cur_frame += 1;
-			}
-			if (cur_plant->name_plant == "oxygen_algae") {
-				cur_plant->cur_frame += 1;
-			}
-			if (cur_plant->name_plant == "cherrybomb") {
-				//cur_plant->cur_frame += 1;
-			}
-
-
 			if ((cur_plant->cur_frame) >= (num_frame_ - 1)) {
 				cur_plant->cur_frame = 0;
-
-
-
 			}
 		}
 		
@@ -331,7 +331,6 @@ void Element::remote_frame_plant() {
 
 
 }
-
 void Element::remote_func_plant() {
 	for (std::vector <Plant*>::iterator it = list_plant.begin(); it != list_plant.end(); it++) {//dễ hơn thì dùng auto it nhưng vì mơi học
 		Plant* cur_plant = *it;
@@ -353,14 +352,24 @@ void Element::remote_func_plant() {
 
 			}
 			else if (cur_plant->name_plant == "banana_tree") {
-				if (cur_plant->count_down == 100) {
+				if (cur_plant->count_down == 100 && cur_plant->if_shoot == true) {
 					cur_plant->cur_frame = 100;
-					cur_plant->status = "attack";
+					cur_plant->num_frame = 191;
+					cur_plant->status = "shoot";
 				}
 				if (cur_plant->count_down >= 130) {
-					cur_plant->cur_frame = 0;
-					cur_plant->status = "idle";
-					cur_plant->count_down = 0;
+					if (cur_plant->if_shoot == true) {
+						cur_plant->cur_frame = 0;
+						cur_plant->status = "idle";
+						cur_plant->num_frame = 191;
+						cur_plant->count_down = 0;
+					}
+					else {
+						cur_plant->cur_frame = 0;
+						cur_plant->status = "idle";
+						cur_plant->count_down = 0;
+						cur_plant->num_frame = 60;
+					}
 				}
 
 			}
@@ -381,6 +390,8 @@ void Element::remote_func_plant() {
 				}
 
 			}
+
+
 			else if (cur_plant->name_plant == "shiliu") {
 				if (cur_plant->count_down == 90 && cur_plant->if_shoot == true) {
 					cur_plant->cur_frame = 0;
@@ -390,6 +401,25 @@ void Element::remote_func_plant() {
 					cur_plant->cur_frame = 0;
 					cur_plant->status = "idle";
 					cur_plant->count_down = 0;
+				}
+
+			}
+			else if (cur_plant->name_plant == "potato_mine") {
+				if (cur_plant->count_down == 1) {
+					cur_plant->cur_frame = 0;
+					cur_plant->status = "idle";
+				}
+				else if (cur_plant->count_down > 13 && cur_plant->count_down < 469) {
+					cur_plant->status = "idle";
+					cur_plant->cur_frame = 27;
+				}
+				else if (cur_plant->count_down == 470) {
+					cur_plant->cur_frame = 0;
+					cur_plant->status = "up";
+				}
+				else if (cur_plant->count_down == 480) {
+					cur_plant->cur_frame = 0;
+					cur_plant->status = "upidle2";
 				}
 
 			}
@@ -406,7 +436,7 @@ void Element::remote_func_plant() {
 
 			}
 
-			if (cur_plant->if_shoot == false && cur_plant->name_plant != "sunflower") {
+			if (cur_plant->if_shoot == false && cur_plant->name_plant != "sunflower" && cur_plant->name_plant != "potato_mine") {
 				cur_plant->status = "idle";
 			}
 
@@ -420,7 +450,6 @@ void Element::remote_func_plant() {
 
 
 }
-
 void Element::remote_func_zombie() {
 	for (std::vector <Zombie*>::iterator it = list_zombie.begin(); it != list_zombie.end(); it++) {
 		Zombie* cur_zombie = *it;
@@ -432,11 +461,22 @@ void Element::remote_func_zombie() {
 			}
 			
 		}
-		
-
-
 
 	}
 
 
+}
+void Element::reset_list_plant() {
+	for (std::vector<Plant*>::iterator it = list_plant.begin(); it != list_plant.end(); ) {
+		delete* it;
+		it = list_plant.erase(it);
+	}
+	list_plant.clear();
+}
+void Element::reset_list_zombie() {
+	for (std::vector<Zombie*>::iterator it = list_zombie.begin(); it != list_zombie.end(); ) {
+		delete* it;
+		it = list_zombie.erase(it);
+	}
+	list_zombie.clear();
 }

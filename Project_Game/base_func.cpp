@@ -14,8 +14,11 @@ Cur_imf::Cur_imf() {
 	flag1y = 567;
 	flag2x = 645;
 	flag2y = 567;
-
-
+	wintime = 0;
+	time_delay = 600;
+	wave = 0;
+	mouseButton = "";
+	frame_mg_image = 0;
 }
 Cur_imf::~Cur_imf() {
 
@@ -23,6 +26,25 @@ Cur_imf::~Cur_imf() {
 
 }
 
-void Cur_imf::reset_flag_process() {
+void Cur_imf::reset_process() {
+	cur_sun = 2700;//test thôi
+	delay_time = 0;
+	cur_sence = 0;
 	flag_process = 0;
+	flag1x = 615;
+	flag1y = 567;
+	flag2x = 645;
+	flag2y = 567;
+	wintime = 0;
+	time_delay = 600;
+	wave = 0;
+	mouseButton = "";
+	
+
+}
+void Cur_imf::set_mg_image() {
+	frame_mg_image++;
+	if (frame_mg_image >= 59) {
+		frame_mg_image = 0;
+	}
 }

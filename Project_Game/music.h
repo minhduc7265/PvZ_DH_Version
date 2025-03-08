@@ -14,20 +14,14 @@ public:
 	Mix_Chunk* sound_e;
 	Music();
 	~Music();
-
-	void Free_Music();//hàm giải phóng music
-	bool Load_Music(std::string path);//hàm load music
-	void Play_Music(std::string path);//hàm bật nhạc
+	void Free_Music();
+	bool Load_Music(std::string path);
+	void Play_Music(std::string path);
+	void Pause();
+	void Resume();
 	void Play_Sound();
 	void Load_Sound_Effect(std::string path);
-
-	/*void Set_Name(std::string name) {
-		name_music = name;
-	}*/
-
-
 	void End_Music();
-	//void Call_Music(std::string path);
 	double position;
 	double get_position(std::string name);
 	void set_position(double pos);
@@ -36,4 +30,4 @@ private:
 
 };
 
-#endif // !MUSIC_H_
+#endif

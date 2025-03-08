@@ -7,8 +7,9 @@ class game_status {
 public:
 	game_status();
 	int status;
+	int mg_status;
 
 };
 
 
-#endif // !GAME_STATUS_H
+#endif

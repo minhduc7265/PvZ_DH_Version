@@ -2,18 +2,12 @@
 #ifndef ITEM_H_
 #define ITEM_H_
 #include "base_func.h"
-
 class Item {
-
-
 private:
 	bool is_collected;
 	int type;
-	
 	int value_item;
-	
 	SDL_Texture* texture;
-
 public:
 	int type_anim;
 	int animation;
@@ -45,6 +39,4 @@ public:
 	}
 
 };
-
-
 #endif // !ITEM_H_

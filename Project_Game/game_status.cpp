@@ -2,6 +2,7 @@
 
 game_status::game_status() {
 	status = 0;
+	mg_status = 0;
 	//định nghĩa
 	//0 load game
 	//1 màn hình

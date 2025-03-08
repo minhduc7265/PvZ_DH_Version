@@ -52,17 +52,16 @@ protected:
 	int x_second;
 	int y_first;
 	int y_second;
+	bool is_planted;
 
 
 };
 
 
 class Lawn_Mana : public Lawn {
-private:
 
-	Lawn Array_Manager[5][9];
 public:
-	
+	Lawn Array_Manager[5][9];
 	void Lawn_Set() {
 		for (int i = 0; i < MAX_X; i++) {
 			for (int j = 0; j < MAX_Y; j++) {

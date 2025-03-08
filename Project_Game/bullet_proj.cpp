@@ -16,35 +16,30 @@ Bullet::Bullet() {
 	min_ox = 0;
 	num_col = 0;
 }
-
-
 Bullet::~Bullet() {
 
 	Free();
 
 }
-
 void Bullet::set_Pos(int x, int y) {
 	rect_.x = x;
 	rect_.y = y;
 
 }
-//int 
 void Bullet::HandleBullet(int lim_Ox, int lim_Oy) {
 	delay_time++;
 	if (delay_time > 0) {
 		rect_.x += Bullet::get_vel_x();
 		delay_time = 0;
 		if (type == 4) {
-
 			double temp = oy + (0.5*(rect_.x - 80 * num_col) * (rect_.x - 80*num_col)) / (Bullet::get_vel_x() * Bullet::get_vel_x()) - min_ox * (rect_.x - 80 * num_col);
 			rect_.y = int(temp);
 
 		}
+		else if (type == 5) {
+			rect_.x += Bullet::get_vel_x();
+		}
 	}
-	
-	//cout << rect_.x << endl;
-	//cout << Bullet::get_vel_x() << endl;
 	if (rect_.x > lim_Ox || rect_.y > lim_Oy) {
 		is_out = true;
 	}

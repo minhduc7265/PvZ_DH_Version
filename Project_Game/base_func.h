@@ -17,7 +17,6 @@ static SDL_Window* window = NULL;
 extern SDL_Renderer* renderer;
 static SDL_Event event;
 static std::pair<int, int> mouse_x_y;
-//10 thẻ cây
 extern PlantCard card[7];
 extern PlantCard card_[10];
 const int FIRST_X = 30;
@@ -29,7 +28,6 @@ const int DISTANCE_Y = 100;
 
 const int SCREEN_WID = 800;
 const int SCREEN_HEI = 600;
-//
 const int SCREEN_BFF = 32;
 
 const int COLOR_R = 255;
@@ -48,9 +46,16 @@ public:
 	int flag1y;
 	int flag2x;
 	int flag2y;
+	int wintime;
+	int wave;
+	int time_delay;
+	int frame_mg_image;
+	std::string mouseButton;
 	Cur_imf();
 	~Cur_imf();
-	void reset_flag_process();
+	void reset_process();
+	void set_mg_image();
+	
 
 
 };

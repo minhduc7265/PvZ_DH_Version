@@ -47,6 +47,12 @@ void Music::Play_Music(std::string path) {
 	Mix_Music* play_mus = musics[path];
 	Mix_PlayMusic(play_mus, -1);
 }
+void Music::Pause() {
+	Mix_PauseMusic();
+}
+void Music::Resume() {
+	Mix_ResumeMusic();
+}
 void Music::Load_Sound_Effect(std::string path) {
 	sound_e = Mix_LoadWAV(path.c_str());
 }

@@ -2,10 +2,14 @@
 #include "main_func.h"
 #include <string.h>
 #include <cstdlib>
+
+
+
+
 Texture texture_game;
 
 Lawn_Mana game_lawn;
-static int wintime = 0;
+
 
 std::string sun_value = "";
 
@@ -33,8 +37,8 @@ std::map<int, int> set_game =
 
 
 
-static int wave = 0;
-static int time_delay = 900;
+
+
 
 
 
@@ -76,7 +80,58 @@ void render_huge_wave() {
 
 
 
+void button_in_game() {
+	//RENDER LIÊN TỤC
+	pause1.SetRect(700, 0);
+	pause1.Render(renderer, NULL);
+	reset1.SetRect(735, 0);
+	reset1.Render(renderer, NULL);
+	outlevel.SetRect(770, 0);
+	outlevel.Render(renderer, NULL);
+	//XỬ LÍ CHUỘT
+	if (mouseX >= 700 && mouseX <= 734 && mouseY >= 0 && mouseY <= 33) {
+		pause2.SetRect(700, 0);
+		pause2.Render(renderer, NULL);
+		if (cur_imformation.mouseButton == "LEFT") {
+			if (timeGame.is_paused() == false) {
+				timeGame.pause();
+				esdp.Pause();
+				std::cout << std::endl;
+				std::cout << std::endl;
+				std::cout << "PAUSE" << std::endl;
+				std::cout << std::endl;
+				std::cout << std::endl;
+			}
+			else {
+				timeGame.resume();
+				esdp.Resume();
+				std::cout << std::endl;
+				std::cout << std::endl;
+				std::cout << "RESUME" << std::endl;
+				std::cout << std::endl;
+				std::cout << std::endl;
+			}
+			click.Play_Sound();
+		}
+	}
+	else if (mouseX >= 735 && mouseX <= 769 && mouseY >= 0 && mouseY <= 33) {
+		reset2.SetRect(735, 0);
+		reset2.Render(renderer, NULL);
+		if (cur_imformation.mouseButton == "LEFT") {
+			status_manager.status = 3;
+			esdp.End_Music();
+			click.Play_Sound();
+		}
+	}
+	else if (mouseX >= 770 && mouseX <= 800 && mouseY >= 0 && mouseY <= 30) {
+		if (cur_imformation.mouseButton == "LEFT") {
+			status_manager.status = 2;
+			esdp.End_Music();
+			click.Play_Sound();
+		}
+	}
 
+}
 
 
 
@@ -100,10 +155,10 @@ bool InitData() {
 
 
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
-	window = SDL_CreateWindow("Plants vs. Zombies DH Version - Normal Mode", SDL_WINDOWPOS_UNDEFINED, 
+	window = SDL_CreateWindow(WINDOW_NAME_N.c_str(), SDL_WINDOWPOS_UNDEFINED,
 		SDL_WINDOWPOS_UNDEFINED, 
 		SCREEN_WID, 
-		SCREEN_HEI, 
+		SCREEN_HEI,
 		SDL_WINDOW_SHOWN);
 	if (window == NULL) {
 		success = false;
@@ -251,6 +306,7 @@ void cyp_remote() {
 
 void status_process() {
 	if (status_manager.status == 0) {
+		reset_level();
 		if (is_music != 1) {
 			play_mainmusic(ctx, 152);
 			is_music = 1;
@@ -265,6 +321,7 @@ void status_process() {
 
 			if (SDL_WaitEvent(&event) && event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
 				status_manager.status = 1;
+				click.Play_Sound();
 			}
 		}
 		else {
@@ -275,50 +332,83 @@ void status_process() {
 
 	}
 	else if (status_manager.status == 1) {
+		
+		reset_level();
 		if (is_music != 1) {
+			mg_background.End_Music();
 			play_mainmusic(ctx, 152);
 			is_music = 1;
 		}
 
 		bgnormal.SetRect(0, 0);
 		bgnormal.Render(renderer, NULL);
+		cur_imformation.set_mg_image();
+		texture_reanim.Render(renderer, &miniGame.get_clip()[cur_imformation.frame_mg_image], "minigame", 10, 370, 234, 254);
+		adventure1.SetRect(570, 430);
+		adventure1.Render(renderer, NULL);
 		if (mouseX >= 570 && mouseX <= 750 && mouseY >= 430 && mouseY <= 590) {
 			adventure2.SetRect(570, 430);
 			adventure2.Render(renderer, NULL);
 			if (SDL_WaitEvent(&event) && event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
 				status_manager.status = 2;
+				status_manager.mg_status = 0;//0-4 là map TD mà chắc quái gì làm hết
+				click.Play_Sound();
 			}
 		}
-		else {
-			adventure1.SetRect(570, 430);
-			adventure1.Render(renderer, NULL);
+		else if (mouseX >= 10 && mouseX <= 244 && mouseY >= 370 && mouseY <= 600) {
+			if (SDL_WaitEvent(&event) && event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
+				status_manager.status = 2;
+				status_manager.mg_status = 5;//Mini-game
+				click.Play_Sound();
+			}
+			
 		}
 
 	}
 	else if (status_manager.status == 2) {
+		reset_level();
+
 		if (is_music != 2) {
-			play_mainmusic(ctx, 122);
-			is_music = 2;
-		}
-
-		challengebg.SetRect(0, 0);
-		challengebg.Render(renderer, NULL);
-		for (int i = 0; i < 5; i++) {
-			if (mouseX >= i * 155 + 30 && mouseX <= i * 155 + 30 + 120 && mouseY >= 100 && mouseY <= 215) {
-				texture_reanim.Render(renderer, &level2.get_clip()[i], "level", i * 155 + 30, 100, 118, 120);
-
-				if (SDL_WaitEvent(&event) && event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
-					status_manager.status = 3;
-				}
+			if (status_manager.mg_status <= 4) {
+				play_mainmusic(ctx, 122);
 			}
-			texture_reanim.Render(renderer, &level.get_clip()[i], "level", i * 155 + 30, 100, 118, 120);
+			else {
+				off_mainmusic(ctx);
+				mg_background.Play_Music("music/cyp2.mp3");
+			}
+			is_music = 2;
+			
 		}
+
+		if (status_manager.mg_status <= 4) {
+			challengebg.SetRect(0, 0);
+			challengebg.Render(renderer, NULL);
+			for (int i = 0; i < 5; i++) {
+				if (mouseX >= i * 155 + 30 && mouseX <= i * 155 + 30 + 120 && mouseY >= 100 && mouseY <= 215) {
+					texture_reanim.Render(renderer, &level2.get_clip()[i], "level", i * 155 + 30, 100, 118, 120);
+
+					if (SDL_WaitEvent(&event) && event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
+						status_manager.status = 3;
+						click.Play_Sound();
+					}
+				}
+				texture_reanim.Render(renderer, &level.get_clip()[i], "level", i * 155 + 30, 100, 118, 120);
+			}
+		}
+		else{
+			challengemg.SetRect(0, 0);
+			challengemg.Render(renderer, NULL);
+		}
+
+
+		//CHUNG
 		if (mouseX >= 10 && mouseX <= 100 && mouseY >= 575 && mouseY <= 590) {
 			back2.SetRect(10, 575);
 			back2.Render(renderer, NULL);
 
 			if (SDL_WaitEvent(&event) && event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
 				status_manager.status = 1;
+				click.Play_Sound();
 			}
 		}
 		else {
@@ -331,6 +421,7 @@ void status_process() {
 	else if (status_manager.status == 3) {
 		if (is_music != 3) {
 			off_mainmusic(ctx);
+			mg_background.End_Music();
 			esdp_c.Play_Music("music/ESDP-S.mp3");
 			/*play_mainmusic(ctx, 122);*/
 			is_music = 3;
@@ -344,23 +435,37 @@ void status_process() {
 		}
 		if (pos_bg < -550) {
 			cyp.rect_.y = (cyp.rect_.y >= 90) ? cyp.rect_.y -70: 70;
-			
 			cyp.Render(renderer, NULL);
 			cyp_remote();
+			play_but1.SetRect(150, 530);
+			play_but1.Render(renderer, NULL);
 
 		}
-		if (mouseX >= 690 && mouseX <= 780 && mouseY >= 5 && mouseY <= 40) {
-
+		if (mouseX >= 150 && mouseX <= 300 && mouseY >= 530 && mouseY <= 572) {
+			play_but2.SetRect(150, 530);
+			play_but2.Render(renderer, NULL);
 			if (SDL_WaitEvent(&event) && event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
 				status_manager.status = 4;
+				click.Play_Sound();
 			}
 		}
 
 
 	}
-
-
 	else if (status_manager.status == 4) {
+		if (pos_bg < -215) {
+			pos_bg += 18;
+		}
+		else {
+			status_manager.status = 5;
+			//ready->set->plant;
+		}
+
+		bg_sea.SetRect(pos_bg, 0);
+		bg_sea.Render(renderer, NULL);
+	}
+
+	else if (status_manager.status == 5) {
 		if (is_music != 4) {
 			off_mainmusic(ctx);
 			esdp_c.End_Music();
@@ -413,72 +518,115 @@ void status_process() {
 
 		//test
 
-
-
-		remote_bullet(zombie_manager.list_zombie, all_game.list_of_bullet);
-
-
-		//PLANT
-		plant_manager.check_plant();
-		zombie_manager.check_zombie();
-		plant_manager.remote_frame_plant();
-
-		plant_manager.remote_func_plant();
-		remote_anim_(plant_manager.list_plant);
-		//ZOMBIE
-
-		zombie_manager.remote_frame_zombie();
-
-		zombie_manager.remote_func_zombie();
-		remote_anim_zombie(zombie_manager.list_zombie);
-		//CARD
 		set_order();
 		render_card(renderer);
 
-		for (int i = 0; i <= 5; i++) {
-			if (card[i].CD > 0) {
-				card[i].CD--;
+		
+
+		button_in_game();
+		if (timeGame.is_paused() == false) {
+			for (int i = 0; i <= 5; i++) {
+				if (card[i].CD > 0) {
+					card[i].CD--;
+				}
 			}
+			remote_bullet(zombie_manager.list_zombie, all_game.list_of_bullet);//pause
+			plant_manager.check_plant();//pause
+			zombie_manager.check_zombie();//pause
+			item_manager.check_item();//pause
+
+			plant_manager.remote_frame_plant();//pause
+			plant_manager.remote_func_plant();//pause
+			zombie_manager.remote_frame_zombie();//pause
+			zombie_manager.remote_func_zombie();//pause
+			all_game.check_bullet(renderer);
+			
+
+			remote_bullet(zombie_manager.list_zombie, all_game.list_of_bullet);//pause
+			remote_instakill(zombie_manager.list_zombie, plant_manager.list_plant);//pause
+			remote_eat(zombie_manager.list_zombie, plant_manager.list_plant);//pause
+			remote_shoot(zombie_manager.list_zombie, plant_manager.list_plant);//pause
+			remote_anim_item(item_manager.list_item, mouseX, mouseY);//pause
+
+
+
+
+
+
+
+			
+
+			//pause
+			cur_imformation.time_delay--;
+			if (cur_imformation.time_delay <= 0) {//bằng 0 thì nhay wave + set time delay mới
+				cur_imformation.wave++;
+				if (cur_imformation.wave <= 14) {
+					cur_imformation.time_delay = getDelayTime(1, cur_imformation.wave);
+					spwanZombie(1, cur_imformation.wave);
+				}
+				if (cur_imformation.wave == 10 || cur_imformation.wave == 13) {
+					set_wave_time();
+				}
+				if (cur_imformation.wave == 5) {
+					//set_channel_on(ctx, 18, 19, 20, 21);
+				}
+
+			}
+			if (cur_imformation.wave >= 14 && count_zombie == 0) {
+				if (cur_imformation.wintime < 150) {
+					cur_imformation.wintime++;
+				}
+				star.SetRect(740, -45);
+				star.Render(renderer, NULL);
+				if (cur_imformation.wintime == 1) {
+					win_sound.Play_Sound();
+					lightfill.Play_Sound();
+					esdp.End_Music();
+					//off_mainmusic(ctx);
+				}
+				if (cur_imformation.wintime == 148) {
+					status_manager.status = 2;
+				}
+
+			}
+
+
+			if (cur_imformation.wave == 10 || cur_imformation.wave == 13) {
+				if (cur_imformation.time_delay < 75) {
+					if (cur_imformation.time_delay == 73) {
+						huge_wave_sound.Play_Sound();
+					}
+					render_huge_wave();
+				}
+
+			}
+			if (cur_imformation.flag_process <= 11 * cur_imformation.wave && cur_imformation.wave <= 14) {
+				++cur_imformation.delay_time;
+				if (cur_imformation.delay_time > 4) {
+					cur_imformation.flag_process++;
+					cur_imformation.delay_time = 0;
+					if (cur_imformation.wave == 11) {
+						cur_imformation.flag2y--;
+					}
+					if (cur_imformation.wave == 14) {
+						cur_imformation.flag1y--;
+					}
+
+				}
+
+			}
+
 		}
-
-
-
-		//
-
-
-
-
-		/*Uint32 currentTime = SDL_GetTicks();
-
-		frame += 2;
-		if (frame / 31 >= 30) frame = 0;*/
+		
 
 
 
 
-		//tes
-		//SDL_Rect* currentClip = &pea_shoot.get_clip()[frame / pea_shoot.num_frame];
-		//SDL_Rect* currentClip2 = &pea_idle.get_clip()[frame / pea_idle.num_frame];
-
-		//texture_reanim.Render(renderer, currentClip, "pea_shoot", -10, 40, 5 * currentClip->w / 8, 5 * currentClip->h / 8);
-		//texture_reanim.Render(renderer, currentClip2, "peashooter", -10, 140, 5 * currentClip->w / 8, 5 * currentClip->h / 8);
-		//texture_reanim.Render(renderer, currentClip2, "peashooter", -10, 240, 5 * currentClip->w / 8, 5 * currentClip->h / 8);
-		//texture_reanim.Render(renderer, currentClip2, "peashooter", -10, 340, 5 * currentClip->w / 8, 5 * currentClip->h / 8);
-		//texture_reanim.Render(renderer, currentClip2, "peashooter", -10, 440, 5 * currentClip->w / 8, 5 * currentClip->h / 8);
-		////texture_reanim.Render(0, 0, &gSpriteClips[0]);
-		//if (frame == 24) {
-		//	all_game.call_bullet(renderer, 0, 80, 100);
-
-		//}
-
-		all_game.check_bullet(renderer);
-
-		remote_bullet(zombie_manager.list_zombie, all_game.list_of_bullet);
-		remote_instakill(zombie_manager.list_zombie, plant_manager.list_plant);
-		remote_eat(zombie_manager.list_zombie, plant_manager.list_plant);
-		remote_shoot(zombie_manager.list_zombie, plant_manager.list_plant);
-		remote_anim_item(item_manager.list_item, mouseX, mouseY);
-		item_manager.check_item();
+		all_game.remote_func_bullet(renderer);//pause//chưa check nên để ý kĩ
+		remote_anim_(plant_manager.list_plant);//ko pause
+		remote_anim_zombie(zombie_manager.list_zombie);//hàm render ko pause
+		//CARD
+		
 		if (mouse_status == "hold_plant") {
 			PLANT_HOLD = { 0 ,0, plant_wid.at(plant_m_hold), plant_hei.at(plant_m_hold) };
 			if (plant_m_hold == "cherrybomb") {
@@ -490,6 +638,16 @@ void status_process() {
 			else if (plant_m_hold == "shiliu") {
 				texture_reanim.Render(renderer, &PLANT_HOLD, "shiliu_idle", mouseX - 70, mouseY - 90, 5 * plant_wid.at(plant_m_hold) / 8, 5 * plant_hei.at(plant_m_hold) / 8);
 			}
+
+			else if (plant_m_hold == "sunflower") {
+				texture_reanim.Render(renderer, &PLANT_HOLD, plant_m_hold, mouseX - 50, mouseY - 80, 5 * plant_wid.at(plant_m_hold) / 8, 5 * plant_hei.at(plant_m_hold) / 8);
+			}
+			else if (plant_m_hold == "snowpea") {
+				texture_reanim.Render(renderer, &PLANT_HOLD, plant_m_hold, mouseX - 50 + 5, mouseY - 80, 5 * plant_wid.at(plant_m_hold) / 8, 5 * plant_hei.at(plant_m_hold) / 8);
+			}
+			else if (plant_m_hold == "potato_mine") {
+				texture_reanim.Render(renderer, &PLANT_HOLD, "potatoidle", mouseX - 50, mouseY - 60, 5 * plant_wid.at(plant_m_hold) / 8, 5 * plant_hei.at(plant_m_hold) / 8);
+			}
 			else {
 				texture_reanim.Render(renderer, &PLANT_HOLD, plant_m_hold, mouseX - 80, mouseY - 80, 5 * plant_wid.at(plant_m_hold) / 8, 5 * plant_hei.at(plant_m_hold) / 8);
 			}
@@ -498,72 +656,6 @@ void status_process() {
 		}
 
 
-
-		time_delay--;
-		if (time_delay <= 0) {//bằng 0 thì nhay wave + set time delay mới
-			wave++;
-			if (wave <= 14) {
-				time_delay = set_game.at(wave);
-				zombie_manager.call_zombie("zombie", rand() % 5, rand() % 3 + 8, 0, 0, 89);
-				zombie_manager.call_zombie("zombie", rand() % 5, rand() % 3 + 8, 0, 0, 89);
-				zombie_manager.call_zombie("conezombie", rand() % 5, rand() % 3 + 8, 370, 0, 89);
-				zombie_manager.call_zombie("zombie", rand() % 5, rand() % 3 + 8, 0, 0, 89);
-				zombie_manager.call_zombie("conezombie", rand() % 5, rand() % 3 + 8, 370, 0, 89);
-				zombie_manager.call_zombie("zombie", rand() % 5, rand() % 3 + 8, 0, 0, 89);
-				zombie_manager.call_zombie("zombie", rand() % 5, rand() % 3 + 8, 0, 0, 89);
-				zombie_manager.call_zombie("seafzombie", rand() % 5, rand() % 3 + 8, 0, 0, 59);
-			}
-			if (wave == 10 || wave == 13) {
-				set_wave_time();
-			}
-			if (wave == 5) {
-				//set_channel_on(ctx, 18, 19, 20, 21);
-			}
-
-		}
-		if (wave >= 14 && count_zombie == 0) {
-			if (wintime < 150) {
-				wintime++;
-			}
-			star.SetRect(740, -45);
-			star.Render(renderer, NULL);
-			if (wintime == 1) {
-				win_sound.Play_Sound();
-				lightfill.Play_Sound();
-				esdp.End_Music();
-				//off_mainmusic(ctx);
-			}
-			if (wintime == 148) {
-				status_manager.status = 2;
-			}
-			
-		}
-
-
-		if (wave == 10 || wave == 13) {
-			if (time_delay < 75) {
-				if (time_delay == 73) {
-					huge_wave_sound.Play_Sound();
-				}
-				render_huge_wave();
-			}
-
-		}
-		if (cur_imformation.flag_process <= 11 * wave && wave <=14) {
-			++cur_imformation.delay_time;
-			if (cur_imformation.delay_time > 4) {
-				cur_imformation.flag_process++;
-				cur_imformation.delay_time = 0;
-				if (wave == 11) {
-					cur_imformation.flag2y--;
-				}
-				if (wave == 14) {
-					cur_imformation.flag1y--;
-				}
-				
-			}
-			
-		}
 
 
 	}
@@ -583,10 +675,13 @@ void status_process() {
 
 int main(int argc, char* args[])
 {
+	game_lawn.Lawn_Set();
+	timeGame.start();
 	//test
 	int temp = 0;
 
 	//
+	loadFileLevel();
 	cyp.SetRect(0, 630);
 	if ((ctx = xmp_create_context()) == NULL) {
 		cout << "Không tạo được context" << endl;
@@ -677,13 +772,14 @@ int main(int argc, char* args[])
 		CARD_LOCATE = get_pos_card(mouseX, mouseY);
 
 		CARD_LOCATE_C = get_cardlocatec(mouseX, mouseY);
-		
+		cur_imformation.mouseButton = "";
 		while (SDL_PollEvent(&event)) {
 			if (event.type == SDL_QUIT) {
 				running = false;
 			}
 			
-			if (status_manager.status == 4 && event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
+			if (status_manager.status == 5 && event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
+				cur_imformation.mouseButton = "LEFT";
 				if (mouse_status != "hold_plant" && CARD_LOCATE >= 0 && CARD_LOCATE <= 9 && card[CARD_LOCATE].CD<=1 &&cur_imformation.cur_sun>=sun_value_p.at(plant_num_list.at(card[CARD_LOCATE].type))) {
 					mouse_status = "hold_plant";//chuột cầm plant
 					plant_m_hold = plant_num_list.at(card[CARD_LOCATE].type);
@@ -717,7 +813,8 @@ int main(int argc, char* args[])
 				std::cout << "LEFT" << std::endl;
 			
 			}
-			else if (status_manager.status == 4 && event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_RIGHT) {
+			else if (status_manager.status == 5 && event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_RIGHT) {
+				cur_imformation.mouseButton = "RIGHT";
 				cout << mouseX << " " << mouseY << endl;
 				//plant_manager.call_plant("peashooter", u, v, 31);//have test
 				//plant_manager.call_plant("snowpea", 0, 1, 30);//have test
@@ -727,8 +824,6 @@ int main(int argc, char* args[])
 				//plant_manager.call_plant("cherrybomb", 1, 2, 21);//have test
 				//all_game.call_bullet(renderer, 0, mouseX, mouseY);
 				//zombie_manager.call_zombie("zomboni", 0, 9, 0, 0, 12);
-				zombie_manager.call_zombie("seafzombie", 0, 9, 0, 0, 59);
-				zombie_manager.call_zombie("exzombie", 3, 9, 0, 0, 60);
 				//zomboni_sound.Play_Sound();
 				//plant_manager.call_plant("banana_tree", 2, 2, 191);
 

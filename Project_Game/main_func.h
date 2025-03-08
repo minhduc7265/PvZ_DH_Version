@@ -11,6 +11,13 @@
 #include <xmp.h>
 #include "game_status.h"
 
+#include "json.hpp"//Thư viện
+#include <fstream>//Dùng đọc file
+using json = nlohmann::json;
+using std::fstream;
+extern std::vector<json> level_list;
+extern const std::vector<std::string> list_file;
+extern const std::map<std::string, int> list_f_frame;
 extern game_status status_manager;
 extern Animation card_plant;
 extern Element texture_reanim;
@@ -21,7 +28,8 @@ extern xmp_context ctx;
 extern bool is_load_texture;
 extern bool running;
 extern int is_music;
-
+extern Music click;
+extern TimeManager timeGame;
 extern bool is_remix;
 extern int CARD_LOCATE;
 extern int CARD_LOCATE_C;
@@ -86,6 +94,13 @@ extern Animation sfwalk;
 extern Animation sfeat;
 extern Animation sfdead;
 
+
+extern Animation potatoplant;
+extern Animation potatoup;
+extern Animation potatoidle;
+extern Animation potatoattack;
+extern Animation potatoboom;
+
 extern Animation level;
 extern Animation level2;
 extern Animation zomboni;
@@ -93,7 +108,14 @@ extern Music zomboni_sound;
 //Item
 extern Animation sun;
 extern Animation melon_pro;
-
+extern Animation miniGame;
+extern LoadPIC outlevel;
+extern LoadPIC pause1;
+extern LoadPIC pause2;
+extern LoadPIC reset1;
+extern LoadPIC reset2;
+extern Music mg_background;
+extern Music potato_sound;
 extern LoadPIC bg_background;
 extern LoadPIC bg_seed_bank;
 extern LoadPIC bg_sea;
@@ -112,6 +134,7 @@ extern LoadPIC adventure1;
 extern LoadPIC adventure2;
 extern LoadPIC bgnormal;
 extern LoadPIC challengebg;
+extern LoadPIC challengemg;
 extern LoadPIC back1;
 extern LoadPIC back2;
 extern LoadPIC cyp;
@@ -120,8 +143,11 @@ extern Animation exnon;
 extern Animation exwalk1;
 extern Animation exwalk2;
 extern Animation exdead;
+extern LoadPIC play_but1;
+extern LoadPIC play_but2;
 extern std::string mouse_status;
-
+extern const std::string WINDOW_NAME_N;
+extern const std::string WINDOW_NAME_H;
 extern const std::map<int, std::string> plant_num_list;
 
 extern const std::map<std::string, int> plant_frame_list;
@@ -129,7 +155,7 @@ extern const std::map<std::string, int> sun_value_p;
 extern const std::map<std::string, int> sun_value_cd;
 extern const std::map<std::string, int> plant_wid;
 extern const std::map<std::string, int> plant_hei;
-
+void loadFileLevel();
 int sound_init(xmp_context ctx, int sampling_rate, int channels);
 void set_order();
 
@@ -157,5 +183,11 @@ void remote_anim_zombie(std::vector<Zombie*>& zombie_vector);
 void remote_anim_item(std::vector<Item*>item_vector, int mX, int mY);
 std::pair<int, int> get_location(int mouseX, int mouseY);
 int get_cardlocatec(int mouseX, int mouseY);
-
+void reset_level();
+int get_sun_init(int level);
+int getSunInit(int level);
+int getWave(int level);
+std::string getNameLevel(int level);
+int getDelayTime(int level, int wave);
+void spwanZombie(int level, int wave);
 #endif // !MAIN_FUNC_H_

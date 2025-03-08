@@ -15,7 +15,6 @@ public:
 	bool get_is_allow()const {
 		return is_allow;
 	}
-
 	int get_type() const {
 		return type;
 	}
