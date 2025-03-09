@@ -19,6 +19,8 @@ Cur_imf::Cur_imf() {
 	wave = 0;
 	mouseButton = "";
 	frame_mg_image = 0;
+	cur_mini_game = 0;
+	cur_td_adventure = 0;
 }
 Cur_imf::~Cur_imf() {
 
@@ -39,6 +41,8 @@ void Cur_imf::reset_process() {
 	time_delay = 600;
 	wave = 0;
 	mouseButton = "";
+	cur_mini_game = 0;
+	cur_td_adventure = 0;
 	
 
 }

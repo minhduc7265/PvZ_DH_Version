@@ -95,6 +95,12 @@ extern Animation sfeat;
 extern Animation sfdead;
 
 
+extern Animation peazombieidle;
+extern Animation peazombiewalk1;
+extern Animation peazombiewalk2;
+extern Animation peazombieeat;
+
+
 extern Animation potatoplant;
 extern Animation potatoup;
 extern Animation potatoidle;

@@ -1,5 +1,26 @@
-﻿  main_func.cpp
-C:\Users\hminh\Desktop\Project_Game\Project_Game\main_func.cpp(611,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\hminh\Desktop\Project_Game\Project_Game\main_func.cpp(831,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\hminh\Desktop\Project_Game\Project_Game\main_func.cpp(228,1): warning C4715: 'sound_init': not all control paths return a value
+﻿  animation.cpp
+  base_func.cpp
+  bullet_proj.cpp
+  element.cpp
+  game_status.cpp
+  item.cpp
+  lawn.cpp
+  load_pic.cpp
+  main.cpp
+C:\Users\hminh\Desktop\Project_Game\Project_Game\main.cpp(693,11): warning C4566: character represented by universal-character-name '\u1EA1' cannot be represented in the current code page (1252)
+C:\Users\hminh\Desktop\Project_Game\Project_Game\main.cpp(693,11): warning C4566: character represented by universal-character-name '\u0111' cannot be represented in the current code page (1252)
+C:\Users\hminh\Desktop\Project_Game\Project_Game\main.cpp(693,11): warning C4566: character represented by universal-character-name '\u01B0' cannot be represented in the current code page (1252)
+C:\Users\hminh\Desktop\Project_Game\Project_Game\main.cpp(693,11): warning C4566: character represented by universal-character-name '\u1EE3' cannot be represented in the current code page (1252)
+  main_func.cpp
+C:\Users\hminh\Desktop\Project_Game\Project_Game\main_func.cpp(649,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\hminh\Desktop\Project_Game\Project_Game\main_func.cpp(916,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\hminh\Desktop\Project_Game\Project_Game\main_func.cpp(1140,12): warning C4566: character represented by universal-character-name '\u1EE7' cannot be represented in the current code page (1252)
+C:\Users\hminh\Desktop\Project_Game\Project_Game\main_func.cpp(1140,12): warning C4566: character represented by universal-character-name '\u0111' cannot be represented in the current code page (1252)
+  plant.cpp
+  texture_storage.cpp
+  time_manager.cpp
+  zombie.cpp
+  Generating Code...
+C:\Users\hminh\Desktop\Project_Game\Project_Game\main_func.cpp(257,1): warning C4715: 'sound_init': not all control paths return a value
+  LINK : C:\Users\hminh\Desktop\Project_Game\Debug\Project_Game.exe not found or not built by the last incremental link; performing full link
   Project_Game.vcxproj -> C:\Users\hminh\Desktop\Project_Game\Debug\Project_Game.exe

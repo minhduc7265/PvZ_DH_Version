@@ -7,7 +7,8 @@ const std::map<std::string, int> body_bl{
 	{"conezombie",270},
 	{"zomboni",750},
 	{"seafzombie",470},
-	{"exzombie",470}
+	{"exzombie",470},
+	{"pea_zombie",270}
 
 
 };
@@ -16,14 +17,16 @@ const std::map<std::string, int> armor1_bl{
 	{"conezombie",370},
 	{"zomboni",0},
 	{"seafzombie",0},
-	{"exzombie",0}
+	{"exzombie",0},
+	{"pea_zombie",0}
 };
 const std::map<std::string, int> armor2_bl{
 	{"zombie",0},
 	{"conezombie",0},
 	{"zomboni",0},
 	{"seafzombie",0},
-	{"exzombie",0}
+	{"exzombie",0},
+	{"pea_zombie",0}
 };
 
 const int BLOOD_DEAD = 50;

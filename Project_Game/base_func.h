@@ -50,6 +50,8 @@ public:
 	int wave;
 	int time_delay;
 	int frame_mg_image;
+	int cur_mini_game;
+	int cur_td_adventure;
 	std::string mouseButton;
 	Cur_imf();
 	~Cur_imf();

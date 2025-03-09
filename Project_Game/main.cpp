@@ -63,7 +63,7 @@ void set_wave_time() {
 }
 
 
-void render_huge_wave() {
+void render_huge_wave() {//5 loại cờ
 	if (huge_wave.rect_.x < 0) {
 		huge_wave.rect_.x+=18;
 		huge_wave.rect_.y+=18;
@@ -164,7 +164,7 @@ bool InitData() {
 		success = false;
 	}
 	else {
-		renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+		renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);//thêm flag ở cuối
 		if (renderer == NULL) {
 			success = false;
 
@@ -389,6 +389,8 @@ void status_process() {
 
 					if (SDL_WaitEvent(&event) && event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
 						status_manager.status = 3;
+						cur_imformation.cur_mini_game = 0;
+						cur_imformation.cur_td_adventure = i + 1;
 						click.Play_Sound();
 					}
 				}
@@ -561,18 +563,16 @@ void status_process() {
 			if (cur_imformation.time_delay <= 0) {//bằng 0 thì nhay wave + set time delay mới
 				cur_imformation.wave++;
 				if (cur_imformation.wave <= 14) {
-					cur_imformation.time_delay = getDelayTime(1, cur_imformation.wave);
-					spwanZombie(1, cur_imformation.wave);
+					cur_imformation.time_delay = getDelayTime(cur_imformation.cur_td_adventure, cur_imformation.wave);
+					spwanZombie(cur_imformation.cur_td_adventure, cur_imformation.wave);
 				}
 				if (cur_imformation.wave == 10 || cur_imformation.wave == 13) {
 					set_wave_time();
 				}
-				if (cur_imformation.wave == 5) {
-					//set_channel_on(ctx, 18, 19, 20, 21);
-				}
 
 			}
-			if (cur_imformation.wave >= 14 && count_zombie == 0) {
+			if (cur_imformation.wave >= 14 && count_zombie == 0) 
+			{
 				if (cur_imformation.wintime < 150) {
 					cur_imformation.wintime++;
 				}
@@ -590,17 +590,8 @@ void status_process() {
 
 			}
 
-
-			if (cur_imformation.wave == 10 || cur_imformation.wave == 13) {
-				if (cur_imformation.time_delay < 75) {
-					if (cur_imformation.time_delay == 73) {
-						huge_wave_sound.Play_Sound();
-					}
-					render_huge_wave();
-				}
-
-			}
-			if (cur_imformation.flag_process <= 11 * cur_imformation.wave && cur_imformation.wave <= 14) {
+			if (cur_imformation.flag_process <= 11 * cur_imformation.wave && cur_imformation.wave <= 14) 
+			{
 				++cur_imformation.delay_time;
 				if (cur_imformation.delay_time > 4) {
 					cur_imformation.flag_process++;
@@ -625,6 +616,21 @@ void status_process() {
 		all_game.remote_func_bullet(renderer);//pause//chưa check nên để ý kĩ
 		remote_anim_(plant_manager.list_plant);//ko pause
 		remote_anim_zombie(zombie_manager.list_zombie);//hàm render ko pause
+
+		if (cur_imformation.wave == 10 || cur_imformation.wave == 13)
+		{
+			if (cur_imformation.time_delay < 75) {
+				if (cur_imformation.time_delay == 73) {
+					huge_wave_sound.Play_Sound();
+				}
+				render_huge_wave();
+			}
+
+		}
+
+
+
+
 		//CARD
 		
 		if (mouse_status == "hold_plant") {

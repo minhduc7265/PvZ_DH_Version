@@ -19,11 +19,16 @@ const std::map<std::string, int> list_f_frame{
 	{"conezombie",90},
 	{"zomboni",12},
 	{"seafzombie",59},
-	{"exzombie",60}
+	{"exzombie",60},
+	{"pea_zombie",90}
 
 
 };
 TimeManager timeGame;
+Animation peazombieidle;
+Animation peazombiewalk1;
+Animation peazombiewalk2;
+Animation peazombieeat;
 Animation pea_idle;
 Animation pea_shoot;
 Animation snow_idle;
@@ -310,7 +315,7 @@ void load_anim() {
 	normal_eat_1.set_clip_bonus(259, 135, 199);
 	normal_eat_2.set_clip_bonus(259, 156, 204);
 	normal_dead.set_clip_bonus(55, 237, 193);
-	sun.set_clip(30, 154, 154);
+	sun.set_clip(30, 200, 200);
 	melon_pro.set_clip(10, 80, 67);
 	shiliu_idle.set_clip(76, 181, 213);
 	shiliu_shoot.set_clip(50, 249, 225);
@@ -337,6 +342,12 @@ void load_anim() {
 	potatoidle.set_clip_bonus(61, 205, 205);
 	potatoattack.set_clip_bonus(20, 205, 205);
 	potatoboom.set_clip_bonus(32, 390, 390);
+	peazombieidle.set_clip_bonus(63, 180, 238);
+	peazombiewalk1.set_clip_bonus(90, 180, 238);
+	peazombiewalk2.set_clip_bonus(90, 180, 238);
+	peazombieeat.set_clip_bonus(259, 180, 238);
+
+
 }
 bool LoadBG() {
 	cyp.Set_Name_Path("images/cyp.png");
@@ -456,7 +467,10 @@ void load_texture_element() {
 	texture_reanim.Load_Texture("spritesheet/potato_idle.png", renderer, "potatoidle", "plant");
 	texture_reanim.Load_Texture("spritesheet/potato_attack.png", renderer, "potatoattack", "plant");
 	texture_reanim.Load_Texture("spritesheet/potato_boom.png", renderer, "potatoboom", "plant");//effect
-
+	texture_reanim.Load_Texture("spritesheet/peazombieidle.png", renderer, "peazombieidle", "zombie");
+	texture_reanim.Load_Texture("spritesheet/peazombiewalk1.png", renderer, "peazombiewalk1", "zombie");
+	texture_reanim.Load_Texture("spritesheet/peazombiewalk2.png", renderer, "peazombiewalk2", "zombie");
+	texture_reanim.Load_Texture("spritesheet/peazombieeat.png", renderer, "peazombieeat", "zombie");
 }
 int get_pos_card(int mouseX, int mouseY) {
 
@@ -841,6 +855,53 @@ void remote_anim_zombie(std::vector<Zombie*>& zombie_vector) {
 
 
 			}
+			else if (cur_zombie->name_zombie == "pea_zombie") {
+				if (cur_zombie->status == "idle") {
+					cur_zombie->num_frame = 63;
+					anim_change = peazombieidle;
+					const_ = 0;
+					name_anim = "peazombieidle";
+
+				}
+				else if (cur_zombie->status == "walk") {
+					cur_zombie->num_frame = 90;
+					if (cur_zombie->zom_blood <= 130) {
+						anim_change = peazombiewalk2;
+						name_anim = "peazombiewalk2";
+						const_ = -10;
+					}
+					
+					else {
+						anim_change = peazombiewalk1;
+						name_anim = "peazombiewalk1";
+						const_ = -10;
+					}
+
+				}
+				else if (cur_zombie->status == "eat") {
+					cur_zombie->num_frame = 259;
+					anim_change = peazombieeat;
+					name_anim = "peazombieeat";
+					const_ = -10;
+
+				}
+				else {
+					cur_zombie->num_frame = 55;
+					anim_change = normal_dead;
+					name_anim = "normal_dead";
+					const_ = 20;
+				}
+				cur_zombie->currentClip = &anim_change.get_clip()[cur_zombie->cur_frame];
+				texture_reanim.Render(renderer, cur_zombie->currentClip, name_anim,
+					cur_zombie->pos_x - 40, cur_zombie->pos_y + const_,
+					126,
+					166);
+
+
+
+			}
+
+
 
 		}
 		

@@ -1,0 +1,78 @@
+{
+	"level_id": 1,
+	"name_level": "East Sea Dragon Palace Day 1",
+	"sun_init": 100,
+	"num_wave": 14,
+	"wave": [
+		{
+			"cur_wave": 1,
+			"delay_time": 400,
+			"enemies": ["zombie", "zombie", "zombie"]
+		},
+		{
+			"cur_wave": 2,
+			"delay_time": 500,
+			"enemies": ["zombie", "zombie", "zombie", "zombie", "zombie"]
+		},
+		{
+			"cur_wave": 3,
+			"delay_time": 600,
+			"enemies": ["zombie", "zombie", "zombie", "zombie", "zombie", "zombie"]
+		},
+		{
+			"cur_wave": 4,
+			"delay_time": 400,
+			"enemies": ["zombie", "zombie", "zombie", "zombie", "zombie"]
+		},
+		{
+			"cur_wave": 5,
+			"delay_time": 500,
+			"enemies": ["zombie", "zombie", "zombie", "zombie", "zombie"]
+		},
+		{
+			"cur_wave": 6,
+			"delay_time": 500,
+			"enemies": ["zombie", "zombie", "zombie", "zombie", "zombie", "zombie"]
+		},
+		{
+			"cur_wave": 7,
+			"delay_time": 400,
+			"enemies": ["zombie", "zombie", "zombie", "zombie", "zombie", "zombie"]
+		},
+		{
+			"cur_wave": 8,
+			"delay_time": 300,
+			"enemies": ["zombie", "zombie", "zombie", "zombie"]
+		},
+		{
+			"cur_wave": 9,
+			"delay_time": 500,
+			"enemies": ["zombie", "zombie", "zombie", "zombie", "zombie"]
+		},
+		{
+			"cur_wave": 10,
+			"delay_time": 600,
+			"enemies": ["zombie", "zombie", "zombie", "zombie", "zombie"]
+		},
+		{
+			"cur_wave": 11,
+			"delay_time": 400,
+			"enemies": ["zombie", "zombie", "zombie", "zombie", "zombie", "zombie", "zombie", "zombie"]
+		},
+		{
+			"cur_wave": 12,
+			"delay_time": 600,
+			"enemies": ["zombie", "zombie", "zombie", "zombie", "zombie", "zombie"]
+		},
+		{
+			"cur_wave": 13,
+			"delay_time": 500,
+			"enemies": ["zombie", "zombie", "zombie", "zombie"]
+		},
+		{
+			"cur_wave": 14,
+			"delay_time": 300,
+			"enemies": ["zombie", "zombie", "zombie", "zombie", "zombie", "zombie", "zombie", "zombie", "zombie", "zombie", "zombie"]
+		}
+	]
+}
