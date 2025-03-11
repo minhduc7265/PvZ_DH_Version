@@ -3,7 +3,28 @@
 #include <string.h>
 #include <cstdlib>
 
+std::map<int, int> maxWave = {
+	{1,14},
+	{2,10},
+	{3,17},
+	{4,27},
+	{5,5}
+};
+std::map<int, int> flagConst = {
+	{1,11},
+	{2,15},
+	{3,9},
+	{4,5},
+	{5,31}
+};
+std::map<int, std::pair<int, int>>  midFlag{
+	{1,{-1,11}},
+	{2,{-1,-1}},
+	{3,{-1,2}},
+	{4,{11,13}},
+	{5,{-1,-1}}
 
+};
 
 
 Texture texture_game;
@@ -77,8 +98,134 @@ void render_huge_wave() {//5 loại cờ
 	huge_wave.Render(renderer, NULL);
 }
 
+void remoteFlagTD() {
+	cur_imformation.time_delay--;
+	if (cur_imformation.time_delay <= 0) {//bằng 0 thì nhay wave + set time delay mới
+		cur_imformation.wave++;
 
+		if (cur_imformation.wave <= maxWave.at(getWave(cur_imformation.cur_td_adventure))) {//nếu set delay thì gọi thêm nếu mà <= max
+			cur_imformation.time_delay = getDelayTime(cur_imformation.cur_td_adventure, cur_imformation.wave);
+			spwanZombie(cur_imformation.cur_td_adventure, cur_imformation.wave);
+		}
 
+		if (cur_imformation.wave == 1 ||
+			cur_imformation.wave == 10 ||
+			cur_imformation.wave == 12 ||
+			cur_imformation.wave == maxWave.at(getWave(cur_imformation.cur_td_adventure)) - 1) {
+			set_wave_time();
+		}
+
+	}
+	//Khi win
+	if (cur_imformation.wave >= maxWave.at(getWave(cur_imformation.cur_td_adventure)) && count_zombie == 0)
+	{
+		if (cur_imformation.wintime < 150) {
+			cur_imformation.wintime++;
+		}
+		star.SetRect(740, -45);
+		star.Render(renderer, NULL);
+		if (cur_imformation.wintime == 1) {
+			win_sound.Play_Sound();
+			lightfill.Play_Sound();
+			esdp.End_Music();
+			//off_mainmusic(ctx);
+		}
+		if (cur_imformation.wintime == 148) {
+			status_manager.status = 2;
+		}
+
+	}
+	//chạy cờ
+	if (cur_imformation.flag_process <= flagConst.at(getWave(cur_imformation.cur_td_adventure)) * cur_imformation.wave &&
+		cur_imformation.wave <= maxWave.at(getWave(cur_imformation.cur_td_adventure)))//nếu hiện tại nhỏ hơn max
+	{
+		++cur_imformation.delay_time;
+		if (cur_imformation.delay_time > 4) {
+			cur_imformation.flag_process++;
+			cur_imformation.delay_time = 0;
+
+			if (cur_imformation.wave == midFlag.at(getWave(cur_imformation.cur_td_adventure)).second) {
+				cur_imformation.flag2y--;
+			}
+			else if (cur_imformation.wave == midFlag.at(getWave(cur_imformation.cur_td_adventure)).first) {
+				cur_imformation.flag3y--;
+			}
+			else if (cur_imformation.wave == maxWave.at(getWave(cur_imformation.cur_td_adventure))) {
+				cur_imformation.flag1y--;
+			}
+
+		}
+
+	}
+	
+}
+void remoteFlagMG() {
+	cur_imformation.time_delay--;
+	if (cur_imformation.time_delay <= 0) {//bằng 0 thì nhay wave + set time delay mới
+		cur_imformation.wave++;
+
+		if (cur_imformation.wave <= maxWave.at(getWave(cur_imformation.cur_mini_game))) {//nếu set delay thì gọi thêm nếu mà <= max
+			cur_imformation.time_delay = getDelayTime(cur_imformation.cur_mini_game, cur_imformation.wave);
+			spwanZombie(cur_imformation.cur_mini_game, cur_imformation.wave);
+		}
+
+		if (cur_imformation.wave == 1 ||
+			cur_imformation.wave == 10 ||
+			cur_imformation.wave == 12 ||
+			cur_imformation.wave == maxWave.at(getWave(cur_imformation.cur_mini_game)) - 1) {
+			set_wave_time();
+		}
+
+	}
+	//Khi win
+	if (cur_imformation.wave >= maxWave.at(getWave(cur_imformation.cur_mini_game)) && count_zombie == 0)
+	{
+		if (cur_imformation.wintime < 150) {
+			cur_imformation.wintime++;
+		}
+		star.SetRect(740, -45);
+		star.Render(renderer, NULL);
+		if (cur_imformation.wintime == 1) {
+			win_sound.Play_Sound();
+			lightfill.Play_Sound();
+			esdp.End_Music();
+			//off_mainmusic(ctx);
+		}
+		if (cur_imformation.wintime == 148) {
+			status_manager.status = 2;
+		}
+
+	}
+	if (cur_imformation.wave == 6) {
+		set_channel_on(ctx, 24, 25, 26, 27);
+	}
+	if (cur_imformation.wave >= maxWave.at(getWave(cur_imformation.cur_mini_game)) && count_zombie < 3) {
+		set_channel_off(ctx, 24, 25, 26, 27);
+	}
+	//chạy cờ
+	if (cur_imformation.flag_process <= flagConst.at(getWave(cur_imformation.cur_mini_game)) * cur_imformation.wave &&
+		cur_imformation.wave <= maxWave.at(getWave(cur_imformation.cur_mini_game)))//nếu hiện tại nhỏ hơn max
+	{
+		++cur_imformation.delay_time;
+		if (cur_imformation.delay_time > 4) {
+			cur_imformation.flag_process++;
+			cur_imformation.delay_time = 0;
+
+			if (cur_imformation.wave == midFlag.at(getWave(cur_imformation.cur_mini_game)).second) {
+				cur_imformation.flag2y--;
+			}
+			else if (cur_imformation.wave == midFlag.at(getWave(cur_imformation.cur_mini_game)).first) {
+				cur_imformation.flag3y--;
+			}
+			else if (cur_imformation.wave == maxWave.at(getWave(cur_imformation.cur_mini_game))) {
+				cur_imformation.flag1y--;
+			}
+
+		}
+
+	}
+
+}
 
 void button_in_game() {
 	//RENDER LIÊN TỤC
@@ -181,20 +328,66 @@ bool InitData() {
 	return success;
 }
 
-void render_flag_pro() {
-	
-	SDL_Rect rect = { 610,570,cur_imformation.flag_process,27 };
-	//cout << &cur_imformation.flag_process << endl;
-	SDL_Rect rect_2 = { 0,0,158,27 };
-	SDL_Point center = { 79, 13 };
-	pro_green.Render_2(renderer, &rect, &rect_2, &center, 180.0);
-	
-	pro_non.SetRect(610, 570);
-	pro_non.Render(renderer, NULL);
+void call_flag_paint() {
 	pro_flag.SetRect(cur_imformation.flag1x, cur_imformation.flag1y);
 	pro_flag.Render(renderer, NULL);
 	pro_flag.SetRect(cur_imformation.flag2x, cur_imformation.flag2y);
 	pro_flag.Render(renderer, NULL);
+	pro_flag.SetRect(cur_imformation.flag3x, cur_imformation.flag3y);
+	pro_flag.Render(renderer, NULL);
+}
+
+
+void render_flag_pro() {
+	SDL_Rect rect = { 610,570,cur_imformation.flag_process,27 };
+	SDL_Rect rect_2 = { 0,0,158,27 };
+	SDL_Point center = { 79, 13 };
+	pro_green.Render_2(renderer, &rect, &rect_2, &center, 180.0);
+	pro_non.SetRect(610, 570);
+	pro_non.Render(renderer, NULL);
+
+	if (cur_imformation.type_flag == 1) {//2 flag
+		cur_imformation.flag1x = 615;
+		cur_imformation.flag2x = 645;
+		cur_imformation.flag3x = -100;
+		cur_imformation.flag3y = -100;
+		call_flag_paint();
+		
+	}
+	else if (cur_imformation.type_flag == 2) {//1 flag
+		cur_imformation.flag1x = 615;
+		cur_imformation.flag2x = -100;
+		cur_imformation.flag2y = -100;
+		cur_imformation.flag3x = -100;
+		cur_imformation.flag3y = -100;
+		call_flag_paint();
+	}
+	else if (cur_imformation.type_flag == 3) {//2 flag 2
+		cur_imformation.flag1x = 615;
+		cur_imformation.flag2x = 730;
+		cur_imformation.flag3x = -100;
+		cur_imformation.flag3y = -100;
+		call_flag_paint();
+	}
+	else if (cur_imformation.type_flag == 4) {//3 flag
+		cur_imformation.flag1x = 615;
+		cur_imformation.flag2x = 685;
+		cur_imformation.flag3x = 700;
+		call_flag_paint();
+
+	}
+	else if (cur_imformation.type_flag == 5) {//0 flag
+		cur_imformation.flag1x = -100;
+		cur_imformation.flag1y = -100;
+		cur_imformation.flag2x = -100;
+		cur_imformation.flag2y = -100;
+		cur_imformation.flag3x = -100;
+		cur_imformation.flag3y = -100;
+		call_flag_paint();
+
+	}
+	
+	
 	pro_zom.SetRect(760 - cur_imformation.flag_process, 567);
 	pro_zom.Render(renderer, NULL);
 }
@@ -400,6 +593,19 @@ void status_process() {
 		else{
 			challengemg.SetRect(0, 0);
 			challengemg.Render(renderer, NULL);
+			for (int i = 0; i < 5; i++) {
+				if (mouseX >= i * 155 + 30 && mouseX <= i * 155 + 30 + 120 && mouseY >= 100 && mouseY <= 215) {
+					texture_reanim.Render(renderer, &minigame2.get_clip()[i], "minigame2", i * 155 + 30, 100, 118, 120);
+
+					if (SDL_WaitEvent(&event) && event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
+						status_manager.status = 3;
+						cur_imformation.cur_mini_game = i + 1;
+						cur_imformation.cur_td_adventure = 0;
+						click.Play_Sound();
+					}
+				}
+				texture_reanim.Render(renderer, &minigame1.get_clip()[i], "minigame1", i * 155 + 30, 100, 118, 120);
+			}
 		}
 
 
@@ -424,13 +630,24 @@ void status_process() {
 		if (is_music != 3) {
 			off_mainmusic(ctx);
 			mg_background.End_Music();
-			esdp_c.Play_Music("music/ESDP-S.mp3");
+			if (cur_imformation.cur_td_adventure != 0) {
+				esdp_c.Play_Music("music/ESDP-S.mp3");
+			}
+			else {
+				mg_background.Play_Music("music/cyp2.mp3");
+			}
 			/*play_mainmusic(ctx, 122);*/
 			is_music = 3;
 		}
+		if (cur_imformation.cur_td_adventure != 0) {
+			bg_sea.SetRect(pos_bg, 0);
+			bg_sea.Render(renderer, NULL);
+		}
+		else {
+			bg_background.SetRect(pos_bg, 0);
+			bg_background.Render(renderer, NULL);
+		}
 		
-		bg_sea.SetRect(pos_bg, 0);
-		bg_sea.Render(renderer, NULL);
 		//status_manager.status = 4;
 		if (pos_bg > -550) {
 			pos_bg -= 18;
@@ -462,23 +679,41 @@ void status_process() {
 			status_manager.status = 5;
 			//ready->set->plant;
 		}
-
-		bg_sea.SetRect(pos_bg, 0);
-		bg_sea.Render(renderer, NULL);
+		if (cur_imformation.cur_td_adventure != 0) {
+			bg_sea.SetRect(pos_bg, 0);
+			bg_sea.Render(renderer, NULL);
+		}
+		else {
+			bg_background.SetRect(pos_bg, 0);
+			bg_background.Render(renderer, NULL);
+		}
 	}
 
 	else if (status_manager.status == 5) {
 		if (is_music != 4) {
 			off_mainmusic(ctx);
 			esdp_c.End_Music();
-			esdp.Play_Music("music/ESDP.mp3");
+			if (cur_imformation.cur_td_adventure != 0) {
+				esdp.Play_Music("music/ESDP.mp3");
+			}
+			else {
+				play_mainmusic(ctx, 0);
+				set_channel_off(ctx,24, 25, 26, 27);
+
+			}
+			
 			/*set_channel_off(ctx, 18, 19, 20, 21);
 			play_mainmusic(ctx, 184);*/
 			is_music = 4;
 		}
-		bg_sea.SetRect(-215, 0);
-		bg_sea.Render(renderer, NULL);
-
+		if (cur_imformation.cur_td_adventure != 0) {
+			bg_sea.SetRect(pos_bg, 0);
+			bg_sea.Render(renderer, NULL);
+		}
+		else {
+			bg_background.SetRect(pos_bg, 0);
+			bg_background.Render(renderer, NULL);
+		}
 		bg_seed_bank.SetRect(10, 0);
 		bg_seed_bank.Render(renderer, NULL);
 
@@ -491,7 +726,7 @@ void status_process() {
 		SDL_FreeSurface(sun_surface); // Giải phóng surface sau khi tạo texture
 		SDL_RenderCopy(renderer, sun_text, NULL, &renderquad_3);
 
-		render_flag_pro();
+		
 
 		/*bg_seed_packet.SetRect(90, 10);
 		bg_seed_packet.Render(renderer, NULL);*/
@@ -556,77 +791,58 @@ void status_process() {
 
 
 
+			if (cur_imformation.cur_td_adventure != 0) {
+				cur_imformation.type_flag = getWave(cur_imformation.cur_td_adventure);
+				remoteFlagTD();
+			}
+			else {
+				cur_imformation.type_flag = getWave(cur_imformation.cur_mini_game);
+				remoteFlagMG();
+			}
+			
+			//pause
 			
 
-			//pause
-			cur_imformation.time_delay--;
-			if (cur_imformation.time_delay <= 0) {//bằng 0 thì nhay wave + set time delay mới
-				cur_imformation.wave++;
-				if (cur_imformation.wave <= 14) {
-					cur_imformation.time_delay = getDelayTime(cur_imformation.cur_td_adventure, cur_imformation.wave);
-					spwanZombie(cur_imformation.cur_td_adventure, cur_imformation.wave);
-				}
-				if (cur_imformation.wave == 10 || cur_imformation.wave == 13) {
-					set_wave_time();
-				}
-
-			}
-			if (cur_imformation.wave >= 14 && count_zombie == 0) 
+		}
+		if (cur_imformation.cur_td_adventure != 0) {
+			if (cur_imformation.wave == midFlag.at(getWave(cur_imformation.cur_td_adventure)).first - 1 ||
+				cur_imformation.wave == midFlag.at(getWave(cur_imformation.cur_td_adventure)).second - 1 ||
+				cur_imformation.wave == maxWave.at(getWave(cur_imformation.cur_td_adventure)) - 1)
 			{
-				if (cur_imformation.wintime < 150) {
-					cur_imformation.wintime++;
-				}
-				star.SetRect(740, -45);
-				star.Render(renderer, NULL);
-				if (cur_imformation.wintime == 1) {
-					win_sound.Play_Sound();
-					lightfill.Play_Sound();
-					esdp.End_Music();
-					//off_mainmusic(ctx);
-				}
-				if (cur_imformation.wintime == 148) {
-					status_manager.status = 2;
+				if (cur_imformation.time_delay < 75) {
+					if (cur_imformation.time_delay == 73) {
+						huge_wave_sound.Play_Sound();
+					}
+					render_huge_wave();
 				}
 
 			}
 
-			if (cur_imformation.flag_process <= 11 * cur_imformation.wave && cur_imformation.wave <= 14) 
+		}
+		else {
+			if (cur_imformation.wave == midFlag.at(getWave(cur_imformation.cur_mini_game)).first - 1 ||
+				cur_imformation.wave == midFlag.at(getWave(cur_imformation.cur_mini_game)).second - 1 ||
+				cur_imformation.wave == maxWave.at(getWave(cur_imformation.cur_mini_game)) - 1)
 			{
-				++cur_imformation.delay_time;
-				if (cur_imformation.delay_time > 4) {
-					cur_imformation.flag_process++;
-					cur_imformation.delay_time = 0;
-					if (cur_imformation.wave == 11) {
-						cur_imformation.flag2y--;
+				if (cur_imformation.time_delay < 75) {
+					if (cur_imformation.time_delay == 73) {
+						huge_wave_sound.Play_Sound();
 					}
-					if (cur_imformation.wave == 14) {
-						cur_imformation.flag1y--;
-					}
-
+					render_huge_wave();
 				}
 
 			}
-
 		}
 		
 
 
 
-
+		render_flag_pro();
 		all_game.remote_func_bullet(renderer);//pause//chưa check nên để ý kĩ
 		remote_anim_(plant_manager.list_plant);//ko pause
 		remote_anim_zombie(zombie_manager.list_zombie);//hàm render ko pause
 
-		if (cur_imformation.wave == 10 || cur_imformation.wave == 13)
-		{
-			if (cur_imformation.time_delay < 75) {
-				if (cur_imformation.time_delay == 73) {
-					huge_wave_sound.Play_Sound();
-				}
-				render_huge_wave();
-			}
-
-		}
+		
 
 
 
@@ -688,6 +904,7 @@ int main(int argc, char* args[])
 
 	//
 	loadFileLevel();
+	loadFileMiniGame();
 	cyp.SetRect(0, 630);
 	if ((ctx = xmp_create_context()) == NULL) {
 		cout << "Không tạo được context" << endl;

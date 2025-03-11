@@ -1,5 +1,11 @@
 ﻿#include "main_func.h"
 std::vector<json> level_list(11);
+std::vector<json> minigame_list(3);
+const std::vector<std::string> listminigame_file{
+	"",
+	"level/mini1.json",
+	"level/mini2.json"
+};
 const std::vector<std::string> list_file{
 	"",
 	"level/level1.json",
@@ -105,7 +111,8 @@ LoadPIC cyp;
 LoadPIC star;
 LoadPIC play_but1;
 LoadPIC play_but2;
-
+Animation minigame1;
+Animation minigame2;
 LoadPIC outlevel;
 LoadPIC pause1;
 LoadPIC pause2;
@@ -295,6 +302,8 @@ void load_sound() {
 void load_anim() {
 	level.set_clip(5, 118, 120);
 	level2.set_clip(5, 118, 120);
+	minigame1.set_clip(5, 118, 120);
+	minigame2.set_clip(5, 118, 120);
 	pea_idle.set_clip(31, 266, 245);
 	pea_shoot.set_clip(31, 269, 244);
 	snow_idle.set_clip(144, 176, 209);
@@ -418,6 +427,8 @@ bool LoadBG() {
 	return true;
 }
 void load_texture_element() {
+	texture_reanim.Load_Texture("images/mini-game1.png", renderer, "minigame1", "picture");
+	texture_reanim.Load_Texture("images/mini-game2.png", renderer, "minigame2", "picture");
 	texture_reanim.Load_Texture("images/level.png", renderer, "level", "picture");
 	texture_reanim.Load_Texture("images/level2.png", renderer, "level2", "picture");
 	texture_reanim.Load_Texture("spritesheet/peashooter.png", renderer, "peashooter", "plant");
@@ -1146,22 +1157,70 @@ void loadFileLevel() {
 		}
 	}
 }
+void loadFileMiniGame() {
+	for (int i = 1; i <= 2; i++) {
+		fstream file;
+		file.open(listminigame_file.at(i));
+		if (!file.is_open()) {
+			cout << "File của tao đâu" << endl;
+			return;
+		}
+		else {
+			minigame_list[i] = json::parse(file);
+			file.close();
+		}
+	}
+}
 int getSunInit(int level) {
-	return level_list[level]["sun_init"];
+	if (cur_imformation.cur_td_adventure != 0) {
+		return level_list[level]["sun_init"];
+	}
+	else {
+		return minigame_list[level]["sun_init"];
+	}
+	
 }
 int getWave(int level) {
-	return level_list[level]["num_wave"];
+	if (cur_imformation.cur_td_adventure != 0) {
+		return level_list[level]["num_wave"];
+	}
+	else {
+		return minigame_list[level]["num_wave"];
+	}
+	
 }
 std::string getNameLevel(int level) {
-	return level_list[level]["name_level"].template get<std::string>();
+	if (cur_imformation.cur_td_adventure != 0) {
+		return level_list[level]["name_level"].template get<std::string>();
+	}
+	else {
+		return minigame_list[level]["name_level"].template get<std::string>();
+	}
+	
 }
 int getDelayTime(int level, int wave) {
-	return level_list[level]["wave"][wave - 1]["delay_time"];
+	if (cur_imformation.cur_td_adventure != 0) {
+		return level_list[level]["wave"][wave - 1]["delay_time"];
+	}
+	else {
+		return minigame_list[level]["wave"][wave - 1]["delay_time"];
+	}
+	
 }
 void spwanZombie(int level, int wave) {
-	for (auto& enemy : level_list[level]["wave"][wave - 1]["enemies"]) {
-		std::string temp = enemy.template get<std::string>();
-		zombie_manager.call_zombie(temp, rand() % 5, rand() % 3 + 9, list_f_frame.at(temp));
+	if (cur_imformation.cur_td_adventure != 0) {
+		for (auto& enemy : level_list[level]["wave"][wave - 1]["enemies"]) {
+			std::string temp = enemy.template get<std::string>();
+			zombie_manager.call_zombie(temp, rand() % 5, rand() % 3 + 9, list_f_frame.at(temp));
 
+		}
 	}
+	else {
+		for (auto& enemy : minigame_list[level]["wave"][wave - 1]["enemies"]) {
+			std::string temp = enemy.template get<std::string>();
+			zombie_manager.call_zombie(temp, rand() % 5, rand() % 3 + 9, list_f_frame.at(temp));
+
+		}
+	}
+	
 }

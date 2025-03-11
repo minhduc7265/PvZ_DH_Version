@@ -17,6 +17,10 @@ using json = nlohmann::json;
 using std::fstream;
 extern std::vector<json> level_list;
 extern const std::vector<std::string> list_file;
+
+extern std::vector<json> minigame_list;
+extern const std::vector<std::string> listminigame_file;
+
 extern const std::map<std::string, int> list_f_frame;
 extern game_status status_manager;
 extern Animation card_plant;
@@ -109,6 +113,8 @@ extern Animation potatoboom;
 
 extern Animation level;
 extern Animation level2;
+extern Animation minigame1;
+extern Animation minigame2;
 extern Animation zomboni;
 extern Music zomboni_sound;
 //Item
@@ -196,4 +202,5 @@ int getWave(int level);
 std::string getNameLevel(int level);
 int getDelayTime(int level, int wave);
 void spwanZombie(int level, int wave);
+void loadFileMiniGame();
 #endif // !MAIN_FUNC_H_

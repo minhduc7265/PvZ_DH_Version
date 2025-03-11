@@ -46,12 +46,15 @@ public:
 	int flag1y;
 	int flag2x;
 	int flag2y;
+	int flag3x;
+	int flag3y;
 	int wintime;
 	int wave;
 	int time_delay;
 	int frame_mg_image;
 	int cur_mini_game;
 	int cur_td_adventure;
+	int type_flag;
 	std::string mouseButton;
 	Cur_imf();
 	~Cur_imf();

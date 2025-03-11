@@ -10,10 +10,12 @@ Cur_imf::Cur_imf() {
 	delay_time = 0;
 	cur_sence = 0;
 	flag_process = 0;
-	flag1x = 615;
-	flag1y = 567;
-	flag2x = 645;
-	flag2y = 567;
+	flag1x = 0;
+	flag1y = 0;
+	flag2x = 0;
+	flag2y = 0;
+	flag3x = 0;
+	flag3y = 0;
 	wintime = 0;
 	time_delay = 600;
 	wave = 0;
@@ -21,6 +23,7 @@ Cur_imf::Cur_imf() {
 	frame_mg_image = 0;
 	cur_mini_game = 0;
 	cur_td_adventure = 0;
+	type_flag = 0;
 }
 Cur_imf::~Cur_imf() {
 
@@ -33,16 +36,19 @@ void Cur_imf::reset_process() {
 	delay_time = 0;
 	cur_sence = 0;
 	flag_process = 0;
-	flag1x = 615;
+	flag1x = 0;
 	flag1y = 567;
-	flag2x = 645;
+	flag2x = 0;
 	flag2y = 567;
+	flag3x = 0;
+	flag3y = 567;
 	wintime = 0;
 	time_delay = 600;
 	wave = 0;
 	mouseButton = "";
 	cur_mini_game = 0;
 	cur_td_adventure = 0;
+	type_flag = 0;
 	
 
 }
