@@ -4,7 +4,7 @@
 //Quản lí ô đất trồng
 #include "base_func.h"
 #include <iostream>
-
+#include "plant.h"
 const int MAX_X = 5;
 const int MAX_Y = 9;
 
@@ -45,14 +45,18 @@ public:
 	void set_y_se(int x) {
 		y_second = x;
 	}
-
-
+	void setIsPlanted(bool plant);
+	bool getIsPlanted() const;
+	void setPtrPlant(Plant* ptr);
+	Plant* getPtrPlant() const;
 protected:
 	int x_first;
 	int x_second;
 	int y_first;
 	int y_second;
+private:
 	bool is_planted;
+	Plant* ptr_plant;
 
 
 };
@@ -61,6 +65,7 @@ protected:
 class Lawn_Mana : public Lawn {
 
 public:
+
 	Lawn Array_Manager[5][9];
 	void Lawn_Set() {
 		for (int i = 0; i < MAX_X; i++) {
@@ -69,6 +74,8 @@ public:
 				Array_Manager[i][j].set_x_se(SECOND_X + DISTANCE_X * j);
 				Array_Manager[i][j].set_y_fi(FIRST_Y + DISTANCE_Y * i);
 				Array_Manager[i][j].set_y_se(SECOND_Y + DISTANCE_Y * i);
+				Array_Manager[i][j].setIsPlanted(false);//Not Planted Yet
+				Array_Manager[i][j].setPtrPlant(NULL);
 			}
 		}
 	}

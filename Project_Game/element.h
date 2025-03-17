@@ -9,6 +9,8 @@
 #include "card_plant.h"
 #include "zombie.h"
 #include "item.h"
+#include "lawn.h"
+extern Lawn_Mana game_lawn;
 extern const std::map<std::string, int> body_bl;
 extern const std::map<std::string, int> armor1_bl;
 extern const std::map<std::string, int> armor2_bl;
@@ -59,7 +61,7 @@ public:
 
 	void check_bullet(SDL_Renderer* ren);
 
-	void call_plant(std::string name, int x, int y, int frame);
+	Plant* call_plant(std::string name, int x, int y, int frame);
 
 	void check_plant();
 
@@ -88,7 +90,7 @@ public:
 
 	void reset_list_plant();
 	void reset_list_zombie();
-
+	void reset_list_bullet();
 
 
 

@@ -39,6 +39,11 @@ void LoadPIC::Render(SDL_Renderer* render, const SDL_Rect* clip) {
 	SDL_Rect renderquad = { rect_.x,rect_.y,rect_.w ,rect_.h };
 	SDL_RenderCopy(render, textures[name_path], clip, &renderquad);
 }
+void LoadPIC::RenderColor(SDL_Renderer* render, const SDL_Rect* clip, Uint8 color) {
+	SDL_SetTextureColorMod(textures[name_path], color, color, color);
+	SDL_Rect renderquad = { rect_.x,rect_.y,rect_.w ,rect_.h };
+	SDL_RenderCopy(render, textures[name_path], clip, &renderquad);
+}
 void LoadPIC::Render_2(SDL_Renderer* render, const SDL_Rect* clip, const SDL_Rect* clip_2, const SDL_Point* center, double angle) {
 	SDL_RendererFlip flip = SDL_FLIP_NONE;
 	SDL_RenderCopyEx(render, textures[name_path], clip_2, clip, angle, center, flip);

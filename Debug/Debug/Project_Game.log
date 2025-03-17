@@ -1,6 +1,9 @@
-﻿  main.cpp
-C:\Users\hminh\Desktop\Project_Game\Project_Game\main.cpp(910,11): warning C4566: character represented by universal-character-name '\u1EA1' cannot be represented in the current code page (1252)
-C:\Users\hminh\Desktop\Project_Game\Project_Game\main.cpp(910,11): warning C4566: character represented by universal-character-name '\u0111' cannot be represented in the current code page (1252)
-C:\Users\hminh\Desktop\Project_Game\Project_Game\main.cpp(910,11): warning C4566: character represented by universal-character-name '\u01B0' cannot be represented in the current code page (1252)
-C:\Users\hminh\Desktop\Project_Game\Project_Game\main.cpp(910,11): warning C4566: character represented by universal-character-name '\u1EE3' cannot be represented in the current code page (1252)
+﻿  main_func.cpp
+C:\Users\hminh\Desktop\Project_Game\Project_Game\main_func.cpp(691,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\hminh\Desktop\Project_Game\Project_Game\main_func.cpp(1018,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\hminh\Desktop\Project_Game\Project_Game\main_func.cpp(1261,12): warning C4566: character represented by universal-character-name '\u1EE7' cannot be represented in the current code page (1252)
+C:\Users\hminh\Desktop\Project_Game\Project_Game\main_func.cpp(1261,12): warning C4566: character represented by universal-character-name '\u0111' cannot be represented in the current code page (1252)
+C:\Users\hminh\Desktop\Project_Game\Project_Game\main_func.cpp(1275,12): warning C4566: character represented by universal-character-name '\u1EE7' cannot be represented in the current code page (1252)
+C:\Users\hminh\Desktop\Project_Game\Project_Game\main_func.cpp(1275,12): warning C4566: character represented by universal-character-name '\u0111' cannot be represented in the current code page (1252)
+C:\Users\hminh\Desktop\Project_Game\Project_Game\main_func.cpp(279,1): warning C4715: 'sound_init': not all control paths return a value
   Project_Game.vcxproj -> C:\Users\hminh\Desktop\Project_Game\Debug\Project_Game.exe

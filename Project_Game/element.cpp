@@ -8,7 +8,9 @@ const std::map<std::string, int> body_bl{
 	{"zomboni",750},
 	{"seafzombie",470},
 	{"exzombie",470},
-	{"pea_zombie",270}
+	{"pea_zombie",270},
+	{"ball_zombie",270},
+	{"sky_zombie",270}
 
 
 };
@@ -18,7 +20,9 @@ const std::map<std::string, int> armor1_bl{
 	{"zomboni",0},
 	{"seafzombie",0},
 	{"exzombie",0},
-	{"pea_zombie",0}
+	{"pea_zombie",0},
+	{"ball_zombie",0},
+	{"sky_zombie",0}
 };
 const std::map<std::string, int> armor2_bl{
 	{"zombie",0},
@@ -26,10 +30,13 @@ const std::map<std::string, int> armor2_bl{
 	{"zomboni",0},
 	{"seafzombie",0},
 	{"exzombie",0},
-	{"pea_zombie",0}
+	{"pea_zombie",0},
+	{"ball_zombie",0},
+	{"sky_zombie",0}
 };
 
 const int BLOOD_DEAD = 50;
+Lawn_Mana game_lawn;
 Cur_imf cur_imformation;
 Element::Element() {
 	mHeight = 0;
@@ -117,6 +124,7 @@ bool Element::Load_Texture(std::string path, SDL_Renderer* screen, std::string n
 		if (loadedSurface == NULL)
 		{
 			cout << "Khong load duoc: " << path << " " << IMG_GetError() << std::endl;
+			cout << SDL_GetError() << endl;
 			return false;
 		}
 		else
@@ -143,7 +151,7 @@ bool Element::Load_Texture(std::string path, SDL_Renderer* screen, std::string n
 
 
 }
-void Element::call_plant(std::string name, int x, int y,int frame) {
+Plant* Element::call_plant(std::string name, int x, int y,int frame) {
 	Plant* new_plant = new Plant();//con trỏ plant
 	new_plant->set_num_row(x);//hàng
 	new_plant->set_num_col(y);//cột
@@ -156,10 +164,14 @@ void Element::call_plant(std::string name, int x, int y,int frame) {
 	if (new_plant->name_plant == "fire" || new_plant->name_plant == "zom_fire" || new_plant->name_plant == "explosion" || new_plant->name_plant == "light_red" || new_plant->name_plant == "melon_pro") {
 		new_plant->if_effect = true;
 	}
+	else {
+
+	}
 	list_plant.push_back(new_plant);
 
 	std::cout << "Created: " << name << std::endl;
-	std::cout << new_plant->get_num_col() << std::endl;
+	return new_plant;
+
 }
 void Element::call_item(int type_, int x, int y, int frame) {
 	Item* new_item = new Item();
@@ -249,6 +261,12 @@ void Element::check_plant() {
 				(*it)->set_is_dead(true);
 			}
 			if ((*it)->get_is_dead() == true) {
+				if ((*it)->if_effect == false) {
+					game_lawn.Array_Manager[(*it)->get_num_row()][(*it)->get_num_col()].setIsPlanted(false);
+					game_lawn.Array_Manager[(*it)->get_num_row()][(*it)->get_num_col()].setPtrPlant(NULL);
+				}
+				
+
 				delete *it;
 				it = list_plant.erase(it);
 				
@@ -482,4 +500,11 @@ void Element::reset_list_zombie() {
 		it = list_zombie.erase(it);
 	}
 	list_zombie.clear();
+}
+void Element::reset_list_bullet() {
+	for (std::vector<Bullet*>::iterator it = list_of_bullet.begin(); it != list_of_bullet.end(); ) {
+		delete* it;
+		it = list_of_bullet.erase(it);
+	}
+	list_of_bullet.clear();
 }

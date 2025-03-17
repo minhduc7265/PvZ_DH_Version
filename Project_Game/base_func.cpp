@@ -6,6 +6,8 @@ PlantCard card_[10];
 SDL_Renderer* renderer;
 
 Cur_imf::Cur_imf() {
+	count_time = 0;
+	tiankongX = 0;
 	cur_sun = 2700;//test thôi
 	delay_time = 0;
 	cur_sence = 0;
@@ -24,6 +26,7 @@ Cur_imf::Cur_imf() {
 	cur_mini_game = 0;
 	cur_td_adventure = 0;
 	type_flag = 0;
+	color = 255;//0->255
 }
 Cur_imf::~Cur_imf() {
 
@@ -31,7 +34,11 @@ Cur_imf::~Cur_imf() {
 
 }
 
+
+
 void Cur_imf::reset_process() {
+	count_time = 0;
+	tiankongX = 0;
 	cur_sun = 2700;//test thôi
 	delay_time = 0;
 	cur_sence = 0;
@@ -49,9 +56,11 @@ void Cur_imf::reset_process() {
 	cur_mini_game = 0;
 	cur_td_adventure = 0;
 	type_flag = 0;
+	color = 255;//0->255
 	
 
 }
+
 void Cur_imf::set_mg_image() {
 	frame_mg_image++;
 	if (frame_mg_image >= 59) {

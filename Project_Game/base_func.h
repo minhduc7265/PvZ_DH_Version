@@ -55,6 +55,9 @@ public:
 	int cur_mini_game;
 	int cur_td_adventure;
 	int type_flag;
+	int tiankongX;
+	int count_time;
+	Uint8 color;//0->255
 	std::string mouseButton;
 	Cur_imf();
 	~Cur_imf();

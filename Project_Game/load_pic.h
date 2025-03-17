@@ -25,6 +25,7 @@ public:
 	void Render_2(SDL_Renderer* render, const SDL_Rect* clip, const SDL_Rect* clip_2, const SDL_Point* center, double angle);
 	bool LoadImg(std::string path, SDL_Renderer* screen);
 	void Render(SDL_Renderer* render, const SDL_Rect* clip = NULL);
+	void RenderColor(SDL_Renderer* render, const SDL_Rect* clip, Uint8 color);
 	void Free();
 	void Free_Texture();
 	void Set_Name_Path(std::string name) {

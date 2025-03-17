@@ -2,7 +2,6 @@
 #ifndef MAIN_FUNC_H_
 #define MAIN_FUNC_H_
 #include "load_pic.h"
-#include "lawn.h"
 #include "base_func.h"
 #include "element.h"
 #include "music.h"
@@ -104,6 +103,14 @@ extern Animation peazombiewalk1;
 extern Animation peazombiewalk2;
 extern Animation peazombieeat;
 
+extern Animation ballidle;
+extern Animation ballwalk;
+extern Animation balldead;
+
+extern Animation skyidle;
+extern Animation skywalk;
+extern Animation skydead;
+
 
 extern Animation potatoplant;
 extern Animation potatoup;
@@ -144,6 +151,8 @@ extern LoadPIC but1;
 extern LoadPIC but2;
 extern LoadPIC adventure1;
 extern LoadPIC adventure2;
+extern LoadPIC background3;
+extern LoadPIC background2;
 extern LoadPIC bgnormal;
 extern LoadPIC challengebg;
 extern LoadPIC challengemg;
@@ -157,6 +166,7 @@ extern Animation exwalk2;
 extern Animation exdead;
 extern LoadPIC play_but1;
 extern LoadPIC play_but2;
+extern LoadPIC tiankong;
 extern std::string mouse_status;
 extern const std::string WINDOW_NAME_N;
 extern const std::string WINDOW_NAME_H;
@@ -195,7 +205,7 @@ void remote_anim_zombie(std::vector<Zombie*>& zombie_vector);
 void remote_anim_item(std::vector<Item*>item_vector, int mX, int mY);
 std::pair<int, int> get_location(int mouseX, int mouseY);
 int get_cardlocatec(int mouseX, int mouseY);
-void reset_level();
+void reset_level(int parameter);
 int get_sun_init(int level);
 int getSunInit(int level);
 int getWave(int level);

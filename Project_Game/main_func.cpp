@@ -1,10 +1,11 @@
 ﻿#include "main_func.h"
 std::vector<json> level_list(11);
-std::vector<json> minigame_list(3);
+std::vector<json> minigame_list(4);
 const std::vector<std::string> listminigame_file{
 	"",
 	"level/mini1.json",
-	"level/mini2.json"
+	"level/mini2.json",
+	"level/mini3.json"
 };
 const std::vector<std::string> list_file{
 	"",
@@ -26,7 +27,9 @@ const std::map<std::string, int> list_f_frame{
 	{"zomboni",12},
 	{"seafzombie",59},
 	{"exzombie",60},
-	{"pea_zombie",90}
+	{"pea_zombie",90},
+	{"ball_zombie",90},
+	{"sky_zombie",61}
 
 
 };
@@ -83,6 +86,15 @@ Animation potatoup;
 Animation potatoidle;
 Animation potatoattack;
 Animation potatoboom;
+
+Animation ballidle;
+Animation ballwalk;
+Animation balldead;
+
+Animation skyidle;
+Animation skywalk;
+Animation skydead;
+
 Music lightfill;
 LoadPIC huge_wave;
 LoadPIC huge_wave_black;
@@ -105,12 +117,15 @@ LoadPIC adventure2;
 LoadPIC bgnormal;
 LoadPIC challengebg;
 LoadPIC challengemg;
+LoadPIC background3;
+LoadPIC background2;
 LoadPIC back1;
 LoadPIC back2;
 LoadPIC cyp;
 LoadPIC star;
 LoadPIC play_but1;
 LoadPIC play_but2;
+LoadPIC tiankong;
 Animation minigame1;
 Animation minigame2;
 LoadPIC outlevel;
@@ -355,12 +370,22 @@ void load_anim() {
 	peazombiewalk1.set_clip_bonus(90, 180, 238);
 	peazombiewalk2.set_clip_bonus(90, 180, 238);
 	peazombieeat.set_clip_bonus(259, 180, 238);
-
-
+	ballidle.set_clip_bonus(60, 302, 323);
+	ballwalk.set_clip_bonus(90, 407, 515);
+	balldead.set_clip_bonus(57, 334, 374);
+	skyidle.set_clip_bonus(61, 249, 344);
+	skywalk.set_clip_bonus(61, 291, 338);
+	skydead.set_clip_bonus(80, 237, 292);
 }
 bool LoadBG() {
 	cyp.Set_Name_Path("images/cyp.png");
 	cyp.LoadImg("images/cyp.png",renderer);
+	tiankong.Set_Name_Path("images/tiankong.png");
+	tiankong.LoadImg("images/tiankong.png", renderer);
+	background3.Set_Name_Path("images/background3.png");
+	background3.LoadImg("images/background3.png", renderer);
+	background2.Set_Name_Path("images/background2.png");
+	background2.LoadImg("images/background2.png", renderer);
 	back1.Set_Name_Path("images/back1.png");
 	back1.LoadImg("images/back1.png", renderer);
 	back2.Set_Name_Path("images/back2.png");
@@ -482,6 +507,12 @@ void load_texture_element() {
 	texture_reanim.Load_Texture("spritesheet/peazombiewalk1.png", renderer, "peazombiewalk1", "zombie");
 	texture_reanim.Load_Texture("spritesheet/peazombiewalk2.png", renderer, "peazombiewalk2", "zombie");
 	texture_reanim.Load_Texture("spritesheet/peazombieeat.png", renderer, "peazombieeat", "zombie");
+	texture_reanim.Load_Texture("spritesheet/ballidle.png", renderer, "ballidle", "zombie");
+	texture_reanim.Load_Texture("spritesheet/ballwalk.png", renderer, "ballwalk", "zombie");
+	texture_reanim.Load_Texture("spritesheet/balldead.png", renderer, "balldead", "zombie");
+	texture_reanim.Load_Texture("spritesheet/skyidle.png", renderer, "skyidle", "zombie");
+	texture_reanim.Load_Texture("spritesheet/skywalk.png", renderer, "skywalk", "zombie");
+	texture_reanim.Load_Texture("spritesheet/skydead.png", renderer, "skydead", "zombie");
 }
 int get_pos_card(int mouseX, int mouseY) {
 
@@ -549,7 +580,7 @@ void remote_bullet(std::vector<Zombie*>& zombie_vector, std::vector<Bullet*>& bu
 							zombie->zom_blood = zombie->zom_blood - 1;
 							bullet->rect_.x+=4;
 						}
-						hit.Play_Sound();
+						//hit.Play_Sound();
 					}
 				}
 			}
@@ -911,8 +942,68 @@ void remote_anim_zombie(std::vector<Zombie*>& zombie_vector) {
 
 
 			}
+			else if (cur_zombie->name_zombie == "ball_zombie") {
+
+				if (cur_zombie->status == "idle") {
+					anim_change = ballidle;
+					const_ = 0;
+					name_anim = "ballidle";
+
+				}
+				else if (cur_zombie->status == "walk") {
+					cur_zombie->num_frame = 90;
+					anim_change = ballwalk;
+					name_anim = "ballwalk";
+					const_ = -60;
+
+				}
+				else {
+					cur_zombie->num_frame = 57;
+					anim_change = balldead;
+					name_anim = "balldead";
+					const_ = -60;
+
+				}
+				cur_zombie->currentClip = &anim_change.get_clip()[cur_zombie->cur_frame];
+				texture_reanim.Render(renderer, cur_zombie->currentClip, name_anim,
+					cur_zombie->pos_x - 60, cur_zombie->pos_y + const_,
+					cur_zombie->currentClip->w/2,
+					cur_zombie->currentClip->h/2);
 
 
+
+			}
+			else if (cur_zombie->name_zombie == "sky_zombie") {
+
+				if (cur_zombie->status == "idle") {
+					anim_change = skyidle;
+					const_ = 0;
+					name_anim = "skyidle";
+
+				}
+				else if (cur_zombie->status == "walk") {
+					cur_zombie->num_frame = 61;
+					anim_change = skywalk;
+					name_anim = "skywalk";
+					const_ = -60;
+
+				}
+				else {
+					cur_zombie->num_frame = 80;
+					anim_change = skydead;
+					name_anim = "skydead";
+					const_ = -60;
+
+				}
+				cur_zombie->currentClip = &anim_change.get_clip()[cur_zombie->cur_frame];
+				texture_reanim.Render(renderer, cur_zombie->currentClip, name_anim,
+					cur_zombie->pos_x - 60, cur_zombie->pos_y + const_,
+					cur_zombie->currentClip->w / 2,
+					cur_zombie->currentClip->h / 2);
+
+
+
+			}
 
 		}
 		
@@ -1138,10 +1229,29 @@ int get_cardlocatec(int mouseX, int mouseY) {
 		return -1;
 	}
 }
-void reset_level() {
-	cur_imformation.reset_process();
+void reset_level(int parameter) {
+	if (parameter == 0) {
+		cur_imformation.reset_process();
+	}
+	else if (parameter == 1) {
+		cur_imformation.cur_sun = getSunInit(cur_imformation.cur_td_adventure != 0 ? cur_imformation.cur_td_adventure : cur_imformation.cur_mini_game);//test thôi
+		cur_imformation.delay_time = 0;
+		cur_imformation.cur_sence = 0;
+		cur_imformation.flag_process = 0;
+		cur_imformation.flag1x = 0;
+		cur_imformation.flag1y = 567;
+		cur_imformation.flag2x = 0;
+		cur_imformation.flag2y = 567;
+		cur_imformation.flag3x = 0;
+		cur_imformation.flag3y = 567;
+		cur_imformation.wintime = 0;
+		cur_imformation.time_delay = 600;
+		cur_imformation.wave = 0;
+		cur_imformation.type_flag = getWave(cur_imformation.cur_td_adventure != 0 ? cur_imformation.cur_td_adventure : cur_imformation.cur_mini_game);
+	}
 	plant_manager.reset_list_plant();
 	zombie_manager.reset_list_zombie();
+	game_lawn.Lawn_Set();
 }
 void loadFileLevel() {
 	for (int i = 1; i <= 10; i++) {
@@ -1158,7 +1268,7 @@ void loadFileLevel() {
 	}
 }
 void loadFileMiniGame() {
-	for (int i = 1; i <= 2; i++) {
+	for (int i = 1; i <= 3; i++) {
 		fstream file;
 		file.open(listminigame_file.at(i));
 		if (!file.is_open()) {

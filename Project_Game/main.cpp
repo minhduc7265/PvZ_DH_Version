@@ -3,6 +3,7 @@
 #include <string.h>
 #include <cstdlib>
 
+
 std::map<int, int> maxWave = {
 	{1,14},
 	{2,10},
@@ -29,7 +30,6 @@ std::map<int, std::pair<int, int>>  midFlag{
 
 Texture texture_game;
 
-Lawn_Mana game_lawn;
 
 
 std::string sun_value = "";
@@ -197,6 +197,16 @@ void remoteFlagMG() {
 
 	}
 	if (cur_imformation.wave == 6) {
+		/*__asm {
+			push 0x1B
+			push 0x1A
+			push 0x19
+			push 0x18
+			mov eax, [ctx]
+			push eax
+			call set_channel_on
+			add esp, 0x14//5x4=0x14
+		}*/
 		set_channel_on(ctx, 24, 25, 26, 27);
 	}
 	if (cur_imformation.wave >= maxWave.at(getWave(cur_imformation.cur_mini_game)) && count_zombie < 3) {
@@ -296,10 +306,11 @@ bool InitData() {
 	{
 		std::cout << "Khong the khoi tao SDL_Mixer: " << Mix_GetError() << std::endl;
 		success = false;
+		
 	}
 
 
-
+	Mix_AllocateChannels(32);//Set 32 kênh
 
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
 	window = SDL_CreateWindow(WINDOW_NAME_N.c_str(), SDL_WINDOWPOS_UNDEFINED,
@@ -499,7 +510,7 @@ void cyp_remote() {
 
 void status_process() {
 	if (status_manager.status == 0) {
-		reset_level();
+		reset_level(0);
 		if (is_music != 1) {
 			play_mainmusic(ctx, 152);
 			is_music = 1;
@@ -526,7 +537,7 @@ void status_process() {
 	}
 	else if (status_manager.status == 1) {
 		
-		reset_level();
+		reset_level(0);
 		if (is_music != 1) {
 			mg_background.End_Music();
 			play_mainmusic(ctx, 152);
@@ -559,7 +570,7 @@ void status_process() {
 
 	}
 	else if (status_manager.status == 2) {
-		reset_level();
+		reset_level(0);
 
 		if (is_music != 2) {
 			if (status_manager.mg_status <= 4) {
@@ -627,6 +638,7 @@ void status_process() {
 
 	}
 	else if (status_manager.status == 3) {
+		reset_level(1);//cả load luôn
 		if (is_music != 3) {
 			off_mainmusic(ctx);
 			mg_background.End_Music();
@@ -686,6 +698,7 @@ void status_process() {
 		else {
 			bg_background.SetRect(pos_bg, 0);
 			bg_background.Render(renderer, NULL);
+			
 		}
 	}
 
@@ -697,63 +710,75 @@ void status_process() {
 				esdp.Play_Music("music/ESDP.mp3");
 			}
 			else {
-				play_mainmusic(ctx, 0);
-				set_channel_off(ctx,24, 25, 26, 27);
+				if (cur_imformation.cur_mini_game == 1) {
+					play_mainmusic(ctx, 212);
+				}
+				else {
+					play_mainmusic(ctx, 0);
+					set_channel_off(ctx, 24, 25, 26, 27);
+				}
+				
 
 			}
 			
-			/*set_channel_off(ctx, 18, 19, 20, 21);
-			play_mainmusic(ctx, 184);*/
 			is_music = 4;
 		}
 		if (cur_imformation.cur_td_adventure != 0) {
-			bg_sea.SetRect(pos_bg, 0);
+			bg_sea.SetRect(-215, 0);
 			bg_sea.Render(renderer, NULL);
 		}
 		else {
-			bg_background.SetRect(pos_bg, 0);
+			bg_background.SetRect(-215, 0);
 			bg_background.Render(renderer, NULL);
+			if (cur_imformation.cur_mini_game == 1) {
+				cur_imformation.tiankongX -= 8;
+				tiankong.SetRect(cur_imformation.tiankongX, 0);
+				tiankong.Render(renderer, NULL);
+				tiankong.SetRect(800+ cur_imformation.tiankongX, 0);
+				tiankong.Render(renderer, NULL);
+				if (cur_imformation.tiankongX <= -800) {
+					cur_imformation.tiankongX = 0;
+				}
+			}
+			else if (cur_imformation.cur_mini_game == 3) {//Xong viết lại chứ hơi kì kì
+				background3.SetRect(-215, 0);
+				background3.RenderColor(renderer, NULL, 255);
+				cur_imformation.count_time++;
+				if (cur_imformation.count_time > 400) {
+					if (cur_imformation.color > 80 && cur_imformation.count_time < 1200) {
+						background3.SetRect(-215, 0);
+						background3.RenderColor(renderer, NULL, cur_imformation.color--);
+					}
+					else {
+						background2.SetRect(-215, 0);
+						background2.RenderColor(renderer, NULL, cur_imformation.color);
+						if (cur_imformation.count_time > 1200) {
+							if (cur_imformation.color < 255) {
+								background3.SetRect(-215, 0);
+								background3.RenderColor(renderer, NULL, cur_imformation.color++);
+							}
+							else {
+								cur_imformation.count_time = 0;
+							}
+						}
+					}
+					
+				}
+			}
 		}
 		bg_seed_bank.SetRect(10, 0);
 		bg_seed_bank.Render(renderer, NULL);
 
 		sun_value = std::to_string(cur_imformation.cur_sun);
-		// Render văn bản
-		SDL_Color textColor = { 0, 0, 0 }; // Màu đen
+		SDL_Color textColor = { 0, 0, 0 };
 		SDL_Surface* sun_surface = TTF_RenderText_Blended(font, sun_value.c_str(), textColor);
 		SDL_Texture* sun_text = SDL_CreateTextureFromSurface(renderer, sun_surface);
 		SDL_Rect renderquad_3 = { 40,63,3 * sun_surface->w / 4,3 * sun_surface->h / 4 };
-		SDL_FreeSurface(sun_surface); // Giải phóng surface sau khi tạo texture
+		SDL_FreeSurface(sun_surface);
 		SDL_RenderCopy(renderer, sun_text, NULL, &renderquad_3);
 
-		
+		SDL_RenderCopy(renderer, textTexture, NULL, &renderquad_2);
 
-		/*bg_seed_packet.SetRect(90, 10);
-		bg_seed_packet.Render(renderer, NULL);*/
-		////texture_reanim.Render(renderer, NULL, "sunflower", 100, 100);
-		
-
-		
-
-
-
-
-		//test
-
-
-
-
-		// Chuyển surface thành texture
-
-
-		// Vẽ văn bản lên màn hình
-		//SDL_RenderClear(renderer); // Xóa màn hình
-
-
-		SDL_RenderCopy(renderer, textTexture, NULL, &renderquad_2);// Vẽ texture
-		//SDL_RenderPresent(renderer); // Cập nhật màn hình
-
-		//test
 
 		set_order();
 		render_card(renderer);
@@ -762,35 +787,7 @@ void status_process() {
 
 		button_in_game();
 		if (timeGame.is_paused() == false) {
-			for (int i = 0; i <= 5; i++) {
-				if (card[i].CD > 0) {
-					card[i].CD--;
-				}
-			}
-			remote_bullet(zombie_manager.list_zombie, all_game.list_of_bullet);//pause
-			plant_manager.check_plant();//pause
-			zombie_manager.check_zombie();//pause
-			item_manager.check_item();//pause
-
-			plant_manager.remote_frame_plant();//pause
-			plant_manager.remote_func_plant();//pause
-			zombie_manager.remote_frame_zombie();//pause
-			zombie_manager.remote_func_zombie();//pause
-			all_game.check_bullet(renderer);
 			
-
-			remote_bullet(zombie_manager.list_zombie, all_game.list_of_bullet);//pause
-			remote_instakill(zombie_manager.list_zombie, plant_manager.list_plant);//pause
-			remote_eat(zombie_manager.list_zombie, plant_manager.list_plant);//pause
-			remote_shoot(zombie_manager.list_zombie, plant_manager.list_plant);//pause
-			remote_anim_item(item_manager.list_item, mouseX, mouseY);//pause
-
-
-
-
-
-
-
 			if (cur_imformation.cur_td_adventure != 0) {
 				cur_imformation.type_flag = getWave(cur_imformation.cur_td_adventure);
 				remoteFlagTD();
@@ -799,11 +796,41 @@ void status_process() {
 				cur_imformation.type_flag = getWave(cur_imformation.cur_mini_game);
 				remoteFlagMG();
 			}
-			
-			//pause
-			
+			if (cur_imformation.cur_mini_game == 1) {
+				cur_imformation.count_time++;
+				if (cur_imformation.count_time > 4) {
+					all_game.call_bullet(renderer, 1, mouseX, mouseY, mouse_x_y.first, mouse_x_y.second);
+					cur_imformation.count_time = 0;
+				}
+				
+			}
+			for (int i = 0; i <= 5; i++) {
+				if (card[i].CD > 0) {
+					card[i].CD--;
+				}
+			}
+			remote_bullet(zombie_manager.list_zombie, all_game.list_of_bullet);
+			plant_manager.check_plant();
+			zombie_manager.check_zombie();
+			item_manager.check_item();
+
+			plant_manager.remote_frame_plant();
+			plant_manager.remote_func_plant();
+			zombie_manager.remote_frame_zombie();
+			zombie_manager.remote_func_zombie();
+			all_game.check_bullet(renderer);
+
+
+			remote_bullet(zombie_manager.list_zombie, all_game.list_of_bullet);
+			remote_instakill(zombie_manager.list_zombie, plant_manager.list_plant);
+			remote_eat(zombie_manager.list_zombie, plant_manager.list_plant);
+			remote_shoot(zombie_manager.list_zombie, plant_manager.list_plant);
+			remote_anim_item(item_manager.list_item, mouseX, mouseY);
+
 
 		}
+
+
 		if (cur_imformation.cur_td_adventure != 0) {
 			if (cur_imformation.wave == midFlag.at(getWave(cur_imformation.cur_td_adventure)).first - 1 ||
 				cur_imformation.wave == midFlag.at(getWave(cur_imformation.cur_td_adventure)).second - 1 ||
@@ -838,16 +865,10 @@ void status_process() {
 
 
 		render_flag_pro();
-		all_game.remote_func_bullet(renderer);//pause//chưa check nên để ý kĩ
-		remote_anim_(plant_manager.list_plant);//ko pause
-		remote_anim_zombie(zombie_manager.list_zombie);//hàm render ko pause
+		all_game.remote_func_bullet(renderer);
+		remote_anim_(plant_manager.list_plant);
+		remote_anim_zombie(zombie_manager.list_zombie);
 
-		
-
-
-
-
-		//CARD
 		
 		if (mouse_status == "hold_plant") {
 			PLANT_HOLD = { 0 ,0, plant_wid.at(plant_m_hold), plant_hei.at(plant_m_hold) };
@@ -860,7 +881,6 @@ void status_process() {
 			else if (plant_m_hold == "shiliu") {
 				texture_reanim.Render(renderer, &PLANT_HOLD, "shiliu_idle", mouseX - 70, mouseY - 90, 5 * plant_wid.at(plant_m_hold) / 8, 5 * plant_hei.at(plant_m_hold) / 8);
 			}
-
 			else if (plant_m_hold == "sunflower") {
 				texture_reanim.Render(renderer, &PLANT_HOLD, plant_m_hold, mouseX - 50, mouseY - 80, 5 * plant_wid.at(plant_m_hold) / 8, 5 * plant_hei.at(plant_m_hold) / 8);
 			}
@@ -944,10 +964,10 @@ int main(int argc, char* args[])
 		return 1;
 	}
 
-	SDL_Color textColor = { 255, 131, 54 }; // Màu text
+	SDL_Color textColor = { 255, 131, 54 };
 
-	// Render văn bản
 	SDL_Surface* textSurface = TTF_RenderText_Blended(font, "Test Stage", textColor);
+
 	if (textSurface == NULL) {
 		std::cout << "TTF_RenderText_Solid Error: " << TTF_GetError() << std::endl;
 		TTF_CloseFont(font);
@@ -958,15 +978,10 @@ int main(int argc, char* args[])
 		return 1;
 	}
 	textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
-	SDL_FreeSurface(textSurface); // Giải phóng surface sau khi tạo texture
+	SDL_FreeSurface(textSurface);
 	renderquad_2 = { 500,570,textSurface->w,textSurface->h };
-	//test
-
-	
-
-	
 	cout << &mouse_x_y.first << ":" << &mouse_x_y.second << endl;
-	//Cấp phát trước
+	//Init Vector 
 	plant_manager.list_plant.reserve(7265);
 	zombie_manager.list_zombie.reserve(7265);
 	all_game.list_of_bullet.reserve(7265);
@@ -980,20 +995,13 @@ int main(int argc, char* args[])
 			load_texture_element();
 			load_anim();
 			set_wave_time();
-			//gọi hàm load vào đây
+
 		}
-		//
-		
-	
-		
 		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-		//
-		
 		SDL_GetMouseState(&mouseX, &mouseY);
 		mouse_x_y = get_location(mouseX, mouseY);
 		SDL_RenderClear(renderer);
 		CARD_LOCATE = get_pos_card(mouseX, mouseY);
-
 		CARD_LOCATE_C = get_cardlocatec(mouseX, mouseY);
 		cur_imformation.mouseButton = "";
 		while (SDL_PollEvent(&event)) {
@@ -1004,77 +1012,44 @@ int main(int argc, char* args[])
 			if (status_manager.status == 5 && event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
 				cur_imformation.mouseButton = "LEFT";
 				if (mouse_status != "hold_plant" && CARD_LOCATE >= 0 && CARD_LOCATE <= 9 && card[CARD_LOCATE].CD<=1 &&cur_imformation.cur_sun>=sun_value_p.at(plant_num_list.at(card[CARD_LOCATE].type))) {
-					mouse_status = "hold_plant";//chuột cầm plant
+					mouse_status = "hold_plant";
 					plant_m_hold = plant_num_list.at(card[CARD_LOCATE].type);
 					temp = CARD_LOCATE;
 				}
 				if (mouse_status == "hold_plant") {
 					if (mouse_x_y.first >= 0 && mouse_x_y.first <= 4 && mouse_x_y.second >= 0 && mouse_x_y.second <= 8) {
-						cout << &mouse_status << endl;
-						cout << mouse_x_y.first << " " << mouse_x_y.second << endl;
-						planted.Play_Sound();
-						cur_imformation.cur_sun -= sun_value_p.at(plant_num_list.at(card[temp].type));
-						card[temp].CD = sun_value_cd.at(plant_m_hold);
-						plant_manager.call_plant(plant_m_hold, mouse_x_y.first, mouse_x_y.second, plant_frame_list.at(plant_m_hold));
-						mouse_status = "";//không cầm
-						if (plant_m_hold == "cherrybomb") {
-							reverse_explos.Play_Sound();
+						if (game_lawn.Array_Manager[mouse_x_y.first][mouse_x_y.second].getIsPlanted() == false) {
+							cout << &mouse_status << endl;
+							cout << mouse_x_y.first << " " << mouse_x_y.second << endl;
+							planted.Play_Sound();
+							cur_imformation.cur_sun -= sun_value_p.at(plant_num_list.at(card[temp].type));
+							card[temp].CD = sun_value_cd.at(plant_m_hold);
+							Plant * newplant = plant_manager.call_plant(plant_m_hold, mouse_x_y.first, mouse_x_y.second, plant_frame_list.at(plant_m_hold));
+							mouse_status = "";
+							if (plant_m_hold == "cherrybomb") {
+								reverse_explos.Play_Sound();
+							}
+							game_lawn.Array_Manager[mouse_x_y.first][mouse_x_y.second].setIsPlanted(true);//Đã trồng
+							game_lawn.Array_Manager[mouse_x_y.first][mouse_x_y.second].setPtrPlant(newplant);//Nhét dữ liệu plant vào
+						
 						}
+						
 					}
 
 				}
 				cout << mouseX << " " << mouseY << endl;
-				//plant_manager.call_plant("peashooter", mouse_x_y.first, mouse_x_y.second, 31);//have test
-				//plant_manager.call_plant("snowpea", mouse_x_y.first, mouse_x_y.second, 30);//have test
-				//plant_manager.call_plant("sunflower", mouse_x_y.first, mouse_x_y.second, 59);//have test
-				//plant_manager.call_plant("explosion", mouse_x_y.first, mouse_x_y.second, 21);//have test
-				//plant_manager.call_plant("zom_fire", mouse_x_y.first, mouse_x_y.second, 44);//have test
-				//plant_manager.call_plant("cherrybomb", mouse_x_y.first, mouse_x_y.second, 21);//have test
-				//all_game.call_bullet(renderer, 0, mouseX, mouseY);
-
-				//plant_manager.call_plant("oxygen_algae", mouse_x_y.first, mouse_x_y.second, 60);
 				std::cout << "LEFT" << std::endl;
 			
 			}
 			else if (status_manager.status == 5 && event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_RIGHT) {
 				cur_imformation.mouseButton = "RIGHT";
 				cout << mouseX << " " << mouseY << endl;
-				//plant_manager.call_plant("peashooter", u, v, 31);//have test
-				//plant_manager.call_plant("snowpea", 0, 1, 30);//have test
-				//plant_manager.call_plant("sunflower", 0, 2, 59);//have test
-				//plant_manager.call_plant("explosion", 6, 0, 21);//have test
-				//plant_manager.call_plant("zom_fire", 7, 4, 44);//have test
-				//plant_manager.call_plant("cherrybomb", 1, 2, 21);//have test
-				//all_game.call_bullet(renderer, 0, mouseX, mouseY);
-				//zombie_manager.call_zombie("zomboni", 0, 9, 0, 0, 12);
-				//zomboni_sound.Play_Sound();
-				//plant_manager.call_plant("banana_tree", 2, 2, 191);
-
 				mouse_status = "";
-
 				std::cout << "RIGHT" << std::endl;
 
 			}
 
 		}
-
-
-
-
-		
-		//Render top right sprite
-		///texture_reanim.Render(SCREEN_WID - gSpriteClips[1].w, 0, &gSpriteClips[1]);
-
-		//Render bottom left sprite
-		///texture_reanim.Render(0, SCREEN_HEI - gSpriteClips[2].h, &gSpriteClips[2]);
-
-		//Render bottom right sprite
-		//texture_reanim.Render(SCREEN_WID- gSpriteClips[3].w, SCREEN_HEI - gSpriteClips[3].h, &gSpriteClips[3]);
-
-		
-		
-		
-
 		status_process();
 
 		
