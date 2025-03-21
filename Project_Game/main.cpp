@@ -125,8 +125,8 @@ void remoteFlagTD() {
 		star.SetRect(740, -45);
 		star.Render(renderer, NULL);
 		if (cur_imformation.wintime == 1) {
-			win_sound.Play_Sound();
-			lightfill.Play_Sound();
+			win_sound.Play_Sound(30);
+			lightfill.Play_Sound(29);
 			esdp.End_Music();
 			//off_mainmusic(ctx);
 		}
@@ -186,8 +186,8 @@ void remoteFlagMG() {
 		star.SetRect(740, -45);
 		star.Render(renderer, NULL);
 		if (cur_imformation.wintime == 1) {
-			win_sound.Play_Sound();
-			lightfill.Play_Sound();
+			win_sound.Play_Sound(30);
+			lightfill.Play_Sound(29);
 			esdp.End_Music();
 			//off_mainmusic(ctx);
 		}
@@ -268,7 +268,7 @@ void button_in_game() {
 				std::cout << std::endl;
 				std::cout << std::endl;
 			}
-			click.Play_Sound();
+			click.Play_Sound(28);
 		}
 	}
 	else if (mouseX >= 735 && mouseX <= 769 && mouseY >= 0 && mouseY <= 33) {
@@ -277,14 +277,16 @@ void button_in_game() {
 		if (cur_imformation.mouseButton == "LEFT") {
 			status_manager.status = 3;
 			esdp.End_Music();
-			click.Play_Sound();
+			click.Play_Sound(28);
 		}
 	}
 	else if (mouseX >= 770 && mouseX <= 800 && mouseY >= 0 && mouseY <= 30) {
+		outlevel2.SetRect(770, 0);
+		outlevel2.Render(renderer, NULL);
 		if (cur_imformation.mouseButton == "LEFT") {
 			status_manager.status = 2;
 			esdp.End_Music();
-			click.Play_Sound();
+			click.Play_Sound(28);
 		}
 	}
 
@@ -525,7 +527,7 @@ void status_process() {
 
 			if (SDL_WaitEvent(&event) && event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
 				status_manager.status = 1;
-				click.Play_Sound();
+				click.Play_Sound(28);
 			}
 		}
 		else {
@@ -556,14 +558,14 @@ void status_process() {
 			if (SDL_WaitEvent(&event) && event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
 				status_manager.status = 2;
 				status_manager.mg_status = 0;//0-4 là map TD mà chắc quái gì làm hết
-				click.Play_Sound();
+				click.Play_Sound(28);
 			}
 		}
 		else if (mouseX >= 10 && mouseX <= 244 && mouseY >= 370 && mouseY <= 600) {
 			if (SDL_WaitEvent(&event) && event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
 				status_manager.status = 2;
 				status_manager.mg_status = 5;//Mini-game
-				click.Play_Sound();
+				click.Play_Sound(28);
 			}
 			
 		}
@@ -595,7 +597,7 @@ void status_process() {
 						status_manager.status = 3;
 						cur_imformation.cur_mini_game = 0;
 						cur_imformation.cur_td_adventure = i + 1;
-						click.Play_Sound();
+						click.Play_Sound(28);
 					}
 				}
 				texture_reanim.Render(renderer, &level.get_clip()[i], "level", i * 155 + 30, 100, 118, 120);
@@ -612,7 +614,7 @@ void status_process() {
 						status_manager.status = 3;
 						cur_imformation.cur_mini_game = i + 1;
 						cur_imformation.cur_td_adventure = 0;
-						click.Play_Sound();
+						click.Play_Sound(28);
 					}
 				}
 				texture_reanim.Render(renderer, &minigame1.get_clip()[i], "minigame1", i * 155 + 30, 100, 118, 120);
@@ -627,7 +629,7 @@ void status_process() {
 
 			if (SDL_WaitEvent(&event) && event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
 				status_manager.status = 1;
-				click.Play_Sound();
+				click.Play_Sound(28);
 			}
 		}
 		else {
@@ -677,7 +679,7 @@ void status_process() {
 			play_but2.Render(renderer, NULL);
 			if (SDL_WaitEvent(&event) && event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
 				status_manager.status = 4;
-				click.Play_Sound();
+				click.Play_Sound(28);
 			}
 		}
 
@@ -799,7 +801,7 @@ void status_process() {
 			if (cur_imformation.cur_mini_game == 1) {
 				cur_imformation.count_time++;
 				if (cur_imformation.count_time > 4) {
-					all_game.call_bullet(renderer, 1, mouseX, mouseY, mouse_x_y.first, mouse_x_y.second);
+					all_game.call_bullet(renderer, 1, mouseX, mouseY, mouse_x_y.first, mouse_x_y.second,15);
 					cur_imformation.count_time = 0;
 				}
 				
@@ -838,7 +840,7 @@ void status_process() {
 			{
 				if (cur_imformation.time_delay < 75) {
 					if (cur_imformation.time_delay == 73) {
-						huge_wave_sound.Play_Sound();
+						huge_wave_sound.Play_Sound(27);
 					}
 					render_huge_wave();
 				}
@@ -853,7 +855,7 @@ void status_process() {
 			{
 				if (cur_imformation.time_delay < 75) {
 					if (cur_imformation.time_delay == 73) {
-						huge_wave_sound.Play_Sound();
+						huge_wave_sound.Play_Sound(27);
 					}
 					render_huge_wave();
 				}
@@ -1011,7 +1013,7 @@ int main(int argc, char* args[])
 			
 			if (status_manager.status == 5 && event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
 				cur_imformation.mouseButton = "LEFT";
-				if (mouse_status != "hold_plant" && CARD_LOCATE >= 0 && CARD_LOCATE <= 9 && card[CARD_LOCATE].CD<=1 &&cur_imformation.cur_sun>=sun_value_p.at(plant_num_list.at(card[CARD_LOCATE].type))) {
+				if (mouse_status != "hold_plant" && CARD_LOCATE >= 0 && CARD_LOCATE <= 5 && card[CARD_LOCATE].CD<=1 &&cur_imformation.cur_sun>=sun_value_p.at(plant_num_list.at(card[CARD_LOCATE].type))) {
 					mouse_status = "hold_plant";
 					plant_m_hold = plant_num_list.at(card[CARD_LOCATE].type);
 					temp = CARD_LOCATE;
@@ -1021,19 +1023,33 @@ int main(int argc, char* args[])
 						if (game_lawn.Array_Manager[mouse_x_y.first][mouse_x_y.second].getIsPlanted() == false) {
 							cout << &mouse_status << endl;
 							cout << mouse_x_y.first << " " << mouse_x_y.second << endl;
-							planted.Play_Sound();
+							planted.Play_Sound(26);
 							cur_imformation.cur_sun -= sun_value_p.at(plant_num_list.at(card[temp].type));
 							card[temp].CD = sun_value_cd.at(plant_m_hold);
 							Plant * newplant = plant_manager.call_plant(plant_m_hold, mouse_x_y.first, mouse_x_y.second, plant_frame_list.at(plant_m_hold));
 							mouse_status = "";
 							if (plant_m_hold == "cherrybomb") {
-								reverse_explos.Play_Sound();
+								reverse_explos.Play_Sound(25);
 							}
 							game_lawn.Array_Manager[mouse_x_y.first][mouse_x_y.second].setIsPlanted(true);//Đã trồng
 							game_lawn.Array_Manager[mouse_x_y.first][mouse_x_y.second].setPtrPlant(newplant);//Nhét dữ liệu plant vào
-						
 						}
-						
+						else if (plant_m_hold == "sunflower" && game_lawn.Array_Manager[mouse_x_y.first][mouse_x_y.second].getIsPlanted() == true && game_lawn.Array_Manager[mouse_x_y.first][mouse_x_y.second].getPtrPlant()->name_plant == "sunflower") {
+							game_lawn.Array_Manager[mouse_x_y.first][mouse_x_y.second].getPtrPlant()->name_plant = "twinsun";
+							planted.Play_Sound(24);
+							cur_imformation.cur_sun -= sun_value_p.at(plant_num_list.at(card[temp].type));
+							card[temp].CD = sun_value_cd.at(plant_m_hold);
+							mouse_status = "";
+
+						}
+						else if (plant_m_hold == "peashooter" && game_lawn.Array_Manager[mouse_x_y.first][mouse_x_y.second].getIsPlanted() == true && game_lawn.Array_Manager[mouse_x_y.first][mouse_x_y.second].getPtrPlant()->name_plant == "peashooter") {
+							game_lawn.Array_Manager[mouse_x_y.first][mouse_x_y.second].getPtrPlant()->name_plant = "repeater";
+							planted.Play_Sound(24);
+							cur_imformation.cur_sun -= sun_value_p.at(plant_num_list.at(card[temp].type));
+							card[temp].CD = sun_value_cd.at(plant_m_hold);
+							mouse_status = "";
+
+						}
 					}
 
 				}

@@ -6,7 +6,7 @@
 	"wave": [
 		{
 			"cur_wave": 1,
-			"delay_time": 400,
+			"delay_time": 900,
 			"enemies": [
 				"pea_zombie",
 				"pea_zombie",
@@ -15,7 +15,7 @@
 		},
 		{
 			"cur_wave": 2,
-			"delay_time": 500,
+			"delay_time": 850,
 			"enemies": [
 				"pea_zombie",
 				"pea_zombie",
@@ -27,7 +27,7 @@
 		},
 		{
 			"cur_wave": 3,
-			"delay_time": 600,
+			"delay_time": 900,
 			"enemies": [
 				"pea_zombie",
 				"pea_zombie",
@@ -39,7 +39,7 @@
 		},
 		{
 			"cur_wave": 4,
-			"delay_time": 400,
+			"delay_time": 850,
 			"enemies": [
 				"pea_zombie",
 				"pea_zombie",
@@ -51,7 +51,7 @@
 		},
 		{
 			"cur_wave": 5,
-			"delay_time": 500,
+			"delay_time": 700,
 			"enemies": [
 				"pea_zombie",
 				"pea_zombie",
@@ -63,7 +63,7 @@
 		},
 		{
 			"cur_wave": 6,
-			"delay_time": 500,
+			"delay_time": 700,
 			"enemies": [
 				"pea_zombie",
 				"pea_zombie",
@@ -75,7 +75,7 @@
 		},
 		{
 			"cur_wave": 7,
-			"delay_time": 400,
+			"delay_time": 600,
 			"enemies": [
 				"pea_zombie",
 				"pea_zombie",
@@ -87,7 +87,7 @@
 		},
 		{
 			"cur_wave": 8,
-			"delay_time": 300,
+			"delay_time": 700,
 			"enemies": [
 				"pea_zombie",
 				"pea_zombie",
@@ -99,7 +99,7 @@
 		},
 		{
 			"cur_wave": 9,
-			"delay_time": 500,
+			"delay_time": 600,
 			"enemies": [
 				"pea_zombie",
 				"pea_zombie",

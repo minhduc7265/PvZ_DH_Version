@@ -34,7 +34,7 @@ const std::map<std::string, int> armor2_bl{
 	{"ball_zombie",0},
 	{"sky_zombie",0}
 };
-
+Music gulp;
 const int BLOOD_DEAD = 50;
 Lawn_Mana game_lawn;
 Cur_imf cur_imformation;
@@ -48,7 +48,7 @@ Element::~Element() {
 		it = list_texture.erase(it);
 	}
 }
-void Element::call_bullet(SDL_Renderer *ren, int type, int mx, int my, int row,int col) {
+void Element::call_bullet(SDL_Renderer *ren, int type, int mx, int my, int row, int col, int vel) {
 	//SDL_PollEvent(&event);
 	
 		Bullet* cre_bull = new Bullet();
@@ -82,7 +82,7 @@ void Element::call_bullet(SDL_Renderer *ren, int type, int mx, int my, int row,i
 		cre_bull->oy = cre_bull->rect_.y;
 		cout << cre_bull->rect_.x << endl;
 		cre_bull->set_type(type);
-		cre_bull->set_vel(10, 0);
+		cre_bull->set_vel(vel, 0);
 		list_of_bullet.push_back(cre_bull);
 		std::cout << "Bullet created!" << std::endl;
 
@@ -160,8 +160,11 @@ Plant* Element::call_plant(std::string name, int x, int y,int frame) {
 	new_plant->set_cur_blood(400);
 	new_plant->status = "idle";
 	new_plant->count_down = 0;
+	if (new_plant->name_plant == "sunflower" || new_plant->name_plant == "twinsun") {
+		new_plant->count_down = 450;
+	}
 	new_plant->num_frame = frame;
-	if (new_plant->name_plant == "fire" || new_plant->name_plant == "zom_fire" || new_plant->name_plant == "explosion" || new_plant->name_plant == "light_red" || new_plant->name_plant == "melon_pro") {
+	if (new_plant->name_plant == "fire" || new_plant->name_plant == "zom_fire" || new_plant->name_plant == "explosion" || new_plant->name_plant == "light_red" || new_plant->name_plant == "melon_pro" || new_plant->name_plant == "oxy") {
 		new_plant->if_effect = true;
 	}
 	else {
@@ -204,7 +207,7 @@ void Element::check_item() {
 
 			}
 			if ((*it)->rect_.x >= -20 && (*it)->rect_.x <= 10 && (*it)->rect_.y >= -20 && (*it)->rect_.y <= 15 && (*it)->get_collected() != true) {
-				cur_imformation.cur_sun += 25;
+				cur_imformation.cur_sun += 50;
 				(*it)->set_collected(true);
 			}
 			
@@ -266,7 +269,10 @@ void Element::check_plant() {
 					game_lawn.Array_Manager[(*it)->get_num_row()][(*it)->get_num_col()].setPtrPlant(NULL);
 				}
 				
-
+				if (!(*it)->if_effect) {
+					gulp.Play_Sound(23);
+				}
+				
 				delete *it;
 				it = list_plant.erase(it);
 				
@@ -332,7 +338,7 @@ void Element::remote_frame_plant() {
 		if (cur_plant != NULL) {
 			int num_frame_ = cur_plant->num_frame;
 			cur_plant->cur_frame += 1;
-			if (cur_plant->name_plant == "sunflower" && cur_plant->status == "production") {
+			if ((cur_plant->name_plant == "sunflower" || cur_plant->name_plant == "twinsun") && cur_plant->status == "production") {
 				cur_plant->cur_frame += 1;
 			}
 			if ((cur_plant->cur_frame) >= (num_frame_ - 1)) {
@@ -357,7 +363,13 @@ void Element::remote_func_plant() {
 		Plant* cur_plant = *it;
 		if (cur_plant != NULL) {
 			cur_plant->count_down++;
-
+			if (cur_imformation.cur_td_adventure != 0) {
+				cur_plant->dec_blood--;
+				if (cur_plant->dec_blood < 0) {
+					cur_plant->set_cur_blood(cur_plant->get_cur_blood() - 40);
+					cur_plant->dec_blood = 50;
+				}
+			}
 
 
 			if (cur_plant->name_plant == "sunflower") {
@@ -366,6 +378,18 @@ void Element::remote_func_plant() {
 					cur_plant->status = "production";
 				}
 				else if (cur_plant->count_down >= 600 && cur_plant->cur_frame >= 58) {
+					cur_plant->cur_frame = 0;
+					cur_plant->status = "idle";
+					cur_plant->count_down = 0;
+				}
+
+			}
+			else if (cur_plant->name_plant == "twinsun") {
+				if (cur_plant->count_down == 600) {
+					cur_plant->cur_frame = 0;
+					cur_plant->status = "production";
+				}
+				else if (cur_plant->count_down >= 600 && cur_plant->cur_frame >= 42) {
 					cur_plant->cur_frame = 0;
 					cur_plant->status = "idle";
 					cur_plant->count_down = 0;
@@ -395,9 +419,15 @@ void Element::remote_func_plant() {
 
 			}
 			else if (cur_plant->name_plant == "oxygen_algae") {
-				if (cur_plant->count_down == 0) {
+				cur_plant->dec_blood = 50;
+				for (std::vector <Plant*>::iterator it2 = list_plant.begin(); it2 != list_plant.end(); it2++) {//dễ hơn thì dùng auto it nhưng vì mơi học
+					Plant* cur2_plant = *it2;
+					if (cur2_plant != NULL && cur2_plant->name_plant != "oxygen_algae") {
+						if (cur2_plant->num_col >= cur_plant->num_col - 1 && cur2_plant->num_col <= cur_plant->num_col + 1 && cur2_plant->num_row >= cur_plant->num_row - 1 && cur2_plant->num_row <= cur_plant->num_row + 1) {
+							cur2_plant->dec_blood = 50;//3x3->không trừ
+						}
+					}
 				}
-
 			}
 			else if (cur_plant->name_plant == "snowpea" || cur_plant->name_plant == "peashooter") {
 				if (cur_plant->count_down == 60 && cur_plant->if_shoot == true) {
@@ -411,7 +441,19 @@ void Element::remote_func_plant() {
 				}
 
 			}
+			else if (cur_plant->name_plant == "repeater") {
+				cur_plant->num_frame = 30;
+				if (cur_plant->count_down == 60 && cur_plant->if_shoot == true) {
+					cur_plant->cur_frame = 0;
+					cur_plant->status = "shoot";
+				}
+				if (cur_plant->count_down >= 90 && cur_plant->if_shoot == true) {
+					cur_plant->cur_frame = 0;
+					cur_plant->status = "idle";
+					cur_plant->count_down = 41;
+				}
 
+			}
 
 			else if (cur_plant->name_plant == "shiliu") {
 				if (cur_plant->count_down == 90 && cur_plant->if_shoot == true) {
@@ -457,7 +499,7 @@ void Element::remote_func_plant() {
 
 			}
 
-			if (cur_plant->if_shoot == false && cur_plant->name_plant != "sunflower" && cur_plant->name_plant != "potato_mine") {
+			if (cur_plant->if_shoot == false && cur_plant->name_plant != "sunflower"&& cur_plant->name_plant != "twinsun" && cur_plant->name_plant != "potato_mine") {
 				cur_plant->status = "idle";
 			}
 

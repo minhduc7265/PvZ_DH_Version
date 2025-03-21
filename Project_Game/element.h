@@ -10,6 +10,8 @@
 #include "zombie.h"
 #include "item.h"
 #include "lawn.h"
+#include "music.h"
+extern Music gulp;
 extern Lawn_Mana game_lawn;
 extern const std::map<std::string, int> body_bl;
 extern const std::map<std::string, int> armor1_bl;
@@ -57,7 +59,7 @@ public:
 	}
 	//hàm gán dữ liệu//mà chả cần đâu
 	//hàm tạo đạn
-	void call_bullet(SDL_Renderer* ren, int type, int mx, int my, int row, int col);
+	void call_bullet(SDL_Renderer* ren, int type, int mx, int my, int row, int col, int vel);
 
 	void check_bullet(SDL_Renderer* ren);
 

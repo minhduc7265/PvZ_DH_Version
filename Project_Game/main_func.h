@@ -4,7 +4,6 @@
 #include "load_pic.h"
 #include "base_func.h"
 #include "element.h"
-#include "music.h"
 #include "animation.h"
 #include "time_manager.h"
 #include <xmp.h>
@@ -74,6 +73,7 @@ extern Animation oxy_algae;
 extern Animation light_red;
 extern Animation shiliu_idle;
 extern Animation shiliu_shoot;
+extern Animation oxy;
 extern LoadPIC star;
 
 //Zombie
@@ -83,7 +83,8 @@ extern Animation normal_walk_2;
 extern Animation normal_eat_1;
 extern Animation normal_eat_2;
 extern Animation normal_dead;
-
+extern Animation twinidle;
+extern Animation twinproduct;
 extern Animation cnon;
 extern Animation cwalk1;
 extern Animation cwalk2;
@@ -124,11 +125,14 @@ extern Animation minigame1;
 extern Animation minigame2;
 extern Animation zomboni;
 extern Music zomboni_sound;
+extern Animation reidle;
+extern Animation reattack;
 //Item
 extern Animation sun;
 extern Animation melon_pro;
 extern Animation miniGame;
 extern LoadPIC outlevel;
+extern LoadPIC outlevel2;
 extern LoadPIC pause1;
 extern LoadPIC pause2;
 extern LoadPIC reset1;
@@ -185,7 +189,8 @@ void play_mainmusic(xmp_context ctx, int pattern);
 void off_mainmusic(xmp_context ctx);
 void set_channel_off(xmp_context ctx, int c1, int c2, int c3, int c4);
 void set_channel_on(xmp_context ctx, int c1, int c2, int c3, int c4);
-
+void pause_mainmusic(xmp_context ctx);
+void resume_mainmsic(xmp_context ctx);
 void render_card(SDL_Renderer* render);
 
 void load_sound();

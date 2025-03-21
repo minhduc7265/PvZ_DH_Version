@@ -1,26 +1,23 @@
 {
 	"level_id": 1,
 	"name_level": "East Sea Dragon Palace - Day 1",
-	"sun_init": 100,
-	"num_wave": 4,
+	"sun_init": 225,
+	"num_wave": 1,
 	"wave": [
 		{
 			"cur_wave": 1,
-			"delay_time": 400,
+			"delay_time": 700,
 			"enemies": [
-				"pea_zombie",
-				"zombie",
-				"pea_zombie"
+				"zombie"
 			]
 		},
 		{
 			"cur_wave": 2,
-			"delay_time": 500,
+			"delay_time": 800,
 			"enemies": [
 				"zombie",
 				"conezombie",
 				"zombie",
-				"conezombie",
 				"zombie"
 			]
 		},
@@ -31,20 +28,18 @@
 				"zombie",
 				"conezombie",
 				"conezombie",
-				"conezombie",
-				"conezombie",
-				"zombie"
+				"conezombie"
 			]
 		},
 		{
 			"cur_wave": 4,
-			"delay_time": 400,
+			"delay_time": 700,
 			"enemies": [
 				"zombie",
-				"exzombie",
-				"exzombie",
-				"zombie",
-				"exzombie"
+				"conezombie",
+				"conezombie",
+				"conezombie",
+				"zombie"
 			]
 		},
 		{
@@ -52,7 +47,8 @@
 			"delay_time": 500,
 			"enemies": [
 				"zombie",
-				"exzombie",
+				"zombie",
+				"zombie",
 				"conezombie",
 				"zombie",
 				"conezombie"
@@ -62,12 +58,13 @@
 			"cur_wave": 6,
 			"delay_time": 500,
 			"enemies": [
-				"exzombie",
-				"exzombie",
+				"zombie",
+				"zombie",
+				"zombie",
+				"zombie",
 				"conezombie",
 				"zombie",
-				"zombie",
-				"exzombie"
+				"zombie"
 			]
 		},
 		{
@@ -75,10 +72,10 @@
 			"delay_time": 400,
 			"enemies": [
 				"zombie",
-				"exzombie",
-				"exzombie",
-				"zomboni",
-				"zomboni",
+				"zombie",
+				"zombie",
+				"zombie",
+				"zombie",
 				"conezombie"
 			]
 		},
@@ -89,6 +86,9 @@
 				"conezombie",
 				"conezombie",
 				"conezombie",
+				"conezombie",
+				"conezombie",
+				"conezombie",
 				"zombie"
 			]
 		},
@@ -96,9 +96,13 @@
 			"cur_wave": 9,
 			"delay_time": 500,
 			"enemies": [
-				"exzombie",
-				"exzombie",
 				"conezombie",
+				"zombie",
+				"conezombie",
+				"conezombie",
+				"conezombie",
+				"zombie",
+				"zombie",
 				"zombie",
 				"conezombie"
 			]
@@ -110,7 +114,12 @@
 				"zombie",
 				"conezombie",
 				"conezombie",
-				"exzombie",
+				"conezombie",
+				"zombie",
+				"conezombie",
+				"zombie",
+				"conezombie",
+				"zombie",
 				"zombie"
 			]
 		},
@@ -121,10 +130,15 @@
 				"seafzombie",
 				"seafzombie",
 				"conezombie",
-				"exzombie",
-				"zomboni",
 				"conezombie",
-				"exzombie",
+				"zombie",
+				"conezombie",
+				"conezombie",
+				"zombie",
+				"conezombie",
+				"conezombie",
+				"zombie",
+				"zombie",
 				"zombie"
 			]
 		},
@@ -135,8 +149,8 @@
 				"conezombie",
 				"conezombie",
 				"conezombie",
-				"exzombie",
-				"exzombie",
+				"conezombie",
+				"zombie",
 				"zombie"
 			]
 		},
@@ -154,199 +168,28 @@
 			"cur_wave": 14,
 			"delay_time": 300,
 			"enemies": [
-				"exzombie",
-				"exzombie",
 				"conezombie",
-				"seafzombie",
-				"seafzombie",
-				"seafzombie",
-				"conezombie",
-				"zomboni",
-				"exzombie",
-				"zombie",
 				"zombie",
 				"conezombie",
-				"exzombie",
-				"exzombie",
+				"seafzombie",
+				"seafzombie",
+				"seafzombie",
 				"conezombie",
 				"conezombie",
-				"exzombie",
+				"zombie",
+				"zombie",
+				"zombie",
+				"conezombie",
+				"conezombie",
+				"zombie",
+				"conezombie",
+				"conezombie",
+				"conezombie",
+				"zombie",
 				"zombie",
 				"zombie",
 				"conezombie"
-			]
-		},
-		{
-			"cur_wave": 15,
-			"delay_time": 400,
-			"enemies": [
-				"zombie",
-				"exzombie",
-				"exzombie",
-				"zomboni",
-				"zomboni",
-				"conezombie"
-			]
-		},
-		{
-			"cur_wave": 16,
-			"delay_time": 400,
-			"enemies": [
-				"zombie",
-				"exzombie",
-				"exzombie",
-				"zomboni",
-				"zomboni",
-				"conezombie"
-			]
-		},
-		{
-			"cur_wave": 17,
-			"delay_time": 400,
-			"enemies": [
-				"zombie",
-				"exzombie",
-				"exzombie",
-				"zomboni",
-				"zomboni",
-				"conezombie"
-			]
-		},
-		{
-			"cur_wave": 18,
-			"delay_time": 400,
-			"enemies": [
-				"seafzombie",
-				"seafzombie",
-				"conezombie",
-				"exzombie",
-				"zomboni",
-				"conezombie",
-				"exzombie",
-				"zombie"
-			]
-		},
-		{
-			"cur_wave": 19,
-			"delay_time": 600,
-			"enemies": [
-				"conezombie",
-				"conezombie",
-				"conezombie",
-				"exzombie",
-				"exzombie",
-				"zombie"
-			]
-		},
-		{
-			"cur_wave": 20,
-			"delay_time": 500,
-			"enemies": [
-				"conezombie",
-				"conezombie",
-				"conezombie",
-				"zombie"
-			]
-		},
-		{
-			"cur_wave": 21,
-			"delay_time": 300,
-			"enemies": [
-				"exzombie",
-				"exzombie",
-				"conezombie",
-				"seafzombie",
-				"seafzombie",
-				"seafzombie",
-				"conezombie",
-				"zomboni",
-				"exzombie",
-				"zombie",
-				"zombie",
-				"conezombie",
-				"exzombie",
-				"exzombie",
-				"conezombie",
-				"conezombie",
-				"exzombie",
-				"zombie",
-				"zombie",
-				"conezombie"
-			]
-		},
-		{
-			"cur_wave": 22,
-			"delay_time": 400,
-			"enemies": [
-				"zombie",
-				"exzombie",
-				"exzombie",
-				"zomboni",
-				"zomboni",
-				"conezombie"
-			]
-		},
-		{
-			"cur_wave": 23,
-			"delay_time": 400,
-			"enemies": [
-				"zombie",
-				"exzombie",
-				"exzombie",
-				"zomboni",
-				"zomboni",
-				"conezombie"
-			]
-		},
-		{
-			"cur_wave": 24,
-			"delay_time": 400,
-			"enemies": [
-				"zombie",
-				"exzombie",
-				"exzombie",
-				"zomboni",
-				"zomboni",
-				"conezombie"
-			]
-		},
-		{
-			"cur_wave": 25,
-			"delay_time": 400,
-			"enemies": [
-				"seafzombie",
-				"seafzombie",
-				"conezombie",
-				"exzombie",
-				"zomboni",
-				"conezombie",
-				"exzombie",
-				"zombie"
-			]
-		},
-		{
-			"cur_wave": 26,
-			"delay_time": 600,
-			"enemies": [
-				"conezombie",
-				"conezombie",
-				"conezombie",
-				"exzombie",
-				"exzombie",
-				"zombie"
-			]
-		},
-		{
-			"cur_wave": 27,
-			"delay_time": 500,
-			"enemies": [
-				"conezombie",
-				"conezombie",
-				"conezombie",
-				"zombie"
 			]
 		}
-
-
 	]
 }

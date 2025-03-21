@@ -57,6 +57,7 @@ public:
 	int num_row;
 	int num_col;
 	bool if_effect;
+	int dec_blood;
 private:
 	int current_blood;
 	bool is_dead;

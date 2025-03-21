@@ -86,7 +86,7 @@ Animation potatoup;
 Animation potatoidle;
 Animation potatoattack;
 Animation potatoboom;
-
+Animation oxy;
 Animation ballidle;
 Animation ballwalk;
 Animation balldead;
@@ -94,7 +94,8 @@ Animation balldead;
 Animation skyidle;
 Animation skywalk;
 Animation skydead;
-
+Animation twinidle;
+Animation twinproduct;
 Music lightfill;
 LoadPIC huge_wave;
 LoadPIC huge_wave_black;
@@ -129,9 +130,12 @@ LoadPIC tiankong;
 Animation minigame1;
 Animation minigame2;
 LoadPIC outlevel;
+LoadPIC outlevel2;
 LoadPIC pause1;
 LoadPIC pause2;
 LoadPIC reset1;
+Animation reidle;
+Animation reattack;
 LoadPIC reset2;
 Animation miniGame;
 const std::string WINDOW_NAME_N = "Plants vs. Zombies DH Version - Normal Mode";
@@ -165,6 +169,7 @@ Music hit;
 Music huge_wave_sound;
 Music sun_collected;
 Music sound_melon;
+
 int count_zombie = 0;
 Element plant_manager;
 Element zombie_manager;
@@ -192,7 +197,9 @@ const std::map<std::string, int> plant_frame_list = {
 	{"wallnut",0},
 	{"oxygen_algae",60},
 	{"banana_tree",191},
-	{"shiliu",76}
+	{"shiliu",76},
+	{"twinsun",60},
+	{"repeater",30}
 };
 const std::map<std::string, int> plant_wid = {
 	{"sunflower",176},
@@ -204,6 +211,8 @@ const std::map<std::string, int> plant_wid = {
 	{"oxygen_algae",77},
 	{"banana_tree",237},
 	{"shiliu",181},
+	{"twinsun",195},
+	{"repeater",195}
 };
 const std::map<std::string, int> plant_hei = {
 	{"sunflower",209},
@@ -215,6 +224,8 @@ const std::map<std::string, int> plant_hei = {
 	{"oxygen_algae",106},
 	{"banana_tree",173},
 	{"shiliu",213},
+	{"twinsun",195},
+	{"repeater",195}
 };
 const std::map<std::string, int> sun_value_p = {
 	{"sunflower",50},
@@ -226,17 +237,21 @@ const std::map<std::string, int> sun_value_p = {
 	{"oxygen_algae",50},
 	{"banana_tree",175},
 	{"shiliu",225},
+	{"twinsun",50},
+	{ "repeater",100}
 };
 const std::map<std::string, int> sun_value_cd = {
 	{"sunflower",235},
-	{"potato_mine",20},//625
+	{"potato_mine",625},//625
 	{"peashooter",235},
 	{"cherrybomb",1560},
 	{"snowpea",235},
 	{"wallnut",938},
 	{"oxygen_algae",235},
 	{"banana_tree",235},
-	{"shiliu",470},
+	{"shiliu",240},
+	{"twinsun",0},
+	{"repeater",0}
 };
 void play_mainmusic(xmp_context ctx, int pattern) {//pattern xem trong OpenMPT
 	xmp_start_player(ctx, 44100, 0);
@@ -246,6 +261,22 @@ void play_mainmusic(xmp_context ctx, int pattern) {//pattern xem trong OpenMPT
 void off_mainmusic(xmp_context ctx) {
 	SDL_PauseAudio(1);
 	xmp_end_player(ctx);
+}
+void pause_mainmusic(xmp_context ctx) {
+	__asm {
+		push ctx;
+		call xmp_stop_module;
+		add esp, 4;
+	}
+	//or xmp_stop_module(ctx)
+}
+void resume_mainmsic(xmp_context ctx) {
+	__asm {
+		push ctx;
+		call xmp_restart_module;
+		add esp, 4;
+	}
+	// or xmp_restart_module(ctx)
 }
 void set_channel_off(xmp_context ctx, int c1, int c2, int c3, int c4) {
 	xmp_channel_mute(ctx, c1, 1);
@@ -313,6 +344,7 @@ void load_sound() {
 	click.Load_Sound_Effect("music/click.ogg");
 	mg_background.Load_Music("music/cyp2.mp3");
 	potato_sound.Load_Sound_Effect("music/potato_mine.ogg");
+	gulp.Load_Sound_Effect("music/gulp.ogg");
 }
 void load_anim() {
 	level.set_clip(5, 118, 120);
@@ -376,6 +408,11 @@ void load_anim() {
 	skyidle.set_clip_bonus(61, 249, 344);
 	skywalk.set_clip_bonus(61, 291, 338);
 	skydead.set_clip_bonus(80, 237, 292);
+	oxy.set_clip_bonus(46, 51, 78);
+	twinidle.set_clip_bonus(60, 195, 195);
+	twinproduct.set_clip_bonus(45, 195, 195);
+	reidle.set_clip_bonus(30, 195, 195);
+	reattack.set_clip_bonus(30, 195, 195);
 }
 bool LoadBG() {
 	cyp.Set_Name_Path("images/cyp.png");
@@ -431,7 +468,8 @@ bool LoadBG() {
 	play_but1.Set_Name_Path("images/play_button_1.png");
 	play_but2.LoadImg("images/play_button_2.png", renderer);
 	play_but2.Set_Name_Path("images/play_button_2.png");
-
+	outlevel2.LoadImg("images/outlevel2.png", renderer);
+	outlevel2.Set_Name_Path("images/outlevel2.png");
 	outlevel.LoadImg("images/outlevel.png", renderer);
 	outlevel.Set_Name_Path("images/outlevel.png");
 	pause1.LoadImg("images/pause1.png", renderer);
@@ -513,6 +551,11 @@ void load_texture_element() {
 	texture_reanim.Load_Texture("spritesheet/skyidle.png", renderer, "skyidle", "zombie");
 	texture_reanim.Load_Texture("spritesheet/skywalk.png", renderer, "skywalk", "zombie");
 	texture_reanim.Load_Texture("spritesheet/skydead.png", renderer, "skydead", "zombie");
+	texture_reanim.Load_Texture("spritesheet/oxy.png", renderer, "oxy", "plant");//effect
+	texture_reanim.Load_Texture("spritesheet/twinidle.png", renderer, "twinidle", "plant");
+	texture_reanim.Load_Texture("spritesheet/twinproduct.png", renderer, "twinproduct", "plant");
+	texture_reanim.Load_Texture("spritesheet/reidle.png", renderer, "reidle", "plant");
+	texture_reanim.Load_Texture("spritesheet/reattack.png", renderer, "reattack", "plant");
 }
 int get_pos_card(int mouseX, int mouseY) {
 
@@ -534,19 +577,19 @@ void remote_bullet(std::vector<Zombie*>& zombie_vector, std::vector<Bullet*>& bu
 						min_x = zombie->pos_x;
 						min_y = zombie->pos_y;
 					}
-					if (bullet->rect_.x >= zombie->pos_x - 5 && bullet->rect_.x <= zombie->pos_x + 5 && bullet->is_hit == false && bullet->get_type()!=5) {
+					if (bullet->rect_.x >= zombie->pos_x - 9 && bullet->rect_.x <= zombie->pos_x + 9 && bullet->is_hit == false && bullet->get_type()!=5) {
 						
 						bullet->is_out = true;
 						bullet->is_hit = true;
 						if (bullet->get_type() == 4) {
 							if (zombie->armor_type_1 > 0) {
-								zombie->armor_type_1 = zombie->armor_type_1 - 60;
+								zombie->armor_type_1 = zombie->armor_type_1 - 100;
 							}
 							else {
-								zombie->zom_blood = zombie->zom_blood - 60;
+								zombie->zom_blood = zombie->zom_blood - 100;
 							}
 							
-							sound_melon.Play_Sound();
+							sound_melon.Play_Sound(22);
 							plant_manager.call_plant("melon_pro", bullet->num_row, (zombie->pos_x-30)/80, 10);
 						}
 						else if (bullet->get_type() == 2) {
@@ -557,7 +600,7 @@ void remote_bullet(std::vector<Zombie*>& zombie_vector, std::vector<Bullet*>& bu
 								zombie->zom_blood = zombie->zom_blood - 20;
 							}
 							zombie->pos_x += 15;
-							hit.Play_Sound();
+							hit.Play_Sound(21);
 						}
 						else {
 							if (zombie->armor_type_1 > 0) {
@@ -567,17 +610,17 @@ void remote_bullet(std::vector<Zombie*>& zombie_vector, std::vector<Bullet*>& bu
 								zombie->zom_blood = zombie->zom_blood - 20;
 							}
 							
-							hit.Play_Sound();
+							hit.Play_Sound(21);
 						}
 						break;
 					}
 					else if(bullet->rect_.x >= zombie->pos_x && bullet->is_hit == false && bullet->get_type() == 5) {
 						if (zombie->armor_type_1 > 0) {
-							zombie->armor_type_1 = zombie->armor_type_1 - 1;
+							zombie->armor_type_1 = zombie->armor_type_1 - 2;
 							bullet->rect_.x+=2;
 						}
 						else {
-							zombie->zom_blood = zombie->zom_blood - 1;
+							zombie->zom_blood = zombie->zom_blood - 2;
 							bullet->rect_.x+=4;
 						}
 						//hit.Play_Sound();
@@ -627,7 +670,7 @@ void remote_instakill(std::vector<Zombie*>& zombie_vector, std::vector<Plant*>& 
 						zombie->armor_type_1 = -1;
 						plant->set_is_dead(true);
 						plant_manager.call_plant("potatoboom", plant->get_num_row(), plant->get_num_col(), 32);
-						potato_sound.Play_Sound();
+						potato_sound.Play_Sound(20);
 
 					}
 				}
@@ -1024,20 +1067,34 @@ void remote_anim_(std::vector<Plant*>& plant_vector) {
 			}
 			if (cur_plant->name_plant == "peashooter") {
 				if (cur_plant->count_down == 85 && cur_plant->if_shoot == true) {
-					all_game.call_bullet(renderer, 1, (cur_plant->get_num_col() + 1) * 80 + 40, (cur_plant->get_num_row()) * 100 + 100, cur_plant->get_num_row(), cur_plant->get_num_col());
+					all_game.call_bullet(renderer, 1, (cur_plant->get_num_col() + 1) * 80 + 40, (cur_plant->get_num_row()) * 100 + 100, cur_plant->get_num_row(), cur_plant->get_num_col(), 10);
 				}
 				if (cur_plant->status == "idle") {
 					cur_plant->currentClip = &pea_idle.get_clip()[cur_plant->cur_frame];
-					texture_reanim.Render(renderer, cur_plant->currentClip, "peashooter", (cur_plant->get_num_col() + 1) * 80 - 50 - 40, (cur_plant->get_num_row()) * 100 - 50 + 90, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
+					texture_reanim.Render(renderer, cur_plant->currentClip, "peashooter", (cur_plant->get_num_col() + 1) * 80 - 90, (cur_plant->get_num_row()) * 100 + 40, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
 				}
 				else if (cur_plant->status == "shoot") {
 					cur_plant->currentClip = &pea_shoot.get_clip()[cur_plant->cur_frame];
-					texture_reanim.Render(renderer, cur_plant->currentClip, "pea_shoot", (cur_plant->get_num_col() + 1) * 80 - 53 - 40, (cur_plant->get_num_row()) * 100 - 51 + 90, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
+					texture_reanim.Render(renderer, cur_plant->currentClip, "pea_shoot", (cur_plant->get_num_col() + 1) * 80 - 93, (cur_plant->get_num_row()) * 100 + 39, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
+				}
+			}
+			else if (cur_plant->name_plant == "repeater") {
+				if (cur_plant->count_down == 85 && cur_plant->if_shoot == true) {
+					all_game.call_bullet(renderer, 1, (cur_plant->get_num_col() + 1) * 80 + 40, (cur_plant->get_num_row()) * 100 + 100, cur_plant->get_num_row(), cur_plant->get_num_col(), 10);
+					all_game.call_bullet(renderer, 1, (cur_plant->get_num_col() + 1) * 80 + 70, (cur_plant->get_num_row()) * 100 + 100, cur_plant->get_num_row(), cur_plant->get_num_col(), 10);
+				}
+				if (cur_plant->status == "idle") {
+					cur_plant->currentClip = &reidle.get_clip()[cur_plant->cur_frame];
+					texture_reanim.Render(renderer, cur_plant->currentClip, "reidle", (cur_plant->get_num_col() + 1) * 80 - 60, (cur_plant->get_num_row()) * 100 +60, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
+				}
+				else if (cur_plant->status == "shoot") {
+					cur_plant->currentClip = &reattack.get_clip()[cur_plant->cur_frame];
+					texture_reanim.Render(renderer, cur_plant->currentClip, "reattack", (cur_plant->get_num_col() + 1) * 80 - 60, (cur_plant->get_num_row()) * 100 + 60, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
 				}
 			}
 			else if (cur_plant->name_plant == "snowpea") {
 				if (cur_plant->count_down == 80 && cur_plant->if_shoot == true) {
-					all_game.call_bullet(renderer, 2, (cur_plant->get_num_col() + 1) * 80, (cur_plant->get_num_row()) * 100 + 100, cur_plant->get_num_row(), cur_plant->get_num_col());
+					all_game.call_bullet(renderer, 2, (cur_plant->get_num_col() + 1) * 80, (cur_plant->get_num_row()) * 100 + 100, cur_plant->get_num_row(), cur_plant->get_num_col(), 12);
 				}
 				if (cur_plant->status == "idle") {
 					cur_plant->num_frame = 144;
@@ -1052,7 +1109,7 @@ void remote_anim_(std::vector<Plant*>& plant_vector) {
 			}
 			else if (cur_plant->name_plant == "sunflower") {
 				if (cur_plant->count_down == 610) {
-					item_manager.call_item(0, (cur_plant->get_num_col() + 1) * 80 - 50 - 40, (cur_plant->get_num_row()) * 100 - 50 + 10 + 70, 30);
+					item_manager.call_item(0, (cur_plant->get_num_col() + 1) * 80 - 50 - 40, (cur_plant->get_num_row()) * 100 + 30, 30);
 				}
 				if (cur_plant->status == "idle") {
 					cur_plant->num_frame = 59;
@@ -1065,11 +1122,26 @@ void remote_anim_(std::vector<Plant*>& plant_vector) {
 					texture_reanim.Render(renderer, cur_plant->currentClip, "sunf_product", (cur_plant->get_num_col() + 1) * 80 - 60 , (cur_plant->get_num_row()) * 100  + 60, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
 				}
 			}
-
+			else if (cur_plant->name_plant == "twinsun") {
+				if (cur_plant->count_down == 610) {
+					item_manager.call_item(0, (cur_plant->get_num_col() + 1) * 80 - 50 - 40, (cur_plant->get_num_row()) * 100 + 30, 30);
+					item_manager.call_item(0, (cur_plant->get_num_col() + 1) * 80 - 50 - 20, (cur_plant->get_num_row()) * 100 + 30, 30);
+				}
+				if (cur_plant->status == "idle") {
+					cur_plant->num_frame = 60;
+					cur_plant->currentClip = &twinidle.get_clip()[cur_plant->cur_frame];
+					texture_reanim.Render(renderer, cur_plant->currentClip, "twinidle", (cur_plant->get_num_col() + 1) * 80 - 60, (cur_plant->get_num_row()) * 100 + 60, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
+				}
+				else if (cur_plant->status == "production") {
+					cur_plant->num_frame = 45;
+					cur_plant->currentClip = &twinproduct.get_clip()[cur_plant->cur_frame];
+					texture_reanim.Render(renderer, cur_plant->currentClip, "twinproduct", (cur_plant->get_num_col() + 1) * 80 - 60, (cur_plant->get_num_row()) * 100 + 60, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
+				}
+			}
 			else if (cur_plant->name_plant == "explosion") {
 				cur_plant->if_effect = true;
 				cur_plant->currentClip = &explosion.get_clip()[cur_plant->cur_frame];
-				texture_reanim.Render(renderer, cur_plant->currentClip, "explosion", (cur_plant->get_num_col() + 1) * 80 - 53 - 95, (cur_plant->get_num_row()) * 100 - 51 + 20, 4 * cur_plant->currentClip->w / 8, 4 * cur_plant->currentClip->h / 8);
+				texture_reanim.Render(renderer, cur_plant->currentClip, "explosion", (cur_plant->get_num_col() + 1) * 80 - 148, (cur_plant->get_num_row()) * 100 - 31, 4 * cur_plant->currentClip->w / 8, 4 * cur_plant->currentClip->h / 8);
 				if (cur_plant->count_down == 20) {
 					cur_plant->set_is_dead(true);
 				}
@@ -1077,17 +1149,17 @@ void remote_anim_(std::vector<Plant*>& plant_vector) {
 			else if (cur_plant->name_plant == "light_red") {
 				cur_plant->if_effect = true;
 				cur_plant->currentClip = &light_red.get_clip()[cur_plant->cur_frame];
-				texture_reanim.Render(renderer, cur_plant->currentClip, "light_red", (cur_plant->get_num_col() + 1) * 80 - 53 - 95, (cur_plant->get_num_row()) * 100 - 51 + 20, 4 * cur_plant->currentClip->w / 8, 4 * cur_plant->currentClip->h / 8);
+				texture_reanim.Render(renderer, cur_plant->currentClip, "light_red", (cur_plant->get_num_col() + 1) * 80 - 148, (cur_plant->get_num_row()) * 100 - 31, 4 * cur_plant->currentClip->w / 8, 4 * cur_plant->currentClip->h / 8);
 				if (cur_plant->count_down == 20) {
 					cur_plant->set_is_dead(true);
 				}
 			}
 			else if (cur_plant->name_plant == "cherrybomb") {
 				cur_plant->currentClip = &cherry_bomb.get_clip()[cur_plant->cur_frame];
-				texture_reanim.Render(renderer, cur_plant->currentClip, "cherry_bomb", (cur_plant->get_num_col() + 1) * 80 - 53 - 75, (cur_plant->get_num_row()) * 100 - 51 + 70, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
+				texture_reanim.Render(renderer, cur_plant->currentClip, "cherry_bomb", (cur_plant->get_num_col() + 1) * 80 - 128, (cur_plant->get_num_row()) * 100 - 19, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
 				if (cur_plant->count_down == 20) {
 					cur_plant->set_is_dead(true);
-					cherry_sound.Play_Sound();
+					cherry_sound.Play_Sound(19);
 					plant_manager.call_plant("explosion", cur_plant->get_num_row(), cur_plant->get_num_col(), 21);
 					//plant_manager.call_plant("zom_fire", 6, 0, 21);
 					plant_manager.call_plant("light_red", cur_plant->get_num_row(), cur_plant->get_num_col(), 21);
@@ -1103,10 +1175,19 @@ void remote_anim_(std::vector<Plant*>& plant_vector) {
 				}
 
 			}
+			else if (cur_plant->name_plant == "oxy") {
+				cur_plant->if_effect = true;
+				cur_plant->currentClip = &oxy.get_clip()[cur_plant->cur_frame];
+				texture_reanim.Render(renderer, cur_plant->currentClip, "oxy", (cur_plant->get_num_col() + 1) * 80 - 110, (cur_plant->get_num_row() + 1) * 100 -90, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
+				if (cur_plant->count_down == 45) {
+					cur_plant->set_is_dead(true);
+				}
+
+			}
 			else if (cur_plant->name_plant == "fire") {
 				cur_plant->if_effect = true;
 				cur_plant->currentClip = &fire.get_clip()[cur_plant->cur_frame];
-				texture_reanim.Render(renderer, cur_plant->currentClip, "fire", (cur_plant->get_num_col() + 1) * 80 - 110, (cur_plant->get_num_row() + 1) * 100 -90, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
+				texture_reanim.Render(renderer, cur_plant->currentClip, "fire", (cur_plant->get_num_col() + 1) * 80 - 110, (cur_plant->get_num_row() + 1) * 100 - 90, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
 				if (cur_plant->count_down == 34) {
 					cur_plant->set_is_dead(true);
 				}
@@ -1132,9 +1213,9 @@ void remote_anim_(std::vector<Plant*>& plant_vector) {
 			}
 			else if (cur_plant->name_plant == "banana_tree") {
 				cur_plant->currentClip = &banana_tree.get_clip()[cur_plant->cur_frame];
-				texture_reanim.Render(renderer, cur_plant->currentClip, "banana_tree", (cur_plant->get_num_col() + 1) * 80 - 50 - 30, (cur_plant->get_num_row()) * 100 + 70, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
+				texture_reanim.Render(renderer, cur_plant->currentClip, "banana_tree", (cur_plant->get_num_col() + 1) * 80 - 80, (cur_plant->get_num_row()) * 100 + 70, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
 				if ((cur_plant->count_down == 110 || cur_plant->count_down == 120) && cur_plant->if_shoot == true) {
-					all_game.call_bullet(renderer, 5, (cur_plant->get_num_col() + 1) * 80, (cur_plant->get_num_row()) * 100 + 100, cur_plant->get_num_row(), cur_plant->get_num_col());
+					all_game.call_bullet(renderer, 5, (cur_plant->get_num_col() + 1) * 80, (cur_plant->get_num_row()) * 100 + 100, cur_plant->get_num_row(), cur_plant->get_num_col(),12);
 				}
 			}
 			else if (cur_plant->name_plant == "oxygen_algae") {
@@ -1144,17 +1225,17 @@ void remote_anim_(std::vector<Plant*>& plant_vector) {
 			}
 			else if (cur_plant->name_plant == "shiliu") {
 				if (cur_plant->count_down == 110 && cur_plant->if_shoot == true) {
-					all_game.call_bullet(renderer, 4, (cur_plant->get_num_col() + 1) * 80-100, (cur_plant->get_num_row()) * 100 +50, cur_plant->get_num_row(), cur_plant->get_num_col());
+					all_game.call_bullet(renderer, 4, (cur_plant->get_num_col() + 1) * 80 - 100, (cur_plant->get_num_row()) * 100 + 50, cur_plant->get_num_row(), cur_plant->get_num_col(), 10);
 				}
 				if (cur_plant->status == "idle") {
 					cur_plant->num_frame = 76;
 					cur_plant->currentClip = &shiliu_idle.get_clip()[cur_plant->cur_frame];
-					texture_reanim.Render(renderer, cur_plant->currentClip, "shiliu_idle", (cur_plant->get_num_col() + 1) * 80 - 50- 35, (cur_plant->get_num_row()) * 100 - 51 + 70+20, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
+					texture_reanim.Render(renderer, cur_plant->currentClip, "shiliu_idle", (cur_plant->get_num_col() + 1) * 80 - 85, (cur_plant->get_num_row()) * 100 + 39, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
 				}
 				else if (cur_plant->status == "shoot") {
 					cur_plant->num_frame = 50;
 					cur_plant->currentClip = &shiliu_shoot.get_clip()[cur_plant->cur_frame];
-					texture_reanim.Render(renderer, cur_plant->currentClip, "shiliu_shoot", (cur_plant->get_num_col() + 1) * 80 - 50 - 17 - 40, (cur_plant->get_num_row()) * 100 - 51 + 15 + 70, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
+					texture_reanim.Render(renderer, cur_plant->currentClip, "shiliu_shoot", (cur_plant->get_num_col() + 1) * 80 - 107, (cur_plant->get_num_row()) * 100 +34, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
 				}
 			}
 			else if (cur_plant->name_plant == "potato_mine") {
@@ -1192,7 +1273,7 @@ void remote_anim_item(std::vector<Item*>item_vector, int mX, int mY) {
 			texture_reanim.Render(renderer, item->currentClip, "sun", item->rect_.x, item->rect_.y, 3 * item->currentClip->w / 5, 3 * item->currentClip->h / 5);
 			if (mX >= item->rect_.x + 25 && mX <= item->rect_.x + 80 && mY >= item->rect_.y + 25 && mY <= item->rect_.y + 80) {
 				item->animation = 1;
-				sun_collected.Play_Sound();
+				sun_collected.Play_Sound(18);
 			}
 
 
@@ -1234,7 +1315,7 @@ void reset_level(int parameter) {
 		cur_imformation.reset_process();
 	}
 	else if (parameter == 1) {
-		cur_imformation.cur_sun = getSunInit(cur_imformation.cur_td_adventure != 0 ? cur_imformation.cur_td_adventure : cur_imformation.cur_mini_game);//test thôi
+		cur_imformation.cur_sun = getSunInit(cur_imformation.cur_td_adventure != 0 ? cur_imformation.cur_td_adventure : cur_imformation.cur_mini_game);
 		cur_imformation.delay_time = 0;
 		cur_imformation.cur_sence = 0;
 		cur_imformation.flag_process = 0;

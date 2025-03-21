@@ -19,7 +19,7 @@ public:
 	void Play_Music(std::string path);
 	void Pause();
 	void Resume();
-	void Play_Sound();
+	void Play_Sound(int channel);
 	void Load_Sound_Effect(std::string path);
 	void End_Music();
 	double position;
