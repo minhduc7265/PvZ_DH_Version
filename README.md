@@ -9,3 +9,13 @@
 📌 Phần 5: Almanac  
 📌 Phần 6: Về texture và nhạc module  
 📌 Phần 7: Cheat table của game(Assembly với CE)  
+# Phần 1: Tải game và tải source code
+⚠️ Chú ý: Mặc dù game 32-bit nhưng tôi không khuyến khích chạy game trên máy 32-bit bởi vì:  
+● Máy 32-bit hỗ trợ tối đa 4GB RAM và khi mở game, game sẽ load texture và sẽ chiếm khoảng 1,4GB hoặc hơn. Vì vậy khi mở game lên chắc chắn máy sẽ bị lag thậm chí crash game ngay lập tức.  
+● Lý do: Texture lấy từ game gốc, không cắt giảm, không giảm bớt frame.  
+⚠️ Do đó tôi khuyến khích dùng máy 64-bit, có tối thiểu 8GB RAM
+
+
+
+
+
