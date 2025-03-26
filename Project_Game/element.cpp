@@ -1,7 +1,4 @@
 ﻿#include "element.h"
-
-
-
 const std::map<std::string, int> body_bl{
 	{"zombie",270},
 	{"conezombie",270},
@@ -11,8 +8,6 @@ const std::map<std::string, int> body_bl{
 	{"pea_zombie",270},
 	{"ball_zombie",270},
 	{"sky_zombie",270}
-
-
 };
 const std::map<std::string, int> armor1_bl{
 	{"zombie",0},
@@ -34,7 +29,20 @@ const std::map<std::string, int> armor2_bl{
 	{"ball_zombie",0},
 	{"sky_zombie",0}
 };
+const std::map<int, std::pair<std::string, int>> rand_zombie{
+	{0,{"zombie",89}},
+	{1,{"conezombie",90}},
+	{2,{"zomboni",12}},
+	{3,{"seafzombie",59}},
+	{4,{"exzombie",60}},
+	{5,{"pea_zombie",90}},
+	{6,{"ball_zombie",90}},
+	{7,{"sky_zombie",61}}
+};
 Music gulp;
+Music rip;
+Element plant_manager;
+Element zombie_manager;
 const int BLOOD_DEAD = 50;
 Lawn_Mana game_lawn;
 Cur_imf cur_imformation;
@@ -71,6 +79,10 @@ void Element::call_bullet(SDL_Renderer *ren, int type, int mx, int my, int row, 
 		else if (type == 5) {
 			cre_bull->Set_Name_Path("projectiles/leaf.png");
 			cre_bull->LoadImg("projectiles/leaf.png", ren);
+		}
+		else if (type == 6) {
+			cre_bull->Set_Name_Path("projectiles/pea.png");
+			cre_bull->LoadImg("projectiles/pea.png", ren);
 		}
 		else {
 			cre_bull->Set_Name_Path("projectiles/pea.png");
@@ -151,13 +163,17 @@ bool Element::Load_Texture(std::string path, SDL_Renderer* screen, std::string n
 
 
 }
-Plant* Element::call_plant(std::string name, int x, int y,int frame) {
+Plant* Element::call_plant(std::string name, int x, int y, int frame) {
 	Plant* new_plant = new Plant();//con trỏ plant
 	new_plant->set_num_row(x);//hàng
 	new_plant->set_num_col(y);//cột
+	new_plant->posX = (new_plant->num_col + 1) * 80;
 	new_plant->name_plant = name;
 	new_plant->set_can_eat(true);
 	new_plant->set_cur_blood(400);
+	if (new_plant->name_plant == "wallnut") {
+		new_plant->set_cur_blood(4000);
+	}
 	new_plant->status = "idle";
 	new_plant->count_down = 0;
 	if (new_plant->name_plant == "sunflower" || new_plant->name_plant == "twinsun") {
@@ -518,11 +534,19 @@ void Element::remote_func_zombie() {
 		Zombie* cur_zombie = *it;
 		if (cur_zombie != NULL) {
 			cur_zombie->count_down++;
+			cur_zombie->count_down2++;
 			if (cur_zombie->count_down >= 2 && cur_zombie->is_dead == false && cur_zombie->status != "eat") {
-				cur_zombie->pos_x -= 1;
-				cur_zombie->count_down = 0;
+				if (cur_imformation.cur_mini_game == 3 && cur_imformation.count_time > 500) {
+					cur_zombie->pos_x -= 2;
+					cur_zombie->cur_frame += 1;
+					cur_zombie->count_down = -1;
+				}
+				else {
+					cur_zombie->pos_x -= 1;
+					cur_zombie->count_down = 0;
+				}
+				
 			}
-			
 		}
 
 	}

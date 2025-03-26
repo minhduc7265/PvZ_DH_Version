@@ -1,0 +1,203 @@
+{
+	"level_id": 1,
+	"name_level": "Fog??",
+	"sun_init": 250,
+	"num_wave": 1,
+	"wave": [
+		{
+			"cur_wave": 1,
+			"delay_time": 900,
+			"enemies": [
+				"exzombie",
+				"exzombie",
+				"zombie"
+			]
+		},
+		{
+			"cur_wave": 2,
+			"delay_time": 850,
+			"enemies": [
+				"exzombie",
+				"exzombie",
+				"zomboni",
+				"zombie",
+				"zombie",
+				"zombie",
+				"zombie",
+				"zombie"
+			]
+		},
+		{
+			"cur_wave": 3,
+			"delay_time": 900,
+			"enemies": [
+				"conezombie",
+				"exzombie",
+				"zombie",
+				"conezombie",
+				"exzombie",
+				"zombie",
+				"zombie"
+			]
+		},
+		{
+			"cur_wave": 4,
+			"delay_time": 850,
+			"enemies": [
+				"exzombie",
+				"exzombie",
+				"conezombie",
+				"conezombie",
+				"zombie",
+				"zombie",
+				"zombie"
+			]
+		},
+		{
+			"cur_wave": 5,
+			"delay_time": 700,
+			"enemies": [
+				"zomboni",
+				"zomboni",
+				"zombie",
+				"zombie",
+				"conezombie",
+				"zombie",
+				"conezombie"
+			]
+		},
+		{
+			"cur_wave": 6,
+			"delay_time": 700,
+			"enemies": [
+				"exzombie",
+				"exzombie",
+				"zomboni",
+				"exzombie",
+				"conezombie",
+				"conezombie",
+				"conezombie"
+			]
+		},
+		{
+			"cur_wave": 7,
+			"delay_time": 600,
+			"enemies": [
+				"exzombie",
+				"exzombie",
+				"conezombie",
+				"zombie",
+				"zombie",
+				"zombie",
+				"zomboni",
+				"exzombie"
+			]
+		},
+		{
+			"cur_wave": 8,
+			"delay_time": 700,
+			"enemies": [
+				"exzombie",
+				"exzombie",
+				"conezombie",
+				"conezombie",
+				"conezombie",
+				"zombie",
+				"exzombie"
+			]
+		},
+		{
+			"cur_wave": 9,
+			"delay_time": 600,
+			"enemies": [
+				"exzombie",
+				"exzombie",
+				"exzombie",
+				"conezombie",
+				"conezombie",
+				"conezombie"
+			]
+		},
+		{
+			"cur_wave": 10,
+			"delay_time": 600,
+			"enemies": [
+				"conezombie",
+				"exzombie",
+				"exzombie",
+				"exzombie",
+				"zomboni",
+				"zomboni"
+			]
+		},
+		{
+			"cur_wave": 11,
+			"delay_time": 400,
+			"enemies": [
+				"exzombie",
+				"exzombie",
+				"conezombie",
+				"zomboni",
+				"exzombie",
+				"conezombie",
+				"conezombie",
+				"conezombie"
+			]
+		},
+		{
+			"cur_wave": 12,
+			"delay_time": 600,
+			"enemies": [
+				"exzombie",
+				"conezombie",
+				"exzombie",
+				"zomboni",
+				"conezombie",
+				"exzombie",
+				"conezombie",
+				"exzombie",
+				"conezombie",
+				"conezombie"
+			]
+		},
+		{
+			"cur_wave": 13,
+			"delay_time": 500,
+			"enemies": [
+				"exzombie",
+				"zomboni",
+				"conezombie",
+				"exzombie",
+				"conezombie",
+				"exzombie",
+				"conezombie",
+				"zombie"
+			]
+		},
+		{
+			"cur_wave": 14,
+			"delay_time": 300,
+			"enemies": [
+				"zombie",
+				"zombie",
+				"zombie",
+				"zombie",
+				"exzombie",
+				"conezombie",
+				"exzombie",
+				"conezombie",
+				"exzombie",
+				"conezombie",
+				"exzombie",
+				"conezombie",
+				"exzombie",
+				"conezombie",
+				"exzombie",
+				"zomboni",
+				"zomboni"
+			]
+		}
+
+
+	]
+}

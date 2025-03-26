@@ -19,6 +19,7 @@ Cur_imf::Cur_imf() {
 	flag3x = 0;
 	flag3y = 0;
 	wintime = 0;
+	pause_pos = 0;
 	time_delay = 600;
 	wave = 0;
 	mouseButton = "";
@@ -27,6 +28,7 @@ Cur_imf::Cur_imf() {
 	cur_td_adventure = 0;
 	type_flag = 0;
 	color = 255;//0->255
+	fogX = 800;
 }
 Cur_imf::~Cur_imf() {
 
@@ -55,8 +57,10 @@ void Cur_imf::reset_process() {
 	mouseButton = "";
 	cur_mini_game = 0;
 	cur_td_adventure = 0;
+	pause_pos = 0;
 	type_flag = 0;
 	color = 255;//0->255
+	fogX = 800;
 	
 
 }

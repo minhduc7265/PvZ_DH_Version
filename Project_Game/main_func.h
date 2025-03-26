@@ -8,17 +8,15 @@
 #include "time_manager.h"
 #include <xmp.h>
 #include "game_status.h"
-
 #include "json.hpp"//Thư viện
 #include <fstream>//Dùng đọc file
 using json = nlohmann::json;
 using std::fstream;
+extern struct xmp_frame_info mod_info;
 extern std::vector<json> level_list;
 extern const std::vector<std::string> list_file;
-
 extern std::vector<json> minigame_list;
 extern const std::vector<std::string> listminigame_file;
-
 extern const std::map<std::string, int> list_f_frame;
 extern game_status status_manager;
 extern Animation card_plant;
@@ -44,20 +42,24 @@ extern Music esdp_c;
 extern Music esdp;
 extern SDL_Texture* textTexture;
 extern SDL_Rect renderquad_2;
-extern Element plant_manager;
-extern Element zombie_manager;
+//extern Element plant_manager;
+//extern Element zombie_manager;
 extern Element item_manager;
 extern Element all_game;
 extern Music game_music;
 extern Music cherry_sound;
 extern Music planted;
 extern Music reverse_explos;
+extern LoadPIC shovelblank;
+extern LoadPIC shovel;
 extern Music hit;
+extern LoadPIC background9;
 extern Music sun_collected;
 extern Music huge_wave_sound;
 extern Music sound_melon;
 extern Music win_sound;
 extern Music lightfill;
+extern LoadPIC fog;
 extern Animation pea_idle;
 extern Animation pea_shoot;
 extern Animation snow_idle;
@@ -74,8 +76,10 @@ extern Animation light_red;
 extern Animation shiliu_idle;
 extern Animation shiliu_shoot;
 extern Animation oxy;
+extern Music hit2;
+extern Music hit3;
 extern LoadPIC star;
-
+extern LoadPIC cdseed;
 //Zombie
 extern Animation normal_non;
 extern Animation normal_walk_1;
@@ -92,33 +96,29 @@ extern Animation cwalk3;
 extern Animation ceat1;
 extern Animation ceat2;
 extern Animation ceat3;
-
 extern Animation sfnon;
 extern Animation sfwalk;
 extern Animation sfeat;
 extern Animation sfdead;
-
-
 extern Animation peazombieidle;
 extern Animation peazombiewalk1;
 extern Animation peazombiewalk2;
 extern Animation peazombieeat;
-
 extern Animation ballidle;
 extern Animation ballwalk;
 extern Animation balldead;
-
 extern Animation skyidle;
 extern Animation skywalk;
 extern Animation skydead;
-
-
+extern Animation wallidle;
+extern Animation walldamage;
+extern Animation walldamage2;
+extern Animation walldamage3;
 extern Animation potatoplant;
 extern Animation potatoup;
 extern Animation potatoidle;
 extern Animation potatoattack;
 extern Animation potatoboom;
-
 extern Animation level;
 extern Animation level2;
 extern Animation minigame1;
@@ -138,6 +138,8 @@ extern LoadPIC pause2;
 extern LoadPIC reset1;
 extern LoadPIC reset2;
 extern Music mg_background;
+extern Music shovel_dig;
+extern Music fogmusic;
 extern Music potato_sound;
 extern LoadPIC bg_background;
 extern LoadPIC bg_seed_bank;
@@ -163,6 +165,10 @@ extern LoadPIC challengemg;
 extern LoadPIC back1;
 extern LoadPIC back2;
 extern LoadPIC cyp;
+extern Music e1;
+extern Music e2;
+extern Music e3;
+extern Music e4;
 extern Animation fire;
 extern Animation exnon;
 extern Animation exwalk1;
@@ -174,8 +180,8 @@ extern LoadPIC tiankong;
 extern std::string mouse_status;
 extern const std::string WINDOW_NAME_N;
 extern const std::string WINDOW_NAME_H;
+extern LoadPIC bgtd;
 extern const std::map<int, std::string> plant_num_list;
-
 extern const std::map<std::string, int> plant_frame_list;
 extern const std::map<std::string, int> sun_value_p;
 extern const std::map<std::string, int> sun_value_cd;
@@ -184,25 +190,20 @@ extern const std::map<std::string, int> plant_hei;
 void loadFileLevel();
 int sound_init(xmp_context ctx, int sampling_rate, int channels);
 void set_order();
-
 void play_mainmusic(xmp_context ctx, int pattern);
 void off_mainmusic(xmp_context ctx);
 void set_channel_off(xmp_context ctx, int c1, int c2, int c3, int c4);
 void set_channel_on(xmp_context ctx, int c1, int c2, int c3, int c4);
 void pause_mainmusic(xmp_context ctx);
-void resume_mainmsic(xmp_context ctx);
+void resume_mainmusic(xmp_context ctx);
 void render_card(SDL_Renderer* render);
-
 void load_sound();
-
 void load_anim();
-
 bool LoadBG();
 void load_texture_element();
 int get_pos_card(int mouseX, int mouseY);
 void remote_bullet(std::vector<Zombie*>& zombie_vector, std::vector<Bullet*>& bullet_vector);
 void remote_anim_(std::vector<Plant*>& plant_vector);
-
 void remote_instakill(std::vector<Zombie*>& zombie_vector, std::vector<Plant*>& plant_vector);
 void remote_eat(std::vector<Zombie*>& zombie_vector, std::vector<Plant*>& plant_vector);
 void remote_shoot(std::vector<Zombie*>& zombie_vector, std::vector<Plant*>& plant_vector);
@@ -218,4 +219,7 @@ std::string getNameLevel(int level);
 int getDelayTime(int level, int wave);
 void spwanZombie(int level, int wave);
 void loadFileMiniGame();
+void playHit();
+void eSound();
+void remote_bullet2(std::vector<Plant*>& plant_vector, std::vector<Bullet*>& bullet_vector);
 #endif // !MAIN_FUNC_H_

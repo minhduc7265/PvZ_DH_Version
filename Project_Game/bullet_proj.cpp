@@ -40,7 +40,7 @@ void Bullet::HandleBullet(int lim_Ox, int lim_Oy) {
 			rect_.x += Bullet::get_vel_x();
 		}
 	}
-	if (rect_.x > 800 || rect_.y > 600 /*|| rect_.x < 0*/) {
+	if (rect_.x > 800 || rect_.y > 600 || rect_.x < -50/*|| rect_.x < 0*/) {
 		is_out = true;
 	}
 }

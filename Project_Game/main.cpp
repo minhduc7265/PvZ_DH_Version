@@ -207,10 +207,35 @@ void remoteFlagMG() {
 			call set_channel_on
 			add esp, 0x14//5x4=0x14
 		}*/
-		set_channel_on(ctx, 24, 25, 26, 27);
+		
+		if (cur_imformation.cur_mini_game == 3) {
+			play_mainmusic(ctx, 76);
+			cur_imformation.wave = 7;
+		}
+		/*else if (cur_imformation.cur_mini_game == 4) {
+			set_channel_on(ctx, 20, 21, 22, 23);
+			set_channel_on(ctx, 16, 17, 19, 19);
+		}*/
+		else if (cur_imformation.cur_mini_game == 5) {
+			set_channel_on(ctx, 18, 19, 20, 21);
+		}
+		else {
+			set_channel_on(ctx, 24, 25, 26, 27);
+		}
+		
 	}
 	if (cur_imformation.wave >= maxWave.at(getWave(cur_imformation.cur_mini_game)) && count_zombie < 3) {
-		set_channel_off(ctx, 24, 25, 26, 27);
+		
+		/*if (cur_imformation.cur_mini_game == 4) {
+			set_channel_off(ctx, 20, 21, 22, 23);
+			set_channel_off(ctx, 16, 17, 19, 19);
+		}*/
+		if (cur_imformation.cur_mini_game == 3) {
+			set_channel_off(ctx, 29, 29, 29, 29);
+		}
+		else { 
+			set_channel_off(ctx, 24,25, 26, 27);
+		}
 	}
 	//chạy cờ
 	if (cur_imformation.flag_process <= flagConst.at(getWave(cur_imformation.cur_mini_game)) * cur_imformation.wave &&
@@ -253,6 +278,7 @@ void button_in_game() {
 			if (timeGame.is_paused() == false) {
 				timeGame.pause();
 				esdp.Pause();
+				pause_mainmusic(ctx);
 				std::cout << std::endl;
 				std::cout << std::endl;
 				std::cout << "PAUSE" << std::endl;
@@ -262,6 +288,7 @@ void button_in_game() {
 			else {
 				timeGame.resume();
 				esdp.Resume();
+				resume_mainmusic(ctx);
 				std::cout << std::endl;
 				std::cout << std::endl;
 				std::cout << "RESUME" << std::endl;
@@ -304,7 +331,7 @@ bool InitData() {
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 		return false;
 	}
-	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
+	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024) < 0)
 	{
 		std::cout << "Khong the khoi tao SDL_Mixer: " << Mix_GetError() << std::endl;
 		success = false;
@@ -640,7 +667,7 @@ void status_process() {
 
 	}
 	else if (status_manager.status == 3) {
-		reset_level(1);//cả load luôn
+		reset_level(1);
 		if (is_music != 3) {
 			off_mainmusic(ctx);
 			mg_background.End_Music();
@@ -650,16 +677,23 @@ void status_process() {
 			else {
 				mg_background.Play_Music("music/cyp2.mp3");
 			}
-			/*play_mainmusic(ctx, 122);*/
 			is_music = 3;
 		}
 		if (cur_imformation.cur_td_adventure != 0) {
 			bg_sea.SetRect(pos_bg, 0);
 			bg_sea.Render(renderer, NULL);
 		}
-		else {
+		else if (cur_imformation.cur_mini_game == 4) {
+			background2.SetRect(pos_bg, 0);
+			background2.RenderColor(renderer, NULL, 255);
+		}
+		else if (cur_imformation.cur_mini_game == 2) {
 			bg_background.SetRect(pos_bg, 0);
 			bg_background.Render(renderer, NULL);
+		}
+		else {
+			background3.SetRect(pos_bg, 0);
+			background3.RenderColor(renderer, NULL, 255);
 		}
 		
 		//status_manager.status = 4;
@@ -697,10 +731,18 @@ void status_process() {
 			bg_sea.SetRect(pos_bg, 0);
 			bg_sea.Render(renderer, NULL);
 		}
-		else {
+		else if (cur_imformation.cur_mini_game == 2) {
 			bg_background.SetRect(pos_bg, 0);
 			bg_background.Render(renderer, NULL);
-			
+		}
+		else if (cur_imformation.cur_mini_game == 4) {
+			background2.SetRect(pos_bg, 0);
+			background2.RenderColor(renderer, NULL, 255);
+
+		}
+		else {
+			background3.SetRect(pos_bg, 0);
+			background3.RenderColor(renderer, NULL, 255);
 		}
 	}
 
@@ -715,12 +757,23 @@ void status_process() {
 				if (cur_imformation.cur_mini_game == 1) {
 					play_mainmusic(ctx, 212);
 				}
+				else if (cur_imformation.cur_mini_game == 3) {
+					play_mainmusic(ctx, 48);
+				}
+				else if (cur_imformation.cur_mini_game == 4) {
+					fogmusic.Play_Music("music/Fog_Remix.mp3");
+					//play_mainmusic(ctx, 125);
+					//set_channel_off(ctx, 20, 21, 22, 23);
+					//set_channel_off(ctx, 16, 17, 19, 19);
+				}
+				else if (cur_imformation.cur_mini_game == 5) {
+					play_mainmusic(ctx, 184);
+					set_channel_off(ctx, 18, 19, 20, 21);
+				}
 				else {
 					play_mainmusic(ctx, 0);
 					set_channel_off(ctx, 24, 25, 26, 27);
 				}
-				
-
 			}
 			
 			is_music = 4;
@@ -736,11 +789,19 @@ void status_process() {
 				cur_imformation.tiankongX -= 8;
 				tiankong.SetRect(cur_imformation.tiankongX, 0);
 				tiankong.Render(renderer, NULL);
-				tiankong.SetRect(800+ cur_imformation.tiankongX, 0);
+				tiankong.SetRect(800 + cur_imformation.tiankongX, 0);
 				tiankong.Render(renderer, NULL);
 				if (cur_imformation.tiankongX <= -800) {
 					cur_imformation.tiankongX = 0;
 				}
+			}
+			else if (cur_imformation.cur_mini_game == 4) {
+				background2.SetRect(-215, 0);
+				background2.RenderColor(renderer, NULL, 255);
+			}
+			else if (cur_imformation.cur_mini_game == 5) {
+				background9.SetRect(0, 0);
+				background9.RenderColor(renderer, NULL, 255);
 			}
 			else if (cur_imformation.cur_mini_game == 3) {//Xong viết lại chứ hơi kì kì
 				background3.SetRect(-215, 0);
@@ -824,6 +885,7 @@ void status_process() {
 
 
 			remote_bullet(zombie_manager.list_zombie, all_game.list_of_bullet);
+			remote_bullet2(plant_manager.list_plant, all_game.list_of_bullet);
 			remote_instakill(zombie_manager.list_zombie, plant_manager.list_plant);
 			remote_eat(zombie_manager.list_zombie, plant_manager.list_plant);
 			remote_shoot(zombie_manager.list_zombie, plant_manager.list_plant);
@@ -831,8 +893,20 @@ void status_process() {
 
 
 		}
+		
+		remote_anim_(plant_manager.list_plant);
+		remote_anim_zombie(zombie_manager.list_zombie);
+		all_game.remote_func_bullet(renderer);
 
 
+
+
+		if (cur_imformation.cur_mini_game == 4) {
+			cur_imformation.fogX = cur_imformation.fogX > 50 ? cur_imformation.fogX - 10 : cur_imformation.fogX;
+			fog.SetRect(cur_imformation.fogX, 0);
+			fog.Render(renderer, NULL);
+		}
+		render_flag_pro();
 		if (cur_imformation.cur_td_adventure != 0) {
 			if (cur_imformation.wave == midFlag.at(getWave(cur_imformation.cur_td_adventure)).first - 1 ||
 				cur_imformation.wave == midFlag.at(getWave(cur_imformation.cur_td_adventure)).second - 1 ||
@@ -864,13 +938,10 @@ void status_process() {
 		}
 		
 
+		
 
-
-		render_flag_pro();
-		all_game.remote_func_bullet(renderer);
-		remote_anim_(plant_manager.list_plant);
-		remote_anim_zombie(zombie_manager.list_zombie);
-
+		shovelblank.SetRect(440, 10);
+		shovelblank.Render(renderer, NULL);
 		
 		if (mouse_status == "hold_plant") {
 			PLANT_HOLD = { 0 ,0, plant_wid.at(plant_m_hold), plant_hei.at(plant_m_hold) };
@@ -879,6 +950,9 @@ void status_process() {
 			}
 			else if (plant_m_hold == "oxygen_algae") {
 				texture_reanim.Render(renderer, &PLANT_HOLD, "oxygen", mouseX - 40, mouseY - 90, plant_wid.at(plant_m_hold), plant_hei.at(plant_m_hold));
+			}
+			else if (plant_m_hold == "wallnut") {
+				texture_reanim.Render(renderer, &PLANT_HOLD, "wallidle", mouseX - 40, mouseY - 90, 5*plant_wid.at(plant_m_hold)/8, 5*plant_hei.at(plant_m_hold)/8);
 			}
 			else if (plant_m_hold == "shiliu") {
 				texture_reanim.Render(renderer, &PLANT_HOLD, "shiliu_idle", mouseX - 70, mouseY - 90, 5 * plant_wid.at(plant_m_hold) / 8, 5 * plant_hei.at(plant_m_hold) / 8);
@@ -898,10 +972,14 @@ void status_process() {
 
 
 		}
-
-
-
-
+		else if (mouse_status == "hold_shovel") {
+			shovel.SetRect(mouseX - 25, mouseY - 20);
+			shovel.Render(renderer, NULL);
+		}
+		if (mouse_status != "hold_shovel") {
+			shovel.SetRect(440, 10);
+			shovel.Render(renderer, NULL);
+		}
 	}
 }
 
@@ -1018,6 +1096,9 @@ int main(int argc, char* args[])
 					plant_m_hold = plant_num_list.at(card[CARD_LOCATE].type);
 					temp = CARD_LOCATE;
 				}
+				else if (mouse_status != "hold_shovel" && mouseX >= 440 && mouseX <= 485 && mouseY >=15 && mouseY <= 50) {
+					mouse_status = "hold_shovel";
+				}
 				if (mouse_status == "hold_plant") {
 					if (mouse_x_y.first >= 0 && mouse_x_y.first <= 4 && mouse_x_y.second >= 0 && mouse_x_y.second <= 8) {
 						if (game_lawn.Array_Manager[mouse_x_y.first][mouse_x_y.second].getIsPlanted() == false) {
@@ -1026,6 +1107,7 @@ int main(int argc, char* args[])
 							planted.Play_Sound(26);
 							cur_imformation.cur_sun -= sun_value_p.at(plant_num_list.at(card[temp].type));
 							card[temp].CD = sun_value_cd.at(plant_m_hold);
+							card[temp].maxCD = sun_value_cd.at(plant_m_hold);
 							Plant * newplant = plant_manager.call_plant(plant_m_hold, mouse_x_y.first, mouse_x_y.second, plant_frame_list.at(plant_m_hold));
 							mouse_status = "";
 							if (plant_m_hold == "cherrybomb") {
@@ -1039,6 +1121,7 @@ int main(int argc, char* args[])
 							planted.Play_Sound(24);
 							cur_imformation.cur_sun -= sun_value_p.at(plant_num_list.at(card[temp].type));
 							card[temp].CD = sun_value_cd.at(plant_m_hold);
+							card[temp].maxCD = sun_value_cd.at(plant_m_hold);
 							mouse_status = "";
 
 						}
@@ -1047,11 +1130,23 @@ int main(int argc, char* args[])
 							planted.Play_Sound(24);
 							cur_imformation.cur_sun -= sun_value_p.at(plant_num_list.at(card[temp].type));
 							card[temp].CD = sun_value_cd.at(plant_m_hold);
+							card[temp].maxCD = sun_value_cd.at(plant_m_hold);
 							mouse_status = "";
 
 						}
 					}
 
+				}
+				else if (mouse_status == "hold_shovel") {
+					if (mouse_x_y.first >= 0 && mouse_x_y.first <= 4 && mouse_x_y.second >= 0 && mouse_x_y.second <= 8) {
+						if (game_lawn.Array_Manager[mouse_x_y.first][mouse_x_y.second].getIsPlanted() == true &&
+							game_lawn.Array_Manager[mouse_x_y.first][mouse_x_y.second].getPtrPlant() != NULL) {
+							game_lawn.Array_Manager[mouse_x_y.first][mouse_x_y.second].setIsPlanted(false);
+							game_lawn.Array_Manager[mouse_x_y.first][mouse_x_y.second].getPtrPlant()->set_cur_blood(-1);
+						}
+						mouse_status = "";
+						shovel_dig.Play_Sound(11);
+					}
 				}
 				cout << mouseX << " " << mouseY << endl;
 				std::cout << "LEFT" << std::endl;

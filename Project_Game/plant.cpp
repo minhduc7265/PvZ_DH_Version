@@ -16,6 +16,7 @@ Plant::Plant() {
 	currentClip = NULL;// = &gSpriteClips[frame / num_frame];
 	if_effect = false;
 	dec_blood = 50;
+	posX = 0;
 
 }
 
@@ -34,5 +35,6 @@ Plant::~Plant() {
 	currentClip = NULL;// = &gSpriteClips[frame / num_frame];
 	if_effect = false;
 	dec_blood = 0;
+	posX = 0;
 
 }

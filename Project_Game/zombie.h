@@ -30,7 +30,7 @@ public:
 	int cur_frame;//frame hiện tại
 	int count_down;
 	int slow_time;
-
+	int count_down2;
 protected:
 	
 	

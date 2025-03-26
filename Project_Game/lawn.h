@@ -1,7 +1,6 @@
 ﻿#pragma once
 #ifndef LAWN_H_
 #define LAWN_H_
-//Quản lí ô đất trồng
 #include "base_func.h"
 #include <iostream>
 #include "plant.h"

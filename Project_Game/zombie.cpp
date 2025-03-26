@@ -20,10 +20,11 @@ Zombie::Zombie() {
 	cur_frame = 0;
 	count_down = 0;
 	slow_time = 0;
+	count_down2 = 0;
 }
 
 Zombie::~Zombie() {
-
+	count_down2 = 0;
 	name_zombie = "";
 	zom_blood = 0;
 	armor_type_1 = 0;//bucket;

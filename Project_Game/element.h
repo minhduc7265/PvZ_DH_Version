@@ -12,9 +12,11 @@
 #include "lawn.h"
 #include "music.h"
 extern Music gulp;
+extern Music rip;
 extern Lawn_Mana game_lawn;
 extern const std::map<std::string, int> body_bl;
 extern const std::map<std::string, int> armor1_bl;
+extern const std::map<int, std::pair<std::string, int>> rand_zombie;
 extern const std::map<std::string, int> armor2_bl;
 extern Cur_imf cur_imformation;
 class Element : public Bullet, public Texture_Storage, public Plant, public Zombie,public Item {
@@ -136,7 +138,8 @@ public:
 
 
 
-
+extern Element plant_manager;
+extern Element zombie_manager;
 
 
 

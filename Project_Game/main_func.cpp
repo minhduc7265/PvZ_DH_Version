@@ -1,11 +1,13 @@
 ﻿#include "main_func.h"
 std::vector<json> level_list(11);
-std::vector<json> minigame_list(4);
+std::vector<json> minigame_list(6);//
 const std::vector<std::string> listminigame_file{
 	"",
 	"level/mini1.json",
 	"level/mini2.json",
-	"level/mini3.json"
+	"level/mini3.json",
+	"level/mini4.json",
+	"level/mini5.json"
 };
 const std::vector<std::string> list_file{
 	"",
@@ -30,9 +32,8 @@ const std::map<std::string, int> list_f_frame{
 	{"pea_zombie",90},
 	{"ball_zombie",90},
 	{"sky_zombie",61}
-
-
 };
+struct xmp_frame_info mod_info;
 TimeManager timeGame;
 Animation peazombieidle;
 Animation peazombiewalk1;
@@ -54,6 +55,8 @@ Animation light_red;
 Animation melon_pro;
 Animation shiliu_idle;
 Music potato_sound;
+Music hit2;
+Music hit3;
 Animation shiliu_shoot;
 Animation normal_non;
 Animation normal_walk_1;
@@ -90,7 +93,11 @@ Animation oxy;
 Animation ballidle;
 Animation ballwalk;
 Animation balldead;
-
+Animation wallidle;
+Music shovel_dig;
+Animation walldamage;
+Animation walldamage2;
+Animation walldamage3;
 Animation skyidle;
 Animation skywalk;
 Animation skydead;
@@ -104,12 +111,15 @@ LoadPIC bg_seed_bank;
 LoadPIC shadow;
 Music click;
 Music mg_background;
+Music fogmusic;
 LoadPIC bg_seed_packet;
 LoadPIC pro_flag;
 LoadPIC pro_green;
+LoadPIC cdseed;
 LoadPIC pro_zom;
 LoadPIC pro_non;
 LoadPIC loadgame;
+LoadPIC background9;
 LoadPIC bg_sea;
 LoadPIC but1;
 LoadPIC but2;
@@ -119,6 +129,7 @@ LoadPIC bgnormal;
 LoadPIC challengebg;
 LoadPIC challengemg;
 LoadPIC background3;
+LoadPIC fog;
 LoadPIC background2;
 LoadPIC back1;
 LoadPIC back2;
@@ -127,6 +138,13 @@ LoadPIC star;
 LoadPIC play_but1;
 LoadPIC play_but2;
 LoadPIC tiankong;
+LoadPIC shovelblank;
+LoadPIC shovel;
+LoadPIC bgtd;
+Music e1;
+Music e2;
+Music e3;
+Music e4;
 Animation minigame1;
 Animation minigame2;
 LoadPIC outlevel;
@@ -169,13 +187,13 @@ Music hit;
 Music huge_wave_sound;
 Music sun_collected;
 Music sound_melon;
-
 int count_zombie = 0;
-Element plant_manager;
-Element zombie_manager;
+//Element plant_manager;
+//Element zombie_manager;
 Element item_manager;
 Element all_game;
 game_status status_manager;
+
 std::string mouse_status = "";
 const std::map<int, std::string> plant_num_list = {
 	{0,"sunflower"},
@@ -194,7 +212,7 @@ const std::map<std::string, int> plant_frame_list = {
 	{"peashooter",31},
 	{"cherrybomb",21},
 	{"snowpea",144},
-	{"wallnut",0},
+	{"wallnut",300},
 	{"oxygen_algae",60},
 	{"banana_tree",191},
 	{"shiliu",76},
@@ -207,7 +225,7 @@ const std::map<std::string, int> plant_wid = {
 	{"peashooter",266},
 	{"cherrybomb",262},
 	{"snowpea",176},
-	{"wallnut",0},
+	{"wallnut",195},
 	{"oxygen_algae",77},
 	{"banana_tree",237},
 	{"shiliu",181},
@@ -220,7 +238,7 @@ const std::map<std::string, int> plant_hei = {
 	{"peashooter",245},
 	{"cherrybomb",249},
 	{"snowpea",209},
-	{"wallnut",0},
+	{"wallnut",195},
 	{"oxygen_algae",106},
 	{"banana_tree",173},
 	{"shiliu",213},
@@ -264,19 +282,17 @@ void off_mainmusic(xmp_context ctx) {
 }
 void pause_mainmusic(xmp_context ctx) {
 	__asm {
-		push ctx;
-		call xmp_stop_module;
+		push 1;
+		call SDL_PauseAudio;
 		add esp, 4;
 	}
-	//or xmp_stop_module(ctx)
 }
-void resume_mainmsic(xmp_context ctx) {
+void resume_mainmusic(xmp_context ctx) {
 	__asm {
-		push ctx;
-		call xmp_restart_module;
+		push 0;
+		call SDL_PauseAudio;
 		add esp, 4;
 	}
-	// or xmp_restart_module(ctx)
 }
 void set_channel_off(xmp_context ctx, int c1, int c2, int c3, int c4) {
 	xmp_channel_mute(ctx, c1, 1);
@@ -314,6 +330,16 @@ void render_card(SDL_Renderer* render) {
 		if (card[i].get_is_allow() == true&& card[i].status_c == 1) {
 			currentClip = &card_plant.get_clip()[card[i].type];
 			texture_reanim.Render(render, currentClip, "card_plant", card[i].card_x, card[i].card_y, 50, 70);
+			int temp = 70 * card[i].CD;
+			temp = temp / card[i].maxCD;
+			SDL_Rect rect = { card[i].card_x,card[i].card_y,50,temp };
+			SDL_Rect rect_2 = { 0,0,50,70 };
+			SDL_Point center = { 79, 13 };
+			cdseed.Render_2(render, &rect, &rect_2, &center, 0.0);
+			if (cur_imformation.cur_sun < sun_value_p.at(plant_num_list.at(card[i].type))) {
+				cdseed.SetRect(card[i].card_x, card[i].card_y);
+				cdseed.Render(render, NULL);
+			}
 		}
 		else {
 			currentClip = &card_plant.get_clip()[19];
@@ -329,15 +355,19 @@ void set_order() {
 	}
 }
 void load_sound() {
+	rip.Load_Sound_Effect("music/newspaper_rip.wav");
+	shovel_dig.Load_Sound_Effect("music/shovel.wav");
 	esdp.Load_Music("music/ESDP.mp3");
 	esdp_c.Load_Music("music/ESDP-S.mp3");
 	cherry_sound.Load_Sound_Effect("music/cherrybomb.ogg");
 	planted.Load_Sound_Effect("music/plant.ogg");
 	reverse_explos.Load_Sound_Effect("music/reverse_explosion.ogg");
-	hit.Load_Sound_Effect("music/splat.ogg");
+	hit.Load_Sound_Effect("music/splat.wav");
+	hit2.Load_Sound_Effect("music/splat2.wav");
+	hit3.Load_Sound_Effect("music/splat3.wav");
 	sun_collected.Load_Sound_Effect("music/sun_collected.ogg");
 	huge_wave_sound.Load_Sound_Effect("music/hugewave.ogg");
-	sound_melon.Load_Sound_Effect("music/melonimpact.ogg");
+	sound_melon.Load_Sound_Effect("music/melonimpact.wav");
 	zomboni_sound.Load_Sound_Effect("music/zomboni.ogg");
 	win_sound.Load_Sound_Effect("music/winsound.ogg");
 	lightfill.Load_Sound_Effect("music/lightfill.ogg");
@@ -345,6 +375,13 @@ void load_sound() {
 	mg_background.Load_Music("music/cyp2.mp3");
 	potato_sound.Load_Sound_Effect("music/potato_mine.ogg");
 	gulp.Load_Sound_Effect("music/gulp.ogg");
+	fogmusic.Load_Music("music/Fog_Remix.mp3");
+
+	e1.Load_Sound_Effect("music/e1.wav");
+	e2.Load_Sound_Effect("music/e2.wav");
+	e3.Load_Sound_Effect("music/e3.wav");
+	e4.Load_Sound_Effect("music/e4.wav");
+	
 }
 void load_anim() {
 	level.set_clip(5, 118, 120);
@@ -413,8 +450,23 @@ void load_anim() {
 	twinproduct.set_clip_bonus(45, 195, 195);
 	reidle.set_clip_bonus(30, 195, 195);
 	reattack.set_clip_bonus(30, 195, 195);
+
+	wallidle.set_clip_bonus(300, 195, 195);
+	walldamage.set_clip_bonus(100, 195, 195);
+	walldamage2.set_clip_bonus(100, 195, 195);
+	walldamage3.set_clip_bonus(200, 195, 195);
 }
 bool LoadBG() {
+	bgtd.Set_Name_Path("images/bgtd.png");
+	bgtd.LoadImg("images/bgtd.png", renderer);
+	cdseed.Set_Name_Path("images/cdseed.png");
+	cdseed.LoadImg("images/cdseed.png", renderer);
+	shovel.Set_Name_Path("images/shovel.png");
+	shovel.LoadImg("images/shovel.png", renderer);
+	shovelblank.Set_Name_Path("images/shovelblank.png");
+	shovelblank.LoadImg("images/shovelblank.png", renderer);
+	fog.Set_Name_Path("images/fog.png");
+	fog.LoadImg("images/fog.png", renderer);
 	cyp.Set_Name_Path("images/cyp.png");
 	cyp.LoadImg("images/cyp.png",renderer);
 	tiankong.Set_Name_Path("images/tiankong.png");
@@ -423,6 +475,8 @@ bool LoadBG() {
 	background3.LoadImg("images/background3.png", renderer);
 	background2.Set_Name_Path("images/background2.png");
 	background2.LoadImg("images/background2.png", renderer);
+	background9.Set_Name_Path("images/background9.png");
+	background9.LoadImg("images/background9.png", renderer);
 	back1.Set_Name_Path("images/back1.png");
 	back1.LoadImg("images/back1.png", renderer);
 	back2.Set_Name_Path("images/back2.png");
@@ -482,7 +536,6 @@ bool LoadBG() {
 	reset2.Set_Name_Path("images/reset2.png");
 	challengemg.Set_Name_Path("images/challengemg.png");
 	challengemg.LoadImg("images/challengemg.png", renderer);
-
 	bool ret = bg_background.LoadImg("images/background1.png", renderer);//
 	if (ret == false) {
 		return false;
@@ -556,9 +609,12 @@ void load_texture_element() {
 	texture_reanim.Load_Texture("spritesheet/twinproduct.png", renderer, "twinproduct", "plant");
 	texture_reanim.Load_Texture("spritesheet/reidle.png", renderer, "reidle", "plant");
 	texture_reanim.Load_Texture("spritesheet/reattack.png", renderer, "reattack", "plant");
+	texture_reanim.Load_Texture("spritesheet/wallidle.png", renderer, "wallidle", "plant");
+	texture_reanim.Load_Texture("spritesheet/walldamage.png", renderer, "walldamage", "plant");
+	texture_reanim.Load_Texture("spritesheet/walldamage2.png", renderer, "walldamage2", "plant");
+	texture_reanim.Load_Texture("spritesheet/walldamage3.png", renderer, "walldamage3", "plant");
 }
 int get_pos_card(int mouseX, int mouseY) {
-
 	if (mouseX >= 90 && mouseX <= 590 && mouseY >= 5 && mouseY <= 75) {
 		return (mouseX - 90) / 50;
 	}
@@ -566,11 +622,60 @@ int get_pos_card(int mouseX, int mouseY) {
 		return -1;
 	}
 }
+void playHit() {
+	int eax_ = rand() % 3 + 1;//1->3
+	if (eax_ == 1) {
+		hit.Play_Sound(21);
+	}
+	else if (eax_ == 2) {
+		hit2.Play_Sound(19);
+	}
+	else {
+		hit3.Play_Sound(18);
+	}
+
+}
+void eSound() {
+	int eax_ = rand() % 4 + 1;//1->3
+	if (eax_ == 1) {
+		e1.Play_Sound(15);
+	}
+	else if (eax_ == 2) {
+		e2.Play_Sound(14);
+	}
+	else if (eax_ == 3 ){
+		e3.Play_Sound(13);
+	}
+	else {
+		e4.Play_Sound(12);
+	}
+
+}
+void remote_bullet2(std::vector<Plant*>& plant_vector, std::vector<Bullet*>& bullet_vector) {
+	for (Bullet* bullet : bullet_vector) {
+		if (bullet != NULL) {
+			for (Plant* plant : plant_vector) {
+				if (plant != NULL && bullet->num_row == plant->num_row && plant->get_is_dead() == false) {
+					if (bullet->is_hit == false && bullet->get_type() == 6 && bullet->rect_.x >= plant->posX - 9 && bullet->rect_.x <= plant->posX + 9) {
+						bullet->is_out = true;
+						bullet->is_hit = true;
+						plant->set_cur_blood(plant->get_cur_blood() - 30);
+						break;
+					}
+
+				}
+			}
+			
+		}
+
+
+	}
+}
 void remote_bullet(std::vector<Zombie*>& zombie_vector, std::vector<Bullet*>& bullet_vector) {
 	for (Bullet* bullet : bullet_vector) {
 		int min_x = 2222;
 		int min_y = 0;
-		if (bullet != NULL) {
+		if (bullet != NULL && bullet->get_type()!=6) {
 			for (Zombie* zombie : zombie_vector) {
 				if (zombie != NULL && bullet->num_row == zombie->num_row && zombie->is_dead == false) {
 					if (min_x >= zombie->pos_x) {
@@ -599,8 +704,8 @@ void remote_bullet(std::vector<Zombie*>& zombie_vector, std::vector<Bullet*>& bu
 							else {
 								zombie->zom_blood = zombie->zom_blood - 20;
 							}
-							zombie->pos_x += 15;
-							hit.Play_Sound(21);
+							zombie->pos_x += 20;
+							playHit();
 						}
 						else {
 							if (zombie->armor_type_1 > 0) {
@@ -610,17 +715,17 @@ void remote_bullet(std::vector<Zombie*>& zombie_vector, std::vector<Bullet*>& bu
 								zombie->zom_blood = zombie->zom_blood - 20;
 							}
 							
-							hit.Play_Sound(21);
+							playHit();
 						}
 						break;
 					}
 					else if(bullet->rect_.x >= zombie->pos_x && bullet->is_hit == false && bullet->get_type() == 5) {
 						if (zombie->armor_type_1 > 0) {
-							zombie->armor_type_1 = zombie->armor_type_1 - 2;
-							bullet->rect_.x+=2;
+							zombie->armor_type_1 = zombie->armor_type_1 - 1;
+							bullet->rect_.x+=4;
 						}
 						else {
-							zombie->zom_blood = zombie->zom_blood - 2;
+							zombie->zom_blood = zombie->zom_blood - 1;
 							bullet->rect_.x+=4;
 						}
 						//hit.Play_Sound();
@@ -719,11 +824,8 @@ void remote_shoot(std::vector<Zombie*>& zombie_vector, std::vector<Plant*>& plan
 				if (zombie !=NULL && plant->num_row == zombie->num_row && zombie->is_dead == false) {
 					plant->if_shoot = true;
 				}
-
 			}
-
 		}
-		
 	}
 }
 void remote_anim_zombie(std::vector<Zombie*>& zombie_vector) {
@@ -961,6 +1063,9 @@ void remote_anim_zombie(std::vector<Zombie*>& zombie_vector) {
 						name_anim = "peazombiewalk1";
 						const_ = -10;
 					}
+					if (cur_zombie->cur_frame == 50) {
+						all_game.call_bullet(renderer, 6, cur_zombie->pos_x - 30, cur_zombie->pos_y + 25, cur_zombie->num_row, 9, -10);
+					}
 
 				}
 				else if (cur_zombie->status == "eat") {
@@ -968,6 +1073,9 @@ void remote_anim_zombie(std::vector<Zombie*>& zombie_vector) {
 					anim_change = peazombieeat;
 					name_anim = "peazombieeat";
 					const_ = -10;
+					if (cur_zombie->cur_frame == 17|| cur_zombie->cur_frame == 47 || cur_zombie->cur_frame == 77 || cur_zombie->cur_frame == 107 ||cur_zombie->cur_frame == 137 || cur_zombie->cur_frame == 167 || cur_zombie->cur_frame == 197) {
+						all_game.call_bullet(renderer, 6, cur_zombie->pos_x -30, cur_zombie->pos_y + 25, cur_zombie->num_row, 9, -10);
+					}
 
 				}
 				else {
@@ -1092,6 +1200,28 @@ void remote_anim_(std::vector<Plant*>& plant_vector) {
 					texture_reanim.Render(renderer, cur_plant->currentClip, "reattack", (cur_plant->get_num_col() + 1) * 80 - 60, (cur_plant->get_num_row()) * 100 + 60, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
 				}
 			}
+			else if (cur_plant->name_plant == "wallnut") {
+				if (cur_plant->get_cur_blood() > 3500) {
+					cur_plant->num_frame = 300;
+					cur_plant->currentClip = &wallidle.get_clip()[cur_plant->cur_frame];
+					texture_reanim.Render(renderer, cur_plant->currentClip, "wallidle", (cur_plant->get_num_col() + 1) * 80 - 60, (cur_plant->get_num_row()) * 100 + 60, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
+				}
+				else if (cur_plant->get_cur_blood() > 2500) {
+					cur_plant->num_frame = 100;
+					cur_plant->currentClip = &walldamage.get_clip()[cur_plant->cur_frame];
+					texture_reanim.Render(renderer, cur_plant->currentClip, "walldamage", (cur_plant->get_num_col() + 1) * 80 - 60, (cur_plant->get_num_row()) * 100 + 60, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
+				}
+				else if (cur_plant->get_cur_blood() > 1500) {
+					cur_plant->num_frame = 100;
+					cur_plant->currentClip = &walldamage2.get_clip()[cur_plant->cur_frame];
+					texture_reanim.Render(renderer, cur_plant->currentClip, "walldamage2", (cur_plant->get_num_col() + 1) * 80 - 60, (cur_plant->get_num_row()) * 100 + 60, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
+				}
+				else {
+					cur_plant->num_frame = 200;
+					cur_plant->currentClip = &walldamage3.get_clip()[cur_plant->cur_frame];
+					texture_reanim.Render(renderer, cur_plant->currentClip, "walldamage3", (cur_plant->get_num_col() + 1) * 80 - 60, (cur_plant->get_num_row()) * 100 + 60, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
+				}
+			}
 			else if (cur_plant->name_plant == "snowpea") {
 				if (cur_plant->count_down == 80 && cur_plant->if_shoot == true) {
 					all_game.call_bullet(renderer, 2, (cur_plant->get_num_col() + 1) * 80, (cur_plant->get_num_row()) * 100 + 100, cur_plant->get_num_row(), cur_plant->get_num_col(), 12);
@@ -1156,7 +1286,7 @@ void remote_anim_(std::vector<Plant*>& plant_vector) {
 			}
 			else if (cur_plant->name_plant == "cherrybomb") {
 				cur_plant->currentClip = &cherry_bomb.get_clip()[cur_plant->cur_frame];
-				texture_reanim.Render(renderer, cur_plant->currentClip, "cherry_bomb", (cur_plant->get_num_col() + 1) * 80 - 128, (cur_plant->get_num_row()) * 100 - 19, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
+				texture_reanim.Render(renderer, cur_plant->currentClip, "cherry_bomb", (cur_plant->get_num_col() + 1) * 80 - 128, (cur_plant->get_num_row()) * 100 +20, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
 				if (cur_plant->count_down == 20) {
 					cur_plant->set_is_dead(true);
 					cherry_sound.Play_Sound(19);
@@ -1285,8 +1415,8 @@ void remote_anim_item(std::vector<Item*>item_vector, int mX, int mY) {
 std::pair<int, int> get_location(int mouseX, int mouseY) {
 	std::pair<int, int> mouse;
 	if (mouseX >= FIRST_X && mouseY >= FIRST_Y) {
-		mouse.second = (mouseX - FIRST_X) / DISTANCE_X;//cột
-		mouse.first = (mouseY - FIRST_Y) / DISTANCE_Y;//hàng
+		mouse.second = (mouseX - FIRST_X) / DISTANCE_X;
+		mouse.first = (mouseY - FIRST_Y) / DISTANCE_Y;
 	}
 	else {
 		mouse.first = -1;
@@ -1328,18 +1458,22 @@ void reset_level(int parameter) {
 		cur_imformation.wintime = 0;
 		cur_imformation.time_delay = 600;
 		cur_imformation.wave = 0;
+		cur_imformation.fogX = 800;
 		cur_imformation.type_flag = getWave(cur_imformation.cur_td_adventure != 0 ? cur_imformation.cur_td_adventure : cur_imformation.cur_mini_game);
 	}
 	plant_manager.reset_list_plant();
 	zombie_manager.reset_list_zombie();
 	game_lawn.Lawn_Set();
+	for (int i = 0; i < 6; i++) {
+		card[i].resetCard();
+	}
 }
 void loadFileLevel() {
 	for (int i = 1; i <= 10; i++) {
 		fstream file;
 		file.open(list_file.at(i));
 		if (!file.is_open()) {
-			cout << "File của tao đâu" << endl;
+			cout << "Can't open file" << endl;
 			return;
 		}
 		else {
@@ -1349,11 +1483,11 @@ void loadFileLevel() {
 	}
 }
 void loadFileMiniGame() {
-	for (int i = 1; i <= 3; i++) {
+	for (int i = 1; i <= 5; i++) {
 		fstream file;
 		file.open(listminigame_file.at(i));
 		if (!file.is_open()) {
-			cout << "File của tao đâu" << endl;
+			cout << "Can't open file" << endl;
 			return;
 		}
 		else {
@@ -1402,6 +1536,12 @@ void spwanZombie(int level, int wave) {
 	if (cur_imformation.cur_td_adventure != 0) {
 		for (auto& enemy : level_list[level]["wave"][wave - 1]["enemies"]) {
 			std::string temp = enemy.template get<std::string>();
+			if (temp == "zomboni") {
+				zomboni_sound.Play_Sound(16);
+			}
+			else if(temp == "exzombie") {
+				eSound();
+			}
 			zombie_manager.call_zombie(temp, rand() % 5, rand() % 3 + 9, list_f_frame.at(temp));
 
 		}
@@ -1409,6 +1549,12 @@ void spwanZombie(int level, int wave) {
 	else {
 		for (auto& enemy : minigame_list[level]["wave"][wave - 1]["enemies"]) {
 			std::string temp = enemy.template get<std::string>();
+			if (temp == "zomboni") {
+				zomboni_sound.Play_Sound(16);
+			}
+			else if (temp == "exzombie") {
+				eSound();
+			}
 			zombie_manager.call_zombie(temp, rand() % 5, rand() % 3 + 9, list_f_frame.at(temp));
 
 		}

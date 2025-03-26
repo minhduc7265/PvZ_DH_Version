@@ -14,7 +14,13 @@ PlantCard::PlantCard() {
 	card_yc = 0;
 	card_xce = 0;
 	card_yce = 0;
+	maxCD = 1;
 
+}
+void PlantCard::resetCard() {
+	CD = 0;
+	maxCD = 1;
+	is_allow = true;
 }
 PlantCard::~PlantCard() {
 

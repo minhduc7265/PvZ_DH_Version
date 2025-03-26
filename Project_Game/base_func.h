@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <utility>
 #include "card_plant.h"
+#include <random>
 using std::cout;
 using std::endl;
 static SDL_Window* window = NULL;
@@ -57,6 +58,8 @@ public:
 	int type_flag;
 	int tiankongX;
 	int count_time;
+	int fogX;
+	int pause_pos;
 	Uint8 color;//0->255
 	std::string mouseButton;
 	Cur_imf();

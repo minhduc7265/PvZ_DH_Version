@@ -25,6 +25,7 @@ public:
 		return card_y;
 	}
 	int CD;
+	int maxCD;
 	int card_order;
 	int type;
 	int card_x;
@@ -36,7 +37,7 @@ public:
 	int status;//0 là hồi xong//1 là bị bấm vào//2 là hủy k trồng, nếu trồng chuyển sang 3 là count down
 	int status_c;//0 là ở bảng// 1 là lên bảng
 	bool is_allow;
-
+	void resetCard();
 protected:
 	
 
