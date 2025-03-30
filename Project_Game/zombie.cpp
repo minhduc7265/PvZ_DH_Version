@@ -21,6 +21,7 @@ Zombie::Zombie() {
 	count_down = 0;
 	slow_time = 0;
 	count_down2 = 0;
+	reset_anim = 0;
 }
 
 Zombie::~Zombie() {
@@ -43,7 +44,7 @@ Zombie::~Zombie() {
 	count_down = 0;
 	slow_time = 0;
 
-
+	reset_anim = 0;
 
 
 

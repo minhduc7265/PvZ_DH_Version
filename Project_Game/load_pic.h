@@ -26,6 +26,7 @@ public:
 	bool LoadImg(std::string path, SDL_Renderer* screen);
 	void Render(SDL_Renderer* render, const SDL_Rect* clip = NULL);
 	void RenderColor(SDL_Renderer* render, const SDL_Rect* clip, Uint8 color);
+	void RenderAlpha(SDL_Renderer* render, Uint8 alpha);
 	void Free();
 	void Free_Texture();
 	void Set_Name_Path(std::string name) {

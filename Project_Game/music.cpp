@@ -62,6 +62,19 @@ void Music::Play_Sound(int channel) {
 	}
 	Mix_PlayChannel(channel, sound_e, 0);
 }
+void Music::Play_Sound_Endless(int channel) {
+	if (!Mix_Playing(channel)) {//Nếu đang chơi thì éo dùng
+		Mix_PlayChannel(channel, sound_e, 0);
+		/*__asm {
+			push 0;
+			push sound_e;
+			push channel;
+			call Mix_PlayChannel;
+			add esp, C;
+		}*/
+	}
+	
+}
 void Music::End_Music() {
 	Mix_HaltMusic();
 

@@ -31,6 +31,7 @@ public:
 	int count_down;
 	int slow_time;
 	int count_down2;
+	int reset_anim;
 protected:
 	
 	

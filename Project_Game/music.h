@@ -20,6 +20,7 @@ public:
 	void Pause();
 	void Resume();
 	void Play_Sound(int channel);
+	void Play_Sound_Endless(int channel);
 	void Load_Sound_Effect(std::string path);
 	void End_Music();
 	double position;

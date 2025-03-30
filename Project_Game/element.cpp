@@ -5,9 +5,11 @@ const std::map<std::string, int> body_bl{
 	{"zomboni",750},
 	{"seafzombie",470},
 	{"exzombie",470},
-	{"pea_zombie",270},
+	{"pea_zombie",370},
 	{"ball_zombie",270},
-	{"sky_zombie",270}
+	{"sky_zombie",270},
+	{"jackbox",470},
+	{"sunzom",370}
 };
 const std::map<std::string, int> armor1_bl{
 	{"zombie",0},
@@ -17,7 +19,9 @@ const std::map<std::string, int> armor1_bl{
 	{"exzombie",0},
 	{"pea_zombie",0},
 	{"ball_zombie",0},
-	{"sky_zombie",0}
+	{"sky_zombie",0},
+	{"jackbox",0},
+	{"sunzom",0}
 };
 const std::map<std::string, int> armor2_bl{
 	{"zombie",0},
@@ -27,7 +31,9 @@ const std::map<std::string, int> armor2_bl{
 	{"exzombie",0},
 	{"pea_zombie",0},
 	{"ball_zombie",0},
-	{"sky_zombie",0}
+	{"sky_zombie",0},
+	{"jackbox",0},
+	{"sunzom",0}
 };
 const std::map<int, std::pair<std::string, int>> rand_zombie{
 	{0,{"zombie",89}},
@@ -37,12 +43,16 @@ const std::map<int, std::pair<std::string, int>> rand_zombie{
 	{4,{"exzombie",60}},
 	{5,{"pea_zombie",90}},
 	{6,{"ball_zombie",90}},
-	{7,{"sky_zombie",61}}
+	{7,{"sky_zombie",61}},
+	{8,{"jackbox",93}},
+	{9,{"sunzom",90}}
 };
 Music gulp;
 Music rip;
 Element plant_manager;
 Element zombie_manager;
+Element item_manager;
+TTF_Font* font;
 const int BLOOD_DEAD = 50;
 Lawn_Mana game_lawn;
 Cur_imf cur_imformation;
@@ -96,7 +106,7 @@ void Element::call_bullet(SDL_Renderer *ren, int type, int mx, int my, int row, 
 		cre_bull->set_type(type);
 		cre_bull->set_vel(vel, 0);
 		list_of_bullet.push_back(cre_bull);
-		std::cout << "Bullet created!" << std::endl;
+		std::cout << "Bullet created! " << "ID = " << type << std::endl;
 
 
 }
@@ -124,9 +134,13 @@ void Element::remote_func_bullet(SDL_Renderer *ren) {//
 		}
 	}
 }
+void Element::set_color_texture(std::string name, Uint8 r, Uint8 g, Uint8 b) {
+	SDL_Texture* cur_ = list_texture[name]->get_ptr_texture();
+	SDL_SetTextureColorMod(cur_, r, g, b);
+}
 bool Element::Load_Texture(std::string path, SDL_Renderer* screen, std::string name, std::string type) {
 	if (list_texture.find(name) != list_texture.end()) {
-		std::cout << "Tim thay " << name << " " << std::endl;
+		std::cout << "Found: " << name << " " << std::endl;
 		return true;
 	}
 	else {
@@ -135,7 +149,7 @@ bool Element::Load_Texture(std::string path, SDL_Renderer* screen, std::string n
 		SDL_Surface* loadedSurface = IMG_Load(path.c_str());
 		if (loadedSurface == NULL)
 		{
-			cout << "Khong load duoc: " << path << " " << IMG_GetError() << std::endl;
+			cout << "Can't load image: " << path << " " << IMG_GetError() << std::endl;
 			cout << SDL_GetError() << endl;
 			return false;
 		}
@@ -145,7 +159,7 @@ bool Element::Load_Texture(std::string path, SDL_Renderer* screen, std::string n
 			newTexture = SDL_CreateTextureFromSurface(screen, loadedSurface);
 			if (newTexture == NULL)
 			{
-				cout << "Khong tao duoc texture: " << name << " " << SDL_GetError() << std::endl;
+				cout << "Can't init texture: " << name << " " << SDL_GetError() << std::endl;
 			}
 			mWidth = loadedSurface->w;
 			mHeight = loadedSurface->h;
@@ -188,7 +202,7 @@ Plant* Element::call_plant(std::string name, int x, int y, int frame) {
 	}
 	list_plant.push_back(new_plant);
 
-	std::cout << "Created: " << name << std::endl;
+	std::cout << "Created Plant: " << name << std::endl;
 	return new_plant;
 
 }
@@ -198,9 +212,12 @@ void Element::call_item(int type_, int x, int y, int frame) {
 	new_item->rect_.y = y;
 	new_item->num_frame = frame;
 	new_item->set_properties(type_, 1, 0);
+	if (new_item->get_type() == 1) {
+		new_item->animation = 1;
+	}
 	list_item.push_back(new_item);
 
-	std::cout << "created item" << std::endl;
+	std::cout << "Created item " << "ID = " << type_ << std::endl;
 	
 }
 void Element::check_item() {
@@ -222,18 +239,24 @@ void Element::check_item() {
 				(*it)->cur_frame = 0;
 
 			}
-			if ((*it)->rect_.x >= -20 && (*it)->rect_.x <= 10 && (*it)->rect_.y >= -20 && (*it)->rect_.y <= 15 && (*it)->get_collected() != true) {
-				cur_imformation.cur_sun += 50;
+			if (/*(*it)->rect_.x >= -20 && */(*it)->rect_.x <= 5 /*&& (*it)->rect_.y >= -20*/ && (*it)->rect_.y <= 10 && (*it)->get_collected() != true) {
+				if ((*it)->get_type() == 1) {
+					cur_imformation.cur_sun -= 25;
+				}
+				else {
+					cur_imformation.cur_sun += 50;
+				}
 				(*it)->set_collected(true);
 			}
 			
 			if ((*it)->animation == 1) {
+				(*it)->type_anim = 0;
 				if ((*it)->rect_.x >= 1) {
-					(*it)->rect_.x -= (*it)->rect_.x / 5;
+					(*it)->rect_.x -= (*it)->rect_.x / 5 + 1;
 
 				}
 				if ((*it)->rect_.y >= 1) {
-					(*it)->rect_.y -= (*it)->rect_.y / 5;
+					(*it)->rect_.y -= (*it)->rect_.y / 5 + 1;
 				}
 			}
 
@@ -270,7 +293,7 @@ void Element::call_zombie(std::string name, int x, int y, int frame) {
 	new_zombie->armor_type_1 = armor1_bl.at(name);
 	new_zombie->armor_typr_2 = armor2_bl.at(name);
 	list_zombie.push_back(new_zombie);
-	std::cout << "Created: " << name << std::endl;
+	std::cout << "Created Zombie: " << name << std::endl;
 }
 void Element::check_plant() {
 	for (std::vector<Plant*>::iterator it = list_plant.begin(); it != list_plant.end();) {
@@ -534,7 +557,6 @@ void Element::remote_func_zombie() {
 		Zombie* cur_zombie = *it;
 		if (cur_zombie != NULL) {
 			cur_zombie->count_down++;
-			cur_zombie->count_down2++;
 			if (cur_zombie->count_down >= 2 && cur_zombie->is_dead == false && cur_zombie->status != "eat") {
 				if (cur_imformation.cur_mini_game == 3 && cur_imformation.count_time > 500) {
 					cur_zombie->pos_x -= 2;
@@ -546,6 +568,14 @@ void Element::remote_func_zombie() {
 					cur_zombie->count_down = 0;
 				}
 				
+			}
+			if (cur_zombie->name_zombie == "sunzom" && cur_zombie->is_dead == false) {
+				cur_zombie->count_down2++;
+				if (cur_zombie->count_down2 > 400) {
+					cur_zombie->count_down2 = 0;
+					item_manager.call_item(1, cur_zombie->pos_x, cur_zombie->pos_y, 30);
+				}
+
 			}
 		}
 
@@ -573,4 +603,39 @@ void Element::reset_list_bullet() {
 		it = list_of_bullet.erase(it);
 	}
 	list_of_bullet.clear();
+}
+void Element::loadNameLevel(std::string path, SDL_Renderer* render, std::string name) {//Load Name
+	if (listText.find(name) != listText.end()) {
+		std::cout << "Found: " << name << " " << std::endl;
+		return ;
+	}
+	else {
+		Texture_Storage* new_ = new Texture_Storage();
+		SDL_Texture* newTexture = NULL;
+		SDL_Color nTextCL = { 255,255,255 };
+		SDL_Surface* newText = TTF_RenderText_Blended(font, path.c_str(), nTextCL);
+		if (newText == NULL)
+		{
+			cout << "Can't load text: " << path << " " << TTF_GetError() << std::endl;
+			cout << SDL_GetError() << endl;
+			return;
+		}
+		else
+		{
+			newTexture = SDL_CreateTextureFromSurface(render, newText);
+			if (newTexture == NULL)
+			{
+				cout << "Can't init texture: " << name << " " << SDL_GetError() << std::endl;
+			}
+			new_->mW = newText->w;
+			new_->mH = newText->h;
+			SDL_FreeSurface(newText);
+		}
+		new_->setLength(path.length());
+		new_->set_ptr(newTexture);
+		new_->set_name(name);
+		listText[name] = new_;
+		return;
+
+	}
 }

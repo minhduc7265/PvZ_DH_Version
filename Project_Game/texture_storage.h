@@ -1,6 +1,4 @@
 ﻿#pragma once
-//lưu ý: chỉ lưu trữ texture
-//việc sử dụng ảnh phải do nơi khác sẽ viết sau
 #ifndef TEXTURE_STORAGE_
 #define TEXTURE_STORAGE_
 #include "base_func.h"
@@ -9,7 +7,7 @@ public:
 	Texture_Storage();
 	~Texture_Storage();
 	void Free_Storage();
-	/*bool Load_Texture(std::string path, SDL_Renderer* screen);*/
+	
 	SDL_Texture* get_ptr_texture() const {
 		return _texture_st;
 	}
@@ -26,15 +24,22 @@ public:
 		name_texture = name_;
 
 	}
-
 	void set_ptr(SDL_Texture* texture) {
 		_texture_st = texture;
 	}
-
+	int getLength() const {
+		return numLength;
+	}
+	void setLength(int length) {
+		numLength = length;
+	}
+	int mW;
+	int mH;
 protected:
 	SDL_Texture* _texture_st;
 	std::string type;
 	std::string name_texture;
+	int numLength;
 
 };
 

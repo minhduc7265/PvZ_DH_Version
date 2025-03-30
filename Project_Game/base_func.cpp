@@ -8,7 +8,8 @@ SDL_Renderer* renderer;
 Cur_imf::Cur_imf() {
 	count_time = 0;
 	tiankongX = 0;
-	cur_sun = 2700;//test thôi
+	cd_text = 0;
+	cur_sun = 7265;
 	delay_time = 0;
 	cur_sence = 0;
 	flag_process = 0;
@@ -27,8 +28,9 @@ Cur_imf::Cur_imf() {
 	cur_mini_game = 0;
 	cur_td_adventure = 0;
 	type_flag = 0;
-	color = 255;//0->255
+	color = 255;
 	fogX = 800;
+	alpha = 255;
 }
 Cur_imf::~Cur_imf() {
 
@@ -39,9 +41,10 @@ Cur_imf::~Cur_imf() {
 
 
 void Cur_imf::reset_process() {
+	cd_text = 0;
 	count_time = 0;
 	tiankongX = 0;
-	cur_sun = 2700;//test thôi
+	cur_sun = 7265;
 	delay_time = 0;
 	cur_sence = 0;
 	flag_process = 0;
@@ -59,7 +62,8 @@ void Cur_imf::reset_process() {
 	cur_td_adventure = 0;
 	pause_pos = 0;
 	type_flag = 0;
-	color = 255;//0->255
+	color = 255; 
+	alpha = 255;
 	fogX = 800;
 	
 

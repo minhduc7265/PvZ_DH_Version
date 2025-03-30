@@ -31,7 +31,9 @@ const std::map<std::string, int> list_f_frame{
 	{"exzombie",60},
 	{"pea_zombie",90},
 	{"ball_zombie",90},
-	{"sky_zombie",61}
+	{"sky_zombie",61},
+	{"jackbox",93},
+	{"sunzom",90}
 };
 struct xmp_frame_info mod_info;
 TimeManager timeGame;
@@ -83,6 +85,7 @@ Animation exwalk2;
 Animation exdead;
 Animation fire;
 Animation sun;
+Music expos;
 Animation zomboni;
 Animation potatoplant;
 Animation potatoup;
@@ -103,6 +106,7 @@ Animation skywalk;
 Animation skydead;
 Animation twinidle;
 Animation twinproduct;
+Music jacksound;
 Music lightfill;
 LoadPIC huge_wave;
 LoadPIC huge_wave_black;
@@ -145,8 +149,14 @@ Music e1;
 Music e2;
 Music e3;
 Music e4;
+Music balla;
+Music thunder;
+Music jacksup;
 Animation minigame1;
 Animation minigame2;
+Animation sunzidle;
+Animation sunzwalk;
+Animation sunzeat;
 LoadPIC outlevel;
 LoadPIC outlevel2;
 LoadPIC pause1;
@@ -154,6 +164,9 @@ LoadPIC pause2;
 LoadPIC reset1;
 Animation reidle;
 Animation reattack;
+Animation jackidle;
+Animation jackwalk;
+Animation jackboom;
 LoadPIC reset2;
 Animation miniGame;
 const std::string WINDOW_NAME_N = "Plants vs. Zombies DH Version - Normal Mode";
@@ -170,12 +183,13 @@ std::string plant_m_hold = "";
 SDL_Rect PLANT_HOLD = { 0,0,0,0 };
 int mouseX = 0;
 int mouseY = 0;
-TTF_Font* font;
+
 SDL_Texture* textTexture;
 SDL_Rect renderquad_2;
 Music win_sound;
 Element texture_reanim;
 Animation card_plant;
+Animation sunred;
 Music esdp_c;
 Music esdp;
 Music game_music;
@@ -190,7 +204,7 @@ Music sound_melon;
 int count_zombie = 0;
 //Element plant_manager;
 //Element zombie_manager;
-Element item_manager;
+
 Element all_game;
 game_status status_manager;
 
@@ -355,6 +369,10 @@ void set_order() {
 	}
 }
 void load_sound() {
+	thunder.Load_Sound_Effect("music/thunder.wav");
+	balla.Load_Sound_Effect("music/ballooninflate.wav");
+	jacksup.Load_Sound_Effect("music/jack_surprise.wav");
+	expos.Load_Sound_Effect("music/explosion.wav");
 	rip.Load_Sound_Effect("music/newspaper_rip.wav");
 	shovel_dig.Load_Sound_Effect("music/shovel.wav");
 	esdp.Load_Music("music/ESDP.mp3");
@@ -376,12 +394,11 @@ void load_sound() {
 	potato_sound.Load_Sound_Effect("music/potato_mine.ogg");
 	gulp.Load_Sound_Effect("music/gulp.ogg");
 	fogmusic.Load_Music("music/Fog_Remix.mp3");
-
 	e1.Load_Sound_Effect("music/e1.wav");
 	e2.Load_Sound_Effect("music/e2.wav");
 	e3.Load_Sound_Effect("music/e3.wav");
 	e4.Load_Sound_Effect("music/e4.wav");
-	
+	jacksound.Load_Sound_Effect("music/jacksound.wav");
 }
 void load_anim() {
 	level.set_clip(5, 118, 120);
@@ -409,6 +426,7 @@ void load_anim() {
 	normal_eat_2.set_clip_bonus(259, 156, 204);
 	normal_dead.set_clip_bonus(55, 237, 193);
 	sun.set_clip(30, 200, 200);
+	sunred.set_clip(30, 200, 200);
 	melon_pro.set_clip(10, 80, 67);
 	shiliu_idle.set_clip(76, 181, 213);
 	shiliu_shoot.set_clip(50, 249, 225);
@@ -455,6 +473,14 @@ void load_anim() {
 	walldamage.set_clip_bonus(100, 195, 195);
 	walldamage2.set_clip_bonus(100, 195, 195);
 	walldamage3.set_clip_bonus(200, 195, 195);
+
+	jackidle.set_clip_bonus(40, 245, 245);
+	jackwalk.set_clip_bonus(93, 245, 245);
+	jackboom.set_clip_bonus(65, 245, 245);
+
+	sunzidle.set_clip_bonus(63, 157, 147);
+	sunzwalk.set_clip_bonus(90, 157, 147);
+	sunzeat.set_clip_bonus(259, 157, 147);
 }
 bool LoadBG() {
 	bgtd.Set_Name_Path("images/bgtd.png");
@@ -575,6 +601,8 @@ void load_texture_element() {
 	texture_reanim.Load_Texture("spritesheet/oxygen.png", renderer, "oxygen", "plant");
 	texture_reanim.Load_Texture("images/seed_packet.png", renderer, "card_plant", "card_plant");
 	texture_reanim.Load_Texture("spritesheet/sun.png", renderer, "sun", "item");
+	texture_reanim.Load_Texture("spritesheet/sun.png", renderer, "sunred", "item");
+	texture_reanim.set_color_texture("sunred", 50, 255, 50);
 	texture_reanim.Load_Texture("spritesheet/melon_effect.png", renderer, "melon_pro", "plant");
 	texture_reanim.Load_Texture("spritesheet/shiliu_idle.png", renderer, "shiliu_idle", "plant");
 	texture_reanim.Load_Texture("spritesheet/shiliu_shoot.png", renderer, "shiliu_shoot", "plant");
@@ -613,6 +641,22 @@ void load_texture_element() {
 	texture_reanim.Load_Texture("spritesheet/walldamage.png", renderer, "walldamage", "plant");
 	texture_reanim.Load_Texture("spritesheet/walldamage2.png", renderer, "walldamage2", "plant");
 	texture_reanim.Load_Texture("spritesheet/walldamage3.png", renderer, "walldamage3", "plant");
+	texture_reanim.Load_Texture("spritesheet/jackidle.png", renderer, "jackidle", "zombie");
+	texture_reanim.Load_Texture("spritesheet/jackwalk.png", renderer, "jackwalk", "zombie");
+	texture_reanim.Load_Texture("spritesheet/jackboom.png", renderer, "jackboom", "zombie");
+	texture_reanim.Load_Texture("spritesheet/sunzidle.png", renderer, "sunzidle", "zombie");
+	texture_reanim.Load_Texture("spritesheet/sunzwalk.png", renderer, "sunzwalk", "zombie");
+	texture_reanim.Load_Texture("spritesheet/sunzeat.png", renderer, "sunzeat", "zombie");
+	texture_reanim.loadNameLevel("East Sea Dragon Palace - Day 1", renderer, "1");
+	texture_reanim.loadNameLevel("East Sea Dragon Palace - Day 2", renderer, "2");
+	texture_reanim.loadNameLevel("East Sea Dragon Palace - Day 3", renderer, "3");
+	texture_reanim.loadNameLevel("East Sea Dragon Palace - Day 4", renderer, "4");
+	texture_reanim.loadNameLevel("East Sea Dragon Palace - Day 5", renderer, "5");
+	texture_reanim.loadNameLevel("Zombotany I", renderer, "Zombotany I");
+	texture_reanim.loadNameLevel("Air Raid", renderer, "Air Raid");
+	texture_reanim.loadNameLevel("Swap I", renderer, "Swap I");
+	texture_reanim.loadNameLevel("Fog??", renderer, "Fog??");
+	texture_reanim.loadNameLevel("Dark Stormy Night", renderer, "Dark Stormy Night");
 }
 int get_pos_card(int mouseX, int mouseY) {
 	if (mouseX >= 90 && mouseX <= 590 && mouseY >= 5 && mouseY <= 75) {
@@ -782,6 +826,31 @@ void remote_instakill(std::vector<Zombie*>& zombie_vector, std::vector<Plant*>& 
 
 
 			}
+		}
+	}
+}
+void remote_instakill2(std::vector<Zombie*>& zombie_vector, std::vector<Plant*>& plant_vector) {
+	for (Zombie* zombie : zombie_vector) {
+		if (zombie != NULL && zombie->name_zombie == "jackbox" && zombie->is_dead == false && zombie->status == "eat") {
+			for (Plant* plant : plant_vector)
+			{
+				if (plant->num_row == zombie->num_row ||
+					plant->num_row == zombie->num_row + 1 ||
+					plant->num_row == zombie->num_row - 1)
+				{
+					if (zombie->cur_frame == 44) {
+						expos.Play_Sound(7);
+					}
+					if (zombie->cur_frame >= 55 && zombie->pos_x >= (plant->num_col - 1) * 80 - 60 && zombie->pos_x <= (plant->num_col + 1) * 80 + 60) {
+						plant->set_cur_blood(-1);
+						zombie->zom_blood = 1;
+						zombie->is_dead = true;
+					}
+				}
+
+
+			}
+
 		}
 	}
 }
@@ -1000,6 +1069,51 @@ void remote_anim_zombie(std::vector<Zombie*>& zombie_vector) {
 
 
 			}
+
+
+			else if (cur_zombie->name_zombie == "jackbox") {
+
+				if (cur_zombie->status == "idle") {
+					anim_change = jackidle;
+					const_ = 0;
+					name_anim = "jackidle";
+
+				}
+				else if (cur_zombie->status == "walk") {
+					cur_zombie->num_frame = 93;
+					anim_change = jackwalk;
+					name_anim = "jackwalk";
+					const_ = 0;
+					jacksound.Play_Sound_Endless(7);
+				}
+				else if (cur_zombie->status == "eat") {
+					cur_zombie->num_frame = 65;
+					anim_change = jackboom;
+					name_anim = "jackboom";
+					const_ = 0;
+					if (cur_zombie->reset_anim != 1) {
+						cur_zombie->reset_anim = 1;
+						cur_zombie->cur_frame = 0;
+						jacksup.Play_Sound(6);
+					}
+
+				}
+				else {
+					cur_zombie->num_frame = 93;
+					anim_change = jackidle;
+					name_anim = "jackidle";
+					const_ = 0;
+
+				}
+				cur_zombie->currentClip = &anim_change.get_clip()[cur_zombie->cur_frame];
+				texture_reanim.Render(renderer, cur_zombie->currentClip, name_anim,
+					cur_zombie->pos_x - 70, cur_zombie->pos_y -40,
+					cur_zombie->currentClip->w,
+					cur_zombie->currentClip->h);
+
+
+
+			}
 			else if (cur_zombie->name_zombie == "exzombie") {
 				if (cur_zombie->status == "idle") {
 					anim_change = exnon;
@@ -1082,6 +1196,7 @@ void remote_anim_zombie(std::vector<Zombie*>& zombie_vector) {
 					cur_zombie->num_frame = 55;
 					anim_change = normal_dead;
 					name_anim = "normal_dead";
+					cur_zombie->name_zombie = "zombie";
 					const_ = 20;
 				}
 				cur_zombie->currentClip = &anim_change.get_clip()[cur_zombie->cur_frame];
@@ -1120,9 +1235,43 @@ void remote_anim_zombie(std::vector<Zombie*>& zombie_vector) {
 					cur_zombie->pos_x - 60, cur_zombie->pos_y + const_,
 					cur_zombie->currentClip->w/2,
 					cur_zombie->currentClip->h/2);
+			}
+			else if (cur_zombie->name_zombie == "sunzom") {
 
+				if (cur_zombie->status == "idle") {
+					cur_zombie->num_frame = 63;
+					anim_change = sunzidle;
+					const_ = -10;
+					name_anim = "sunzidle";
 
+				}
+				else if (cur_zombie->status == "walk") {
+					cur_zombie->num_frame = 90;
+					anim_change = sunzwalk;
+					name_anim = "sunzwalk";
+					const_ = -10;
 
+				}
+				else if (cur_zombie->status == "eat") {
+					cur_zombie->num_frame = 259;
+					anim_change = sunzeat;
+					name_anim = "sunzeat";
+					const_ = -10;
+
+				}
+				else {
+					cur_zombie->num_frame = 55;
+					anim_change = normal_dead;
+					name_anim = "normal_dead";
+					cur_zombie->name_zombie = "zombie";
+					const_ = 20;
+
+				}
+				cur_zombie->currentClip = &anim_change.get_clip()[cur_zombie->cur_frame];
+				texture_reanim.Render(renderer, cur_zombie->currentClip, name_anim,
+					cur_zombie->pos_x - 50, cur_zombie->pos_y + const_,
+					cur_zombie->currentClip->w,
+					cur_zombie->currentClip->h);
 			}
 			else if (cur_zombie->name_zombie == "sky_zombie") {
 
@@ -1398,16 +1547,25 @@ void remote_anim_(std::vector<Plant*>& plant_vector) {
 }
 void remote_anim_item(std::vector<Item*>item_vector, int mX, int mY) {
 	for (Item* item : item_vector) {
-		if (item !=NULL && item->get_type() == 0) {
-			item->currentClip = &sun.get_clip()[item->cur_frame];
-			texture_reanim.Render(renderer, item->currentClip, "sun", item->rect_.x, item->rect_.y, 3 * item->currentClip->w / 5, 3 * item->currentClip->h / 5);
-			if (mX >= item->rect_.x + 25 && mX <= item->rect_.x + 80 && mY >= item->rect_.y + 25 && mY <= item->rect_.y + 80) {
-				item->animation = 1;
-				sun_collected.Play_Sound(18);
+		if (item !=NULL) {
+			if (item->get_type() == 0) {
+				item->currentClip = &sun.get_clip()[item->cur_frame];
+				texture_reanim.Render(renderer, item->currentClip, "sun", item->rect_.x, item->rect_.y, 3 * item->currentClip->w / 5, 3 * item->currentClip->h / 5);
+				if (mX >= item->rect_.x + 25 && mX <= item->rect_.x + 80 && mY >= item->rect_.y + 25 && mY <= item->rect_.y + 80) {
+					item->animation = 1;
+					sun_collected.Play_Sound(18);
+				}
+
 			}
-
-
-
+			else if (item->get_type() == 1) {
+				item->currentClip = &sun.get_clip()[item->cur_frame];
+				texture_reanim.Render(renderer, item->currentClip, "sunred", item->rect_.x, item->rect_.y, 3 * item->currentClip->w / 5, 3 * item->currentClip->h / 5);
+				if (mX >= item->rect_.x + 25 && mX <= item->rect_.x + 80 && mY >= item->rect_.y + 25 && mY <= item->rect_.y + 80) {
+					item->animation = 1;
+					sun_collected.Play_Sound(18);
+				}
+			}
+			
 		}
 
 	}
@@ -1464,6 +1622,7 @@ void reset_level(int parameter) {
 	plant_manager.reset_list_plant();
 	zombie_manager.reset_list_zombie();
 	game_lawn.Lawn_Set();
+	timeGame.resume();
 	for (int i = 0; i < 6; i++) {
 		card[i].resetCard();
 	}
@@ -1539,6 +1698,9 @@ void spwanZombie(int level, int wave) {
 			if (temp == "zomboni") {
 				zomboni_sound.Play_Sound(16);
 			}
+			else if (temp == "ball_zombie") {
+				balla.Play_Sound(5);
+			}
 			else if(temp == "exzombie") {
 				eSound();
 			}
@@ -1552,6 +1714,9 @@ void spwanZombie(int level, int wave) {
 			if (temp == "zomboni") {
 				zomboni_sound.Play_Sound(16);
 			}
+			else if (temp == "ball_zombie") {
+				balla.Play_Sound(5);
+			}
 			else if (temp == "exzombie") {
 				eSound();
 			}
@@ -1560,4 +1725,10 @@ void spwanZombie(int level, int wave) {
 		}
 	}
 	
+}
+Uint8 getRNG(int min, int max) {
+	static std::random_device rd;
+	static std::mt19937 rng(rd());
+	std::uniform_int_distribution<int> dist(min, max);
+	return dist(rng);
 }

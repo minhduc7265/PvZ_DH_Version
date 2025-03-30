@@ -1,8 +1,8 @@
 {
 	"level_id": 1,
-	"name_level": "East Sea Dragon Palace - Day 1",
+	"name_level": "1",
 	"sun_init": 225,
-	"num_wave": 1,
+	"num_wave": 5,
 	"wave": [
 		{
 			"cur_wave": 1,
@@ -51,7 +51,8 @@
 				"zombie",
 				"conezombie",
 				"zombie",
-				"conezombie"
+				"conezombie",
+				"seafzombie"
 			]
 		},
 		{
@@ -65,130 +66,6 @@
 				"conezombie",
 				"zombie",
 				"zombie"
-			]
-		},
-		{
-			"cur_wave": 7,
-			"delay_time": 400,
-			"enemies": [
-				"zombie",
-				"zombie",
-				"zombie",
-				"zombie",
-				"zombie",
-				"conezombie"
-			]
-		},
-		{
-			"cur_wave": 8,
-			"delay_time": 300,
-			"enemies": [
-				"conezombie",
-				"conezombie",
-				"conezombie",
-				"conezombie",
-				"conezombie",
-				"conezombie",
-				"zombie"
-			]
-		},
-		{
-			"cur_wave": 9,
-			"delay_time": 500,
-			"enemies": [
-				"conezombie",
-				"zombie",
-				"conezombie",
-				"conezombie",
-				"conezombie",
-				"zombie",
-				"zombie",
-				"zombie",
-				"conezombie"
-			]
-		},
-		{
-			"cur_wave": 10,
-			"delay_time": 600,
-			"enemies": [
-				"zombie",
-				"conezombie",
-				"conezombie",
-				"conezombie",
-				"zombie",
-				"conezombie",
-				"zombie",
-				"conezombie",
-				"zombie",
-				"zombie"
-			]
-		},
-		{
-			"cur_wave": 11,
-			"delay_time": 400,
-			"enemies": [
-				"seafzombie",
-				"seafzombie",
-				"conezombie",
-				"conezombie",
-				"zombie",
-				"conezombie",
-				"conezombie",
-				"zombie",
-				"conezombie",
-				"conezombie",
-				"zombie",
-				"zombie",
-				"zombie"
-			]
-		},
-		{
-			"cur_wave": 12,
-			"delay_time": 600,
-			"enemies": [
-				"conezombie",
-				"conezombie",
-				"conezombie",
-				"conezombie",
-				"zombie",
-				"zombie"
-			]
-		},
-		{
-			"cur_wave": 13,
-			"delay_time": 500,
-			"enemies": [
-				"conezombie",
-				"conezombie",
-				"conezombie",
-				"zombie"
-			]
-		},
-		{
-			"cur_wave": 14,
-			"delay_time": 300,
-			"enemies": [
-				"conezombie",
-				"zombie",
-				"conezombie",
-				"seafzombie",
-				"seafzombie",
-				"seafzombie",
-				"conezombie",
-				"conezombie",
-				"zombie",
-				"zombie",
-				"zombie",
-				"conezombie",
-				"conezombie",
-				"zombie",
-				"conezombie",
-				"conezombie",
-				"conezombie",
-				"zombie",
-				"zombie",
-				"zombie",
-				"conezombie"
 			]
 		}
 	]

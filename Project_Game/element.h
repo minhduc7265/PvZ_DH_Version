@@ -13,6 +13,7 @@
 #include "music.h"
 extern Music gulp;
 extern Music rip;
+extern TTF_Font* font;
 extern Lawn_Mana game_lawn;
 extern const std::map<std::string, int> body_bl;
 extern const std::map<std::string, int> armor1_bl;
@@ -27,17 +28,11 @@ protected:
 
 
 private:
-	//tạo vector quản lí đạn
-	
-	//vector quản lí plant
-	
-	/// <summary>
-	/// 
-	/// </summary>
 	int mWidth;
 	int mHeight;
 public:
 	std::map<std::string, Texture_Storage*> list_texture;
+	std::map<std::string, Texture_Storage*> listText;
 	std::vector <Plant*> list_plant;
 	std::vector <Plant*> list_effect;
 	std::vector <Zombie*> list_zombie;
@@ -46,7 +41,6 @@ public:
 	Element();
 	~Element();
 
-	//hàm lấy dữ liệu vector ,thừa vkl
 	std::vector<Bullet*>& Get_Vector_Bullet() {
 		return list_of_bullet;
 
@@ -59,88 +53,47 @@ public:
 		return list_zombie;
 
 	}
-	//hàm gán dữ liệu//mà chả cần đâu
-	//hàm tạo đạn
 	void call_bullet(SDL_Renderer* ren, int type, int mx, int my, int row, int col, int vel);
-
 	void check_bullet(SDL_Renderer* ren);
-
 	Plant* call_plant(std::string name, int x, int y, int frame);
-
 	void check_plant();
-
 	void remote_frame_plant();
-
 	void remote_func_plant();
-
-
-
 	void call_zombie(std::string name, int x, int y, int frame);
-
 	void check_zombie();
-
 	void remote_frame_zombie();
-
 	void remote_func_zombie();
 	void remote_func_bullet(SDL_Renderer* ren);
 	void call_item(int type_, int x, int y, int frame);
-
 	void check_item();
-
-
-
-
-
-
 	void reset_list_plant();
 	void reset_list_zombie();
 	void reset_list_bullet();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	//load texture
+	void set_color_texture(std::string name, Uint8 r, Uint8 g, Uint8 b);
 	bool Load_Texture(std::string path, SDL_Renderer* screen, std::string name, std::string type);
-	/// <summary>
-	///
-	//render
+	void loadNameLevel(std::string path, SDL_Renderer* render, std::string name);
 	void Render(SDL_Renderer* render, SDL_Rect* clip, std::string name,int x,int y,int z,int t) {
-		//test
 		SDL_Rect renderquad = { x,y,z,t };
-		//z = clip->w/2+20
-		//t = clip->h/2+20
-		/*if (clip != NULL)
-		{
-			renderquad.w = clip->w;
-			renderquad.h = clip->h;
-		}*/
 		SDL_RenderCopy(render, list_texture[name]->get_ptr_texture(), clip, &renderquad);
 	}
-
-
-
-
-	
-
-
+	void RenderText(SDL_Renderer* render, SDL_Rect* clip, std::string name) {
+		int temp = 0;
+		if (cur_imformation.wave == 0) {
+			temp = 780;
+		}
+		else {
+			temp = 580;
+		}
+		SDL_Rect renderquad = { temp - 8 * listText[name]->getLength(),565,listText[name]->mW,listText[name]->mH };
+		SDL_RenderCopy(render, listText[name]->get_ptr_texture(), clip, &renderquad);
+	}
+	void changeColorText(std::string name, Uint8 r, Uint8 g, Uint8 b) {
+		SDL_SetTextureColorMod(listText[name]->get_ptr_texture(), r, g, b);
+	}
 };
-
-
-
 extern Element plant_manager;
 extern Element zombie_manager;
-
+extern Element item_manager;
 
 
 

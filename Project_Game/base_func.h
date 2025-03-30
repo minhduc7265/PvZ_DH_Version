@@ -39,6 +39,7 @@ const int FPS = 30;
 class Cur_imf {//Thông tin hiện tại
 
 public:
+	int cd_text;
 	int cur_sun;//max is 22500
 	int cur_sence;//0 is day, 1 is night, 2 is zengarden, 3 is dragon place
 	int flag_process;
@@ -61,6 +62,7 @@ public:
 	int fogX;
 	int pause_pos;
 	Uint8 color;//0->255
+	Uint8 alpha;
 	std::string mouseButton;
 	Cur_imf();
 	~Cur_imf();

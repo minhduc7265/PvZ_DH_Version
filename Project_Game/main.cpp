@@ -15,13 +15,13 @@ std::map<int, int> flagConst = {
 	{1,11},
 	{2,15},
 	{3,9},
-	{4,5},
+	{4,6},
 	{5,31}
 };
 std::map<int, std::pair<int, int>>  midFlag{
 	{1,{-1,11}},
 	{2,{-1,-1}},
-	{3,{-1,2}},
+	{3,{-1,3}},
 	{4,{11,13}},
 	{5,{-1,-1}}
 
@@ -218,6 +218,8 @@ void remoteFlagMG() {
 		}*/
 		else if (cur_imformation.cur_mini_game == 5) {
 			set_channel_on(ctx, 18, 19, 20, 21);
+			set_channel_on(ctx, 22, 23, 24, 25);
+			set_channel_on(ctx, 26, 27, 28, 29);
 		}
 		else {
 			set_channel_on(ctx, 24, 25, 26, 27);
@@ -333,7 +335,7 @@ bool InitData() {
 	}
 	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024) < 0)
 	{
-		std::cout << "Khong the khoi tao SDL_Mixer: " << Mix_GetError() << std::endl;
+		std::cout << "Can't Init SDL_Mixer: " << Mix_GetError() << std::endl;
 		success = false;
 		
 	}
@@ -379,57 +381,62 @@ void call_flag_paint() {
 
 
 void render_flag_pro() {
-	SDL_Rect rect = { 610,570,cur_imformation.flag_process,27 };
-	SDL_Rect rect_2 = { 0,0,158,27 };
-	SDL_Point center = { 79, 13 };
-	pro_green.Render_2(renderer, &rect, &rect_2, &center, 180.0);
-	pro_non.SetRect(610, 570);
-	pro_non.Render(renderer, NULL);
+	if (cur_imformation.wave >= 1) {
+		SDL_Rect rect = { 610,570,cur_imformation.flag_process,27 };
+		SDL_Rect rect_2 = { 0,0,158,27 };
+		SDL_Point center = { 79, 13 };
+		pro_green.Render_2(renderer, &rect, &rect_2, &center, 180.0);
+		pro_non.SetRect(610, 570);
+		pro_non.Render(renderer, NULL);
 
-	if (cur_imformation.type_flag == 1) {//2 flag
-		cur_imformation.flag1x = 615;
-		cur_imformation.flag2x = 645;
-		cur_imformation.flag3x = -100;
-		cur_imformation.flag3y = -100;
-		call_flag_paint();
-		
-	}
-	else if (cur_imformation.type_flag == 2) {//1 flag
-		cur_imformation.flag1x = 615;
-		cur_imformation.flag2x = -100;
-		cur_imformation.flag2y = -100;
-		cur_imformation.flag3x = -100;
-		cur_imformation.flag3y = -100;
-		call_flag_paint();
-	}
-	else if (cur_imformation.type_flag == 3) {//2 flag 2
-		cur_imformation.flag1x = 615;
-		cur_imformation.flag2x = 730;
-		cur_imformation.flag3x = -100;
-		cur_imformation.flag3y = -100;
-		call_flag_paint();
-	}
-	else if (cur_imformation.type_flag == 4) {//3 flag
-		cur_imformation.flag1x = 615;
-		cur_imformation.flag2x = 685;
-		cur_imformation.flag3x = 700;
-		call_flag_paint();
+		if (cur_imformation.type_flag == 1) {//2 flag
+			cur_imformation.flag1x = 615;
+			cur_imformation.flag2x = 645;
+			cur_imformation.flag3x = -100;
+			cur_imformation.flag3y = -100;
+			call_flag_paint();
 
-	}
-	else if (cur_imformation.type_flag == 5) {//0 flag
-		cur_imformation.flag1x = -100;
-		cur_imformation.flag1y = -100;
-		cur_imformation.flag2x = -100;
-		cur_imformation.flag2y = -100;
-		cur_imformation.flag3x = -100;
-		cur_imformation.flag3y = -100;
-		call_flag_paint();
+		}
+		else if (cur_imformation.type_flag == 2) {//1 flag
+			cur_imformation.flag1x = 615;
+			cur_imformation.flag2x = -100;
+			cur_imformation.flag2y = -100;
+			cur_imformation.flag3x = -100;
+			cur_imformation.flag3y = -100;
+			call_flag_paint();
+		}
+		else if (cur_imformation.type_flag == 3) {//2 flag 2
+			cur_imformation.flag1x = 615;
+			cur_imformation.flag2x = 730;
+			cur_imformation.flag3x = -100;
+			cur_imformation.flag3y = -100;
+			call_flag_paint();
+		}
+		else if (cur_imformation.type_flag == 4) {//3 flag
+			cur_imformation.flag1x = 615;
+			cur_imformation.flag2x = 685;
+			cur_imformation.flag3x = 700;
+			call_flag_paint();
 
+		}
+		else if (cur_imformation.type_flag == 5) {//0 flag
+			cur_imformation.flag1x = -100;
+			cur_imformation.flag1y = -100;
+			cur_imformation.flag2x = -100;
+			cur_imformation.flag2y = -100;
+			cur_imformation.flag3x = -100;
+			cur_imformation.flag3y = -100;
+			call_flag_paint();
+
+		}
+
+
+		pro_zom.SetRect(760 - cur_imformation.flag_process, 567);
+		pro_zom.Render(renderer, NULL);
 	}
 	
-	
-	pro_zom.SetRect(760 - cur_imformation.flag_process, 567);
-	pro_zom.Render(renderer, NULL);
+
+
 }
 
 
@@ -497,11 +504,8 @@ void cyp_remote() {
 		}
 
 	}
-	//khi thả thẻ ra
 	if (CARD_LOCATE >= 0 && CARD_LOCATE <= 5 && card[CARD_LOCATE].status_c == 1) {
 		if (SDL_WaitEvent(&event) == 1 && event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
-			//card[0].type = card_[i].type;
-			//do xếp card loạn nên phải dùng if else để ép
 			if (card[CARD_LOCATE].type == 2) {
 				card_[0].is_allow = true;
 			}
@@ -520,9 +524,6 @@ void cyp_remote() {
 			else if (card[CARD_LOCATE].type == 4) {
 				card_[5].is_allow = true;
 			}
-			/*else if (card[CARD_LOCATE].type == 14) {
-				card_[9].is_allow = true;
-			}*/
 			else {
 				card_[card[CARD_LOCATE].type].is_allow = true;
 			}
@@ -762,13 +763,12 @@ void status_process() {
 				}
 				else if (cur_imformation.cur_mini_game == 4) {
 					fogmusic.Play_Music("music/Fog_Remix.mp3");
-					//play_mainmusic(ctx, 125);
-					//set_channel_off(ctx, 20, 21, 22, 23);
-					//set_channel_off(ctx, 16, 17, 19, 19);
 				}
 				else if (cur_imformation.cur_mini_game == 5) {
-					play_mainmusic(ctx, 184);
+					play_mainmusic(ctx, 94);
 					set_channel_off(ctx, 18, 19, 20, 21);
+					set_channel_off(ctx, 22, 23, 24, 25);
+					set_channel_off(ctx, 26, 27, 28, 29);
 				}
 				else {
 					play_mainmusic(ctx, 0);
@@ -829,26 +829,9 @@ void status_process() {
 				}
 			}
 		}
-		bg_seed_bank.SetRect(10, 0);
-		bg_seed_bank.Render(renderer, NULL);
 
-		sun_value = std::to_string(cur_imformation.cur_sun);
-		SDL_Color textColor = { 0, 0, 0 };
-		SDL_Surface* sun_surface = TTF_RenderText_Blended(font, sun_value.c_str(), textColor);
-		SDL_Texture* sun_text = SDL_CreateTextureFromSurface(renderer, sun_surface);
-		SDL_Rect renderquad_3 = { 40,63,3 * sun_surface->w / 4,3 * sun_surface->h / 4 };
-		SDL_FreeSurface(sun_surface);
-		SDL_RenderCopy(renderer, sun_text, NULL, &renderquad_3);
-
-		SDL_RenderCopy(renderer, textTexture, NULL, &renderquad_2);
-
-
-		set_order();
-		render_card(renderer);
 
 		
-
-		button_in_game();
 		if (timeGame.is_paused() == false) {
 			
 			if (cur_imformation.cur_td_adventure != 0) {
@@ -887,6 +870,7 @@ void status_process() {
 			remote_bullet(zombie_manager.list_zombie, all_game.list_of_bullet);
 			remote_bullet2(plant_manager.list_plant, all_game.list_of_bullet);
 			remote_instakill(zombie_manager.list_zombie, plant_manager.list_plant);
+			remote_instakill2(zombie_manager.list_zombie, plant_manager.list_plant);
 			remote_eat(zombie_manager.list_zombie, plant_manager.list_plant);
 			remote_shoot(zombie_manager.list_zombie, plant_manager.list_plant);
 			remote_anim_item(item_manager.list_item, mouseX, mouseY);
@@ -906,6 +890,56 @@ void status_process() {
 			fog.SetRect(cur_imformation.fogX, 0);
 			fog.Render(renderer, NULL);
 		}
+		if (cur_imformation.cur_mini_game == 5) {
+			cur_imformation.count_time++;
+			if (cur_imformation.count_time > 200 && cur_imformation.count_time < 400) {
+				bgtd.SetRect(0, 0);
+				bgtd.RenderColor(renderer, NULL, cur_imformation.color);
+				bgtd.RenderAlpha(renderer, cur_imformation.alpha-=2);
+				if (cur_imformation.count_time == 220 || cur_imformation.count_time == 320) {
+					thunder.Play_Sound(4);
+				}
+				if (cur_imformation.color > 0) {
+					cur_imformation.color -= 2;
+					if (cur_imformation.color < 160) {
+						bgtd.RenderColor(renderer, NULL, 0);
+						bgtd.RenderAlpha(renderer, 255);
+					}
+				}
+			}
+			else {
+				if (cur_imformation.count_time >= 400) {
+					
+					cur_imformation.count_time = 0;
+					cur_imformation.color = 255;
+					cur_imformation.alpha = 255;
+				}	
+				bgtd.RenderColor(renderer, NULL, 0);
+				bgtd.RenderAlpha(renderer, 255);
+			}
+			
+		}
+
+		bg_seed_bank.SetRect(10, 0);
+		bg_seed_bank.Render(renderer, NULL);
+
+		sun_value = std::to_string(cur_imformation.cur_sun);
+		SDL_Color textColor = { 0, 0, 0 };
+		SDL_Surface* sun_surface = TTF_RenderText_Blended(font, sun_value.c_str(), textColor);
+		SDL_Texture* sun_text = SDL_CreateTextureFromSurface(renderer, sun_surface);
+		SDL_Rect renderquad_3 = { 40,63,3 * sun_surface->w / 4,3 * sun_surface->h / 4 };
+		SDL_FreeSurface(sun_surface);
+		SDL_RenderCopy(renderer, sun_text, NULL, &renderquad_3);
+
+		SDL_RenderCopy(renderer, textTexture, NULL, &renderquad_2);
+
+		set_order();
+		render_card(renderer);
+
+
+
+		button_in_game();
+
 		render_flag_pro();
 		if (cur_imformation.cur_td_adventure != 0) {
 			if (cur_imformation.wave == midFlag.at(getWave(cur_imformation.cur_td_adventure)).first - 1 ||
@@ -937,7 +971,12 @@ void status_process() {
 			}
 		}
 		
-
+		texture_reanim.RenderText(renderer, NULL, getNameLevel(cur_imformation.cur_td_adventure != 0 ? cur_imformation.cur_td_adventure : cur_imformation.cur_mini_game));
+		cur_imformation.cd_text++;
+		if (cur_imformation.cd_text >= 25) {
+			cur_imformation.cd_text = 0;
+			texture_reanim.changeColorText(getNameLevel(cur_imformation.cur_td_adventure != 0 ? cur_imformation.cur_td_adventure : cur_imformation.cur_mini_game), getRNG(0, 255), getRNG(0, 255), getRNG(0, 255));
+		}
 		
 
 		shovelblank.SetRect(440, 10);
@@ -1001,13 +1040,12 @@ int main(int argc, char* args[])
 	timeGame.start();
 	//test
 	int temp = 0;
-
 	//
 	loadFileLevel();
 	loadFileMiniGame();
 	cyp.SetRect(0, 630);
 	if ((ctx = xmp_create_context()) == NULL) {
-		cout << "Không tạo được context" << endl;
+		cout << "Can't create context" << endl;
 		return -1;
 
 	}
@@ -1021,18 +1059,13 @@ int main(int argc, char* args[])
 		return -1;
 	}
 	if (InitData() == false) {
-		cout << "Loi khoi tao" << endl;
+		cout << "Can't Init" << endl;
 		return -1;
 	}
 	if (LoadBG() == false) {
-		cout << "Loi load background" << endl;
+		cout << "Can't load background" << endl;
 		return -1;
 	}
-
-	
-	//test
-
-
 
 	font = TTF_OpenFont("font/font_a.ttf", 24);
 	if (font == NULL) {
@@ -1044,24 +1077,13 @@ int main(int argc, char* args[])
 		return 1;
 	}
 
-	SDL_Color textColor = { 255, 131, 54 };
+	
 
-	SDL_Surface* textSurface = TTF_RenderText_Blended(font, "Test Stage", textColor);
-
-	if (textSurface == NULL) {
-		std::cout << "TTF_RenderText_Solid Error: " << TTF_GetError() << std::endl;
-		TTF_CloseFont(font);
-		SDL_DestroyRenderer(renderer);
-		SDL_DestroyWindow(window);
-		TTF_Quit();
-		SDL_Quit();
-		return 1;
-	}
-	textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
-	SDL_FreeSurface(textSurface);
-	renderquad_2 = { 500,570,textSurface->w,textSurface->h };
-	cout << &mouse_x_y.first << ":" << &mouse_x_y.second << endl;
-	//Init Vector 
+	cout << "MouseRL: " << &mouse_x_y << endl;
+	cout << "MouseROW: " << &mouse_x_y.first << "  " << "MouseCOL: " << &mouse_x_y.second << endl;
+	cout << "MouseX: " << &mouseX << endl;
+	cout << "MouseY: " << &mouseY << endl;
+	cout << "MouseStatus: " << &mouse_status << endl;
 	plant_manager.list_plant.reserve(7265);
 	zombie_manager.list_zombie.reserve(7265);
 	all_game.list_of_bullet.reserve(7265);
@@ -1113,8 +1135,8 @@ int main(int argc, char* args[])
 							if (plant_m_hold == "cherrybomb") {
 								reverse_explos.Play_Sound(25);
 							}
-							game_lawn.Array_Manager[mouse_x_y.first][mouse_x_y.second].setIsPlanted(true);//Đã trồng
-							game_lawn.Array_Manager[mouse_x_y.first][mouse_x_y.second].setPtrPlant(newplant);//Nhét dữ liệu plant vào
+							game_lawn.Array_Manager[mouse_x_y.first][mouse_x_y.second].setIsPlanted(true);
+							game_lawn.Array_Manager[mouse_x_y.first][mouse_x_y.second].setPtrPlant(newplant);
 						}
 						else if (plant_m_hold == "sunflower" && game_lawn.Array_Manager[mouse_x_y.first][mouse_x_y.second].getIsPlanted() == true && game_lawn.Array_Manager[mouse_x_y.first][mouse_x_y.second].getPtrPlant()->name_plant == "sunflower") {
 							game_lawn.Array_Manager[mouse_x_y.first][mouse_x_y.second].getPtrPlant()->name_plant = "twinsun";
@@ -1157,6 +1179,12 @@ int main(int argc, char* args[])
 				cout << mouseX << " " << mouseY << endl;
 				mouse_status = "";
 				std::cout << "RIGHT" << std::endl;
+
+
+				//TEST
+				zombie_manager.call_zombie("sunzom", rand() % 5, rand() % 3 + 9, 90);
+				zombie_manager.call_zombie("jackbox", rand() % 5, rand() % 3 + 9, 90);
+				//TEST
 
 			}
 

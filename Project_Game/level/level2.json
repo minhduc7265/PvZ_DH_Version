@@ -1,78 +1,78 @@
 {
 	"level_id": 1,
-	"name_level": "East Sea Dragon Palace Day 1",
-	"sun_init": 100,
-	"num_wave": 14,
+	"name_level": "2",
+	"sun_init": 250,
+	"num_wave": 1,
 	"wave": [
 		{
 			"cur_wave": 1,
-			"delay_time": 400,
-			"enemies": ["zombie", "zombie", "zombie"]
+			"delay_time": 600,
+			"enemies": ["zombie", "zombie"]
 		},
 		{
 			"cur_wave": 2,
-			"delay_time": 500,
-			"enemies": ["zombie", "zombie", "zombie", "zombie", "zombie"]
+			"delay_time": 700,
+			"enemies": ["zombie", "conezombie", "conezombie", "conezombie", "zombie"]
 		},
 		{
 			"cur_wave": 3,
-			"delay_time": 600,
-			"enemies": ["zombie", "zombie", "zombie", "zombie", "zombie", "zombie"]
+			"delay_time": 800,
+			"enemies": ["conezombie", "zombie", "conezombie", "zombie", "conezombie", "conezombie"]
 		},
 		{
 			"cur_wave": 4,
-			"delay_time": 400,
+			"delay_time": 700,
 			"enemies": ["zombie", "zombie", "zombie", "zombie", "zombie"]
 		},
 		{
 			"cur_wave": 5,
-			"delay_time": 500,
-			"enemies": ["zombie", "zombie", "zombie", "zombie", "zombie"]
+			"delay_time": 600,
+			"enemies": ["zombie", "ball_zombie", "ball_zombie", "conezombie", "zombie"]
 		},
 		{
 			"cur_wave": 6,
-			"delay_time": 500,
-			"enemies": ["zombie", "zombie", "zombie", "zombie", "zombie", "zombie"]
+			"delay_time": 700,
+			"enemies": ["zombie", "ball_zombie", "zombie", "ball_zombie", "zombie", "zombie"]
 		},
 		{
 			"cur_wave": 7,
-			"delay_time": 400,
-			"enemies": ["zombie", "zombie", "zombie", "zombie", "zombie", "zombie"]
+			"delay_time": 800,
+			"enemies": [ "zombie", "zombie", "ball_zombie", "zombie", "ball_zombie", "zombie", "ball_zombie", "zombie", "ball_zombie" ]
 		},
 		{
 			"cur_wave": 8,
-			"delay_time": 300,
-			"enemies": ["zombie", "zombie", "zombie", "zombie"]
+			"delay_time": 400,
+			"enemies": [ "zombie", "conezombie", "conezombie", "ball_zombie", "ball_zombie", "zombie", "ball_zombie" ]
 		},
 		{
 			"cur_wave": 9,
-			"delay_time": 500,
-			"enemies": ["zombie", "zombie", "zombie", "zombie", "zombie"]
+			"delay_time": 700,
+			"enemies": [ "zombie", "conezombie", "conezombie", "ball_zombie", "zombie", "ball_zombie", "zombie", "ball_zombie" ]
 		},
 		{
 			"cur_wave": 10,
-			"delay_time": 600,
-			"enemies": ["zombie", "zombie", "zombie", "zombie", "zombie"]
+			"delay_time": 800,
+			"enemies": [ "conezombie", "ball_zombie", "ball_zombie", "conezombie", "zombie", "ball_zombie", "zombie", "ball_zombie" ]
 		},
 		{
 			"cur_wave": 11,
-			"delay_time": 400,
-			"enemies": ["zombie", "zombie", "zombie", "zombie", "zombie", "zombie", "zombie", "zombie"]
+			"delay_time": 300,
+			"enemies": [ "zombie", "ball_zombie", "ball_zombie", "conezombie", "conezombie", "conezombie", "conezombie", "ball_zombie", "ball_zombie", "ball_zombie", "conezombie", "zombie" ]
 		},
 		{
 			"cur_wave": 12,
-			"delay_time": 600,
-			"enemies": ["zombie", "zombie", "zombie", "zombie", "zombie", "zombie"]
+			"delay_time": 700,
+			"enemies": [ "zombie", "ball_zombie", "ball_zombie", "conezombie", "zombie", "ball_zombie", "ball_zombie", "conezombie", "conezombie", "zombie", "ball_zombie", "zombie", "ball_zombie", "ball_zombie", "zombie", "ball_zombie" ]
 		},
 		{
 			"cur_wave": 13,
-			"delay_time": 500,
-			"enemies": ["zombie", "zombie", "zombie", "zombie"]
+			"delay_time": 800,
+			"enemies": [ "zombie", "ball_zombie", "ball_zombie", "conezombie", "conezombie", "ball_zombie", "conezombie", "zombie", "ball_zombie", "zombie", "ball_zombie", "ball_zombie", "zombie", "ball_zombie", "ball_zombie", "zombie", "ball_zombie", "ball_zombie", "zombie", "ball_zombie" ]
 		},
 		{
 			"cur_wave": 14,
-			"delay_time": 300,
-			"enemies": ["zombie", "zombie", "zombie", "zombie", "zombie", "zombie", "zombie", "zombie", "zombie", "zombie", "zombie"]
+			"delay_time": 200,
+			"enemies": [ "zombie", "ball_zombie", "ball_zombie", "conezombie", "zombie", "ball_zombie", "ball_zombie", "conezombie", "conezombie", "conezombie", "conezombie", "ball_zombie", "conezombie", "ball_zombie", "zombie", "seafzombie", "ball_zombie", "zombie", "ball_zombie", "ball_zombie", "zombie", "ball_zombie", "ball_zombie", "zombie", "ball_zombie" ]
 		}
 	]
 }
