@@ -63,6 +63,9 @@
     <ClCompile Include="game_status.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="preview.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="base_func.h">
@@ -108,6 +111,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="game_status.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="preview.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

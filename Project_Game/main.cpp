@@ -470,7 +470,7 @@ void cyp_remote() {
 			card_[i].card_xce = 25 + 60 * i + 50;
 			card_[i].card_yc = 110;
 			card_[i].card_yce = 180;
-			texture_reanim.Render(renderer, currentClip, "card_plant", card_[i].card_xc, card_[i].card_yc, 50, 70);
+			all_game.Render(renderer, currentClip, "card_plant", card_[i].card_xc, card_[i].card_yc, 50, 70);
 		}
 	}
 	for (int i = 0; i < 3; i++) {
@@ -481,7 +481,7 @@ void cyp_remote() {
 			card_[i + 7].card_xce = 25 + 60 * i + 50;
 			card_[i + 7].card_yc = 180;
 			card_[i + 7].card_yce = 250;
-			texture_reanim.Render(renderer, currentClip, "card_plant", card_[i + 7].card_xc, card_[i + 7].card_yc, 50, 70);
+			all_game.Render(renderer, currentClip, "card_plant", card_[i + 7].card_xc, card_[i + 7].card_yc, 50, 70);
 		}
 		
 	}
@@ -577,7 +577,7 @@ void status_process() {
 		bgnormal.SetRect(0, 0);
 		bgnormal.Render(renderer, NULL);
 		cur_imformation.set_mg_image();
-		texture_reanim.Render(renderer, &miniGame.get_clip()[cur_imformation.frame_mg_image], "minigame", 10, 370, 234, 254);
+		all_game.Render(renderer, &miniGame.get_clip()[cur_imformation.frame_mg_image], "minigame", 10, 370, 234, 254);
 		adventure1.SetRect(570, 430);
 		adventure1.Render(renderer, NULL);
 		if (mouseX >= 570 && mouseX <= 750 && mouseY >= 430 && mouseY <= 590) {
@@ -619,7 +619,7 @@ void status_process() {
 			challengebg.Render(renderer, NULL);
 			for (int i = 0; i < 5; i++) {
 				if (mouseX >= i * 155 + 30 && mouseX <= i * 155 + 30 + 120 && mouseY >= 100 && mouseY <= 215) {
-					texture_reanim.Render(renderer, &level2.get_clip()[i], "level", i * 155 + 30, 100, 118, 120);
+					all_game.Render(renderer, &level2.get_clip()[i], "level", i * 155 + 30, 100, 118, 120);
 
 					if (SDL_WaitEvent(&event) && event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
 						status_manager.status = 3;
@@ -628,7 +628,7 @@ void status_process() {
 						click.Play_Sound(28);
 					}
 				}
-				texture_reanim.Render(renderer, &level.get_clip()[i], "level", i * 155 + 30, 100, 118, 120);
+				all_game.Render(renderer, &level.get_clip()[i], "level", i * 155 + 30, 100, 118, 120);
 			}
 		}
 		else{
@@ -636,7 +636,7 @@ void status_process() {
 			challengemg.Render(renderer, NULL);
 			for (int i = 0; i < 5; i++) {
 				if (mouseX >= i * 155 + 30 && mouseX <= i * 155 + 30 + 120 && mouseY >= 100 && mouseY <= 215) {
-					texture_reanim.Render(renderer, &minigame2.get_clip()[i], "minigame2", i * 155 + 30, 100, 118, 120);
+					all_game.Render(renderer, &minigame2.get_clip()[i], "minigame2", i * 155 + 30, 100, 118, 120);
 
 					if (SDL_WaitEvent(&event) && event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
 						status_manager.status = 3;
@@ -645,12 +645,10 @@ void status_process() {
 						click.Play_Sound(28);
 					}
 				}
-				texture_reanim.Render(renderer, &minigame1.get_clip()[i], "minigame1", i * 155 + 30, 100, 118, 120);
+				all_game.Render(renderer, &minigame1.get_clip()[i], "minigame1", i * 155 + 30, 100, 118, 120);
 			}
 		}
 
-
-		//CHUNG
 		if (mouseX >= 10 && mouseX <= 100 && mouseY >= 575 && mouseY <= 590) {
 			back2.SetRect(10, 575);
 			back2.Render(renderer, NULL);
@@ -696,38 +694,33 @@ void status_process() {
 			background3.SetRect(pos_bg, 0);
 			background3.RenderColor(renderer, NULL, 255);
 		}
-		
-		//status_manager.status = 4;
 		if (pos_bg > -550) {
-			pos_bg -= 18;
+			pos_bg -= 13;
+			cyp.SetRect(0, 630);
 		}
 		if (pos_bg < -550) {
-			cyp.rect_.y = (cyp.rect_.y >= 90) ? cyp.rect_.y -70: 70;
+			cyp.rect_.y = (cyp.rect_.y >= 90) ? cyp.rect_.y - 70: 70;
 			cyp.Render(renderer, NULL);
 			cyp_remote();
-			play_but1.SetRect(150, 530);
-			play_but1.Render(renderer, NULL);
+			play_but2.SetRect(150, 530);
+			play_but2.Render(renderer, NULL);
 
 		}
 		if (mouseX >= 150 && mouseX <= 300 && mouseY >= 530 && mouseY <= 572) {
-			play_but2.SetRect(150, 530);
-			play_but2.Render(renderer, NULL);
+			if (cyp.rect_.y == 70) {
+				play_but1.SetRect(150, 530);
+				play_but1.Render(renderer, NULL);
+			}
 			if (SDL_WaitEvent(&event) && event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
 				status_manager.status = 4;
 				click.Play_Sound(28);
 			}
 		}
+		RenderPreview();
 
 
 	}
 	else if (status_manager.status == 4) {
-		if (pos_bg < -215) {
-			pos_bg += 18;
-		}
-		else {
-			status_manager.status = 5;
-			//ready->set->plant;
-		}
 		if (cur_imformation.cur_td_adventure != 0) {
 			bg_sea.SetRect(pos_bg, 0);
 			bg_sea.Render(renderer, NULL);
@@ -745,6 +738,28 @@ void status_process() {
 			background3.SetRect(pos_bg, 0);
 			background3.RenderColor(renderer, NULL, 255);
 		}
+		if (pos_bg < -215) {
+			pos_bg += 13;
+		}
+		else {
+			status_manager.cd++;
+			if (status_manager.cd > 2) {
+				startlevel.cur_frame++;
+				status_manager.cd = 0;
+			}
+			all_game.Render(renderer, &startlevel.get_clip()[startlevel.cur_frame], "startlevel", 260, 230, 300, 132);
+			if (startlevel.cur_frame == 1) {
+				rsp.Play_Sound(3);
+			}
+			
+			else if (startlevel.cur_frame >= 22) {
+				status_manager.status = 5;
+				startlevel.cur_frame = 0;
+				status_manager.cd = 0;
+			}
+			
+		}
+		
 	}
 
 	else if (status_manager.status == 5) {
@@ -801,9 +816,18 @@ void status_process() {
 			}
 			else if (cur_imformation.cur_mini_game == 5) {
 				background9.SetRect(0, 0);
-				background9.RenderColor(renderer, NULL, 255);
+
+
+				if (cur_imformation.wave >= 3&& cur_imformation.wave <5) {
+					background9.RenderColor(renderer, NULL, cur_imformation.color > 100 ? cur_imformation.color-- : cur_imformation.color);
+				}
+				else {
+					background9.RenderColor(renderer, NULL, 255);
+				}
+				
+				
 			}
-			else if (cur_imformation.cur_mini_game == 3) {//Xong viết lại chứ hơi kì kì
+			else if (cur_imformation.cur_mini_game == 3) {
 				background3.SetRect(-215, 0);
 				background3.RenderColor(renderer, NULL, 255);
 				cur_imformation.count_time++;
@@ -855,33 +879,33 @@ void status_process() {
 					card[i].CD--;
 				}
 			}
-			remote_bullet(zombie_manager.list_zombie, all_game.list_of_bullet);
-			plant_manager.check_plant();
-			zombie_manager.check_zombie();
-			item_manager.check_item();
+			remote_bullet(all_game.list_zombie, all_game.list_of_bullet);
+			all_game.check_plant();
+			all_game.check_zombie();
+			all_game.check_item();
 
-			plant_manager.remote_frame_plant();
-			plant_manager.remote_func_plant();
-			zombie_manager.remote_frame_zombie();
-			zombie_manager.remote_func_zombie();
+			all_game.remote_frame_plant();
+			all_game.remote_func_plant();
+			all_game.remote_frame_zombie();
+			all_game.remote_func_zombie();
 			all_game.check_bullet(renderer);
 
 
-			remote_bullet(zombie_manager.list_zombie, all_game.list_of_bullet);
-			remote_bullet2(plant_manager.list_plant, all_game.list_of_bullet);
-			remote_instakill(zombie_manager.list_zombie, plant_manager.list_plant);
-			remote_instakill2(zombie_manager.list_zombie, plant_manager.list_plant);
-			remote_eat(zombie_manager.list_zombie, plant_manager.list_plant);
-			remote_shoot(zombie_manager.list_zombie, plant_manager.list_plant);
-			remote_anim_item(item_manager.list_item, mouseX, mouseY);
+			remote_bullet(all_game.list_zombie, all_game.list_of_bullet);
+			remote_bullet2(all_game.list_plant, all_game.list_of_bullet);
+			remote_instakill(all_game.list_zombie, all_game.list_plant);
+			remote_instakill2(all_game.list_zombie, all_game.list_plant);
+			remote_eat(all_game.list_zombie, all_game.list_plant);
+			remote_shoot(all_game.list_zombie, all_game.list_plant);
+			
 
 
 		}
 		
-		remote_anim_(plant_manager.list_plant);
-		remote_anim_zombie(zombie_manager.list_zombie);
+		remote_anim_(all_game.list_plant);
+		remote_anim_zombie(all_game.list_zombie);
 		all_game.remote_func_bullet(renderer);
-
+		remote_anim_item(all_game.list_item, mouseX, mouseY);
 
 
 
@@ -890,7 +914,7 @@ void status_process() {
 			fog.SetRect(cur_imformation.fogX, 0);
 			fog.Render(renderer, NULL);
 		}
-		if (cur_imformation.cur_mini_game == 5) {
+		if (cur_imformation.cur_mini_game == 5 && cur_imformation.wave >= 5) {
 			cur_imformation.count_time++;
 			if (cur_imformation.count_time > 200 && cur_imformation.count_time < 400) {
 				bgtd.SetRect(0, 0);
@@ -932,7 +956,7 @@ void status_process() {
 		SDL_RenderCopy(renderer, sun_text, NULL, &renderquad_3);
 
 		SDL_RenderCopy(renderer, textTexture, NULL, &renderquad_2);
-
+		SDL_DestroyTexture(sun_text);
 		set_order();
 		render_card(renderer);
 
@@ -971,11 +995,11 @@ void status_process() {
 			}
 		}
 		
-		texture_reanim.RenderText(renderer, NULL, getNameLevel(cur_imformation.cur_td_adventure != 0 ? cur_imformation.cur_td_adventure : cur_imformation.cur_mini_game));
+		all_game.RenderText(renderer, NULL, getNameLevel(cur_imformation.cur_td_adventure != 0 ? cur_imformation.cur_td_adventure : cur_imformation.cur_mini_game));
 		cur_imformation.cd_text++;
 		if (cur_imformation.cd_text >= 25) {
 			cur_imformation.cd_text = 0;
-			texture_reanim.changeColorText(getNameLevel(cur_imformation.cur_td_adventure != 0 ? cur_imformation.cur_td_adventure : cur_imformation.cur_mini_game), getRNG(0, 255), getRNG(0, 255), getRNG(0, 255));
+			all_game.changeColorText(getNameLevel(cur_imformation.cur_td_adventure != 0 ? cur_imformation.cur_td_adventure : cur_imformation.cur_mini_game), getRNG(0, 255), getRNG(0, 255), getRNG(0, 255));
 		}
 		
 
@@ -985,28 +1009,31 @@ void status_process() {
 		if (mouse_status == "hold_plant") {
 			PLANT_HOLD = { 0 ,0, plant_wid.at(plant_m_hold), plant_hei.at(plant_m_hold) };
 			if (plant_m_hold == "cherrybomb") {
-				texture_reanim.Render(renderer, &PLANT_HOLD, "cherry_bomb", mouseX - 130, mouseY - 125, 5 * plant_wid.at(plant_m_hold) / 8, 5 * plant_hei.at(plant_m_hold) / 8);
+				all_game.Render(renderer, &PLANT_HOLD, "cherry_bomb", mouseX - 130, mouseY - 125, 5 * plant_wid.at(plant_m_hold) / 8, 5 * plant_hei.at(plant_m_hold) / 8);
 			}
 			else if (plant_m_hold == "oxygen_algae") {
-				texture_reanim.Render(renderer, &PLANT_HOLD, "oxygen", mouseX - 40, mouseY - 90, plant_wid.at(plant_m_hold), plant_hei.at(plant_m_hold));
+				all_game.Render(renderer, &PLANT_HOLD, "oxygen", mouseX - 40, mouseY - 90, plant_wid.at(plant_m_hold), plant_hei.at(plant_m_hold));
 			}
 			else if (plant_m_hold == "wallnut") {
-				texture_reanim.Render(renderer, &PLANT_HOLD, "wallidle", mouseX - 40, mouseY - 90, 5*plant_wid.at(plant_m_hold)/8, 5*plant_hei.at(plant_m_hold)/8);
+				all_game.Render(renderer, &PLANT_HOLD, "wallidle", mouseX - 40, mouseY - 90, 5*plant_wid.at(plant_m_hold)/8, 5*plant_hei.at(plant_m_hold)/8);
 			}
 			else if (plant_m_hold == "shiliu") {
-				texture_reanim.Render(renderer, &PLANT_HOLD, "shiliu_idle", mouseX - 70, mouseY - 90, 5 * plant_wid.at(plant_m_hold) / 8, 5 * plant_hei.at(plant_m_hold) / 8);
+				all_game.Render(renderer, &PLANT_HOLD, "shiliu_idle", mouseX - 70, mouseY - 90, 5 * plant_wid.at(plant_m_hold) / 8, 5 * plant_hei.at(plant_m_hold) / 8);
 			}
 			else if (plant_m_hold == "sunflower") {
-				texture_reanim.Render(renderer, &PLANT_HOLD, plant_m_hold, mouseX - 50, mouseY - 80, 5 * plant_wid.at(plant_m_hold) / 8, 5 * plant_hei.at(plant_m_hold) / 8);
+				all_game.Render(renderer, &PLANT_HOLD, plant_m_hold, mouseX - 50, mouseY - 80, 5 * plant_wid.at(plant_m_hold) / 8, 5 * plant_hei.at(plant_m_hold) / 8);
 			}
 			else if (plant_m_hold == "snowpea") {
-				texture_reanim.Render(renderer, &PLANT_HOLD, plant_m_hold, mouseX - 50 + 5, mouseY - 80, 5 * plant_wid.at(plant_m_hold) / 8, 5 * plant_hei.at(plant_m_hold) / 8);
+				all_game.Render(renderer, &PLANT_HOLD, plant_m_hold, mouseX - 50 + 5, mouseY - 80, 5 * plant_wid.at(plant_m_hold) / 8, 5 * plant_hei.at(plant_m_hold) / 8);
 			}
 			else if (plant_m_hold == "potato_mine") {
-				texture_reanim.Render(renderer, &PLANT_HOLD, "potatoidle", mouseX - 50, mouseY - 60, 5 * plant_wid.at(plant_m_hold) / 8, 5 * plant_hei.at(plant_m_hold) / 8);
+				all_game.Render(renderer, &PLANT_HOLD, "potatoidle", mouseX - 50, mouseY - 60, 5 * plant_wid.at(plant_m_hold) / 8, 5 * plant_hei.at(plant_m_hold) / 8);
+			}
+			else if (plant_m_hold == "acidlemon") {
+				all_game.Render(renderer, &PLANT_HOLD, "acididle", mouseX - 120, mouseY - 120, plant_wid.at(plant_m_hold), plant_hei.at(plant_m_hold));
 			}
 			else {
-				texture_reanim.Render(renderer, &PLANT_HOLD, plant_m_hold, mouseX - 80, mouseY - 80, 5 * plant_wid.at(plant_m_hold) / 8, 5 * plant_hei.at(plant_m_hold) / 8);
+				all_game.Render(renderer, &PLANT_HOLD, plant_m_hold, mouseX - 80, mouseY - 80, 5 * plant_wid.at(plant_m_hold) / 8, 5 * plant_hei.at(plant_m_hold) / 8);
 			}
 
 
@@ -1084,11 +1111,11 @@ int main(int argc, char* args[])
 	cout << "MouseX: " << &mouseX << endl;
 	cout << "MouseY: " << &mouseY << endl;
 	cout << "MouseStatus: " << &mouse_status << endl;
-	plant_manager.list_plant.reserve(7265);
-	zombie_manager.list_zombie.reserve(7265);
+	all_game.list_plant.reserve(7265);
+	all_game.list_zombie.reserve(7265);
 	all_game.list_of_bullet.reserve(7265);
 	while (running) {
-		count_zombie = zombie_manager.list_zombie.size();
+		count_zombie = all_game.list_zombie.size();
 
 		fps_time.start();
 		if (is_load_texture == false) {
@@ -1130,7 +1157,7 @@ int main(int argc, char* args[])
 							cur_imformation.cur_sun -= sun_value_p.at(plant_num_list.at(card[temp].type));
 							card[temp].CD = sun_value_cd.at(plant_m_hold);
 							card[temp].maxCD = sun_value_cd.at(plant_m_hold);
-							Plant * newplant = plant_manager.call_plant(plant_m_hold, mouse_x_y.first, mouse_x_y.second, plant_frame_list.at(plant_m_hold));
+							Plant * newplant = all_game.call_plant(plant_m_hold, mouse_x_y.first, mouse_x_y.second, plant_frame_list.at(plant_m_hold));
 							mouse_status = "";
 							if (plant_m_hold == "cherrybomb") {
 								reverse_explos.Play_Sound(25);
@@ -1182,8 +1209,8 @@ int main(int argc, char* args[])
 
 
 				//TEST
-				zombie_manager.call_zombie("sunzom", rand() % 5, rand() % 3 + 9, 90);
-				zombie_manager.call_zombie("jackbox", rand() % 5, rand() % 3 + 9, 90);
+				all_game.call_zombie("sunzom", rand() % 5, rand() % 3 + 9, 90);
+				all_game.call_zombie("jackbox", rand() % 5, rand() % 3 + 9, 90);
 				//TEST
 
 			}

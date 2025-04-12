@@ -2,7 +2,7 @@
 	"level_id": 1,
 	"name_level": "5",
 	"sun_init": 100,
-	"num_wave": 14,
+	"num_wave": 1,
 	"wave": [
 		{
 			"cur_wave": 1,

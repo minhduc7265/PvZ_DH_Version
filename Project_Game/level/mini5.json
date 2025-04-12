@@ -6,7 +6,7 @@
 	"wave": [
 		{
 			"cur_wave": 1,
-			"delay_time": 900,
+			"delay_time": 1900,
 			"enemies": [
 				"pea_zombie",
 				"pea_zombie",
@@ -15,7 +15,7 @@
 		},
 		{
 			"cur_wave": 2,
-			"delay_time": 850,
+			"delay_time": 1850,
 			"enemies": [
 				"pea_zombie",
 				"pea_zombie",
@@ -27,7 +27,7 @@
 		},
 		{
 			"cur_wave": 3,
-			"delay_time": 900,
+			"delay_time": 1900,
 			"enemies": [
 				"pea_zombie",
 				"pea_zombie",

@@ -36,6 +36,7 @@ const std::map<std::string, int> list_f_frame{
 	{"sunzom",90}
 };
 struct xmp_frame_info mod_info;
+Preview pr[10];
 TimeManager timeGame;
 Animation peazombieidle;
 Animation peazombiewalk1;
@@ -187,7 +188,6 @@ int mouseY = 0;
 SDL_Texture* textTexture;
 SDL_Rect renderquad_2;
 Music win_sound;
-Element texture_reanim;
 Animation card_plant;
 Animation sunred;
 Music esdp_c;
@@ -198,14 +198,22 @@ Music zomboni_sound;
 Music planted;
 Music reverse_explos;
 Music hit;
+Music rsp;
 Music huge_wave_sound;
 Music sun_collected;
+Animation startlevel;
+LoadPIC finalwave;
 Music sound_melon;
+Animation acididle;
+Animation acidattack;
+Animation acidbullet;
+Animation acideffect;
+Animation peasplat;
 int count_zombie = 0;
-//Element plant_manager;
-//Element zombie_manager;
+//Element all_gamez;
+//Element all_gamez;
 
-Element all_game;
+
 game_status status_manager;
 
 std::string mouse_status = "";
@@ -217,8 +225,9 @@ const std::map<int, std::string> plant_num_list = {
 	{4,"snowpea"},
 	{5,"wallnut"},
 	{6,"oxygen_algae"},
-	{7,"banana_tree"},
+	{7,"acidlemon"},
 	{8,"shiliu"},
+	{9,"banana_tree"}
 };
 const std::map<std::string, int> plant_frame_list = {
 	{"sunflower",60},
@@ -231,7 +240,8 @@ const std::map<std::string, int> plant_frame_list = {
 	{"banana_tree",191},
 	{"shiliu",76},
 	{"twinsun",60},
-	{"repeater",30}
+	{"repeater",30},
+	{"acidlemon",210}
 };
 const std::map<std::string, int> plant_wid = {
 	{"sunflower",176},
@@ -244,7 +254,8 @@ const std::map<std::string, int> plant_wid = {
 	{"banana_tree",237},
 	{"shiliu",181},
 	{"twinsun",195},
-	{"repeater",195}
+	{"repeater",195},
+	{"acidlemon",245}
 };
 const std::map<std::string, int> plant_hei = {
 	{"sunflower",209},
@@ -257,7 +268,8 @@ const std::map<std::string, int> plant_hei = {
 	{"banana_tree",173},
 	{"shiliu",213},
 	{"twinsun",195},
-	{"repeater",195}
+	{"repeater",195},
+	{"acidlemon",245}
 };
 const std::map<std::string, int> sun_value_p = {
 	{"sunflower",50},
@@ -270,7 +282,8 @@ const std::map<std::string, int> sun_value_p = {
 	{"banana_tree",175},
 	{"shiliu",225},
 	{"twinsun",50},
-	{ "repeater",100}
+	{"repeater",100},
+	{"acidlemon",175}
 };
 const std::map<std::string, int> sun_value_cd = {
 	{"sunflower",235},
@@ -283,7 +296,8 @@ const std::map<std::string, int> sun_value_cd = {
 	{"banana_tree",235},
 	{"shiliu",240},
 	{"twinsun",0},
-	{"repeater",0}
+	{"repeater",0},
+	{"acidlemon",240}
 };
 void play_mainmusic(xmp_context ctx, int pattern) {//pattern xem trong OpenMPT
 	xmp_start_player(ctx, 44100, 0);
@@ -343,7 +357,7 @@ void render_card(SDL_Renderer* render) {
 	for (int i = 0; i < 7; i++) {
 		if (card[i].get_is_allow() == true&& card[i].status_c == 1) {
 			currentClip = &card_plant.get_clip()[card[i].type];
-			texture_reanim.Render(render, currentClip, "card_plant", card[i].card_x, card[i].card_y, 50, 70);
+			all_game.Render(render, currentClip, "card_plant", card[i].card_x, card[i].card_y, 50, 70);
 			int temp = 70 * card[i].CD;
 			temp = temp / card[i].maxCD;
 			SDL_Rect rect = { card[i].card_x,card[i].card_y,50,temp };
@@ -357,7 +371,7 @@ void render_card(SDL_Renderer* render) {
 		}
 		else {
 			currentClip = &card_plant.get_clip()[19];
-			texture_reanim.Render(render, currentClip, "card_plant", card[i].card_x, card[i].card_y, 50, 70);
+			all_game.Render(render, currentClip, "card_plant", card[i].card_x, card[i].card_y, 50, 70);
 		}
 	}
 }
@@ -399,6 +413,7 @@ void load_sound() {
 	e3.Load_Sound_Effect("music/e3.wav");
 	e4.Load_Sound_Effect("music/e4.wav");
 	jacksound.Load_Sound_Effect("music/jacksound.wav");
+	rsp.Load_Sound_Effect("music/rsp.wav");
 }
 void load_anim() {
 	level.set_clip(5, 118, 120);
@@ -481,6 +496,13 @@ void load_anim() {
 	sunzidle.set_clip_bonus(63, 157, 147);
 	sunzwalk.set_clip_bonus(90, 157, 147);
 	sunzeat.set_clip_bonus(259, 157, 147);
+	startlevel.set_clip_bonus(22, 390, 172);
+
+	acididle.set_clip_bonus(210, 245, 245);
+	acidattack.set_clip_bonus(61, 245, 245);
+	acidbullet.set_clip(7, 100, 12);
+	acideffect.set_clip(19, 116, 203);
+	peasplat.set_clip_bonus(15, 91, 81);
 }
 bool LoadBG() {
 	bgtd.Set_Name_Path("images/bgtd.png");
@@ -562,6 +584,8 @@ bool LoadBG() {
 	reset2.Set_Name_Path("images/reset2.png");
 	challengemg.Set_Name_Path("images/challengemg.png");
 	challengemg.LoadImg("images/challengemg.png", renderer);
+	finalwave.Set_Name_Path("images/finalwave.png");
+	finalwave.LoadImg("images/finalwave.png", renderer);
 	bool ret = bg_background.LoadImg("images/background1.png", renderer);//
 	if (ret == false) {
 		return false;
@@ -569,94 +593,102 @@ bool LoadBG() {
 	return true;
 }
 void load_texture_element() {
-	texture_reanim.Load_Texture("images/mini-game1.png", renderer, "minigame1", "picture");
-	texture_reanim.Load_Texture("images/mini-game2.png", renderer, "minigame2", "picture");
-	texture_reanim.Load_Texture("images/level.png", renderer, "level", "picture");
-	texture_reanim.Load_Texture("images/level2.png", renderer, "level2", "picture");
-	texture_reanim.Load_Texture("spritesheet/peashooter.png", renderer, "peashooter", "plant");
-	texture_reanim.Load_Texture("spritesheet/peashooter_shoot.png", renderer, "pea_shoot", "plant");
-	texture_reanim.Load_Texture("spritesheet/snowpea.png", renderer, "snowpea", "plant");
-	texture_reanim.Load_Texture("spritesheet/snow_shoot.png", renderer, "snow_shoot", "plant");
-	texture_reanim.Load_Texture("spritesheet/sunflower.png", renderer, "sunflower", "plant");
-	texture_reanim.Load_Texture("spritesheet/sunflower_product.png", renderer, "sunf_product", "plant");
-	texture_reanim.Load_Texture("spritesheet/Explosion.png", renderer, "explosion", "plant");//effect not plant
-	texture_reanim.Load_Texture("spritesheet/Zombie_fire.png", renderer, "zom_fire", "plant");//effect not plant
-	texture_reanim.Load_Texture("spritesheet/cherry.png", renderer, "cherry_idle", "plant");
-	texture_reanim.Load_Texture("spritesheet/cherry_bomb.png", renderer, "cherry_bomb", "plant");
-	texture_reanim.Load_Texture("spritesheet/banana_tree.png", renderer, "banana_tree", "plant");
-	texture_reanim.Load_Texture("spritesheet/normal_non.png", renderer, "normal_non", "zombie");
-	texture_reanim.Load_Texture("spritesheet/normal_walk_1.png", renderer, "normal_walk_1", "zombie");
-	texture_reanim.Load_Texture("spritesheet/normal_walk_2.png", renderer, "normal_walk_2", "zombie");
-	texture_reanim.Load_Texture("spritesheet/normal_eat_1.png", renderer, "normal_eat_1", "zombie");
-	texture_reanim.Load_Texture("spritesheet/normal_eat_2.png", renderer, "normal_eat_2", "zombie");
-	texture_reanim.Load_Texture("spritesheet/normal_dead.png", renderer, "normal_dead", "zombie");
-	texture_reanim.Load_Texture("spritesheet/cnon.png", renderer, "cnon", "zombie");
-	texture_reanim.Load_Texture("spritesheet/cwalk1.png", renderer, "cwalk1", "zombie");
-	texture_reanim.Load_Texture("spritesheet/cwalk2.png", renderer, "cwalk2", "zombie");
-	texture_reanim.Load_Texture("spritesheet/cwalk3.png", renderer, "cwalk3", "zombie");
-	texture_reanim.Load_Texture("spritesheet/ceat1.png", renderer, "ceat1", "zombie");
-	texture_reanim.Load_Texture("spritesheet/ceat2.png", renderer, "ceat2", "zombie");
-	texture_reanim.Load_Texture("spritesheet/ceat3.png", renderer, "ceat3", "zombie");
-	texture_reanim.Load_Texture("spritesheet/light_red.png", renderer, "light_red", "plant");//effect not plant
-	texture_reanim.Load_Texture("spritesheet/oxygen.png", renderer, "oxygen", "plant");
-	texture_reanim.Load_Texture("images/seed_packet.png", renderer, "card_plant", "card_plant");
-	texture_reanim.Load_Texture("spritesheet/sun.png", renderer, "sun", "item");
-	texture_reanim.Load_Texture("spritesheet/sun.png", renderer, "sunred", "item");
-	texture_reanim.set_color_texture("sunred", 50, 255, 50);
-	texture_reanim.Load_Texture("spritesheet/melon_effect.png", renderer, "melon_pro", "plant");
-	texture_reanim.Load_Texture("spritesheet/shiliu_idle.png", renderer, "shiliu_idle", "plant");
-	texture_reanim.Load_Texture("spritesheet/shiliu_shoot.png", renderer, "shiliu_shoot", "plant");
-	texture_reanim.Load_Texture("spritesheet/zomboni.png", renderer, "zomboni", "zombie");
-	texture_reanim.Load_Texture("spritesheet/seafidle.png", renderer, "sfnon", "zombie");
-	texture_reanim.Load_Texture("spritesheet/seafwalk.png", renderer, "sfwalk", "zombie");
-	texture_reanim.Load_Texture("spritesheet/seafeat.png", renderer, "sfeat", "zombie");
-	texture_reanim.Load_Texture("spritesheet/seafdead.png", renderer, "sfdead", "zombie");
-	texture_reanim.Load_Texture("spritesheet/exnon.png", renderer, "exnon", "zombie");
-	texture_reanim.Load_Texture("spritesheet/exwalk1.png", renderer, "exwalk1", "zombie");
-	texture_reanim.Load_Texture("spritesheet/exwalk2.png", renderer, "exwalk2", "zombie");
-	texture_reanim.Load_Texture("spritesheet/exdead.png", renderer, "exdead", "zombie");
-	texture_reanim.Load_Texture("spritesheet/fire.png", renderer, "fire", "plant");//effect
-	texture_reanim.Load_Texture("images/mini-game.png", renderer, "minigame", "image");
-	texture_reanim.Load_Texture("spritesheet/potato_plant.png", renderer, "potatoplant", "plant");
-	texture_reanim.Load_Texture("spritesheet/potato_up.png", renderer, "potatoup", "plant");
-	texture_reanim.Load_Texture("spritesheet/potato_idle.png", renderer, "potatoidle", "plant");
-	texture_reanim.Load_Texture("spritesheet/potato_attack.png", renderer, "potatoattack", "plant");
-	texture_reanim.Load_Texture("spritesheet/potato_boom.png", renderer, "potatoboom", "plant");//effect
-	texture_reanim.Load_Texture("spritesheet/peazombieidle.png", renderer, "peazombieidle", "zombie");
-	texture_reanim.Load_Texture("spritesheet/peazombiewalk1.png", renderer, "peazombiewalk1", "zombie");
-	texture_reanim.Load_Texture("spritesheet/peazombiewalk2.png", renderer, "peazombiewalk2", "zombie");
-	texture_reanim.Load_Texture("spritesheet/peazombieeat.png", renderer, "peazombieeat", "zombie");
-	texture_reanim.Load_Texture("spritesheet/ballidle.png", renderer, "ballidle", "zombie");
-	texture_reanim.Load_Texture("spritesheet/ballwalk.png", renderer, "ballwalk", "zombie");
-	texture_reanim.Load_Texture("spritesheet/balldead.png", renderer, "balldead", "zombie");
-	texture_reanim.Load_Texture("spritesheet/skyidle.png", renderer, "skyidle", "zombie");
-	texture_reanim.Load_Texture("spritesheet/skywalk.png", renderer, "skywalk", "zombie");
-	texture_reanim.Load_Texture("spritesheet/skydead.png", renderer, "skydead", "zombie");
-	texture_reanim.Load_Texture("spritesheet/oxy.png", renderer, "oxy", "plant");//effect
-	texture_reanim.Load_Texture("spritesheet/twinidle.png", renderer, "twinidle", "plant");
-	texture_reanim.Load_Texture("spritesheet/twinproduct.png", renderer, "twinproduct", "plant");
-	texture_reanim.Load_Texture("spritesheet/reidle.png", renderer, "reidle", "plant");
-	texture_reanim.Load_Texture("spritesheet/reattack.png", renderer, "reattack", "plant");
-	texture_reanim.Load_Texture("spritesheet/wallidle.png", renderer, "wallidle", "plant");
-	texture_reanim.Load_Texture("spritesheet/walldamage.png", renderer, "walldamage", "plant");
-	texture_reanim.Load_Texture("spritesheet/walldamage2.png", renderer, "walldamage2", "plant");
-	texture_reanim.Load_Texture("spritesheet/walldamage3.png", renderer, "walldamage3", "plant");
-	texture_reanim.Load_Texture("spritesheet/jackidle.png", renderer, "jackidle", "zombie");
-	texture_reanim.Load_Texture("spritesheet/jackwalk.png", renderer, "jackwalk", "zombie");
-	texture_reanim.Load_Texture("spritesheet/jackboom.png", renderer, "jackboom", "zombie");
-	texture_reanim.Load_Texture("spritesheet/sunzidle.png", renderer, "sunzidle", "zombie");
-	texture_reanim.Load_Texture("spritesheet/sunzwalk.png", renderer, "sunzwalk", "zombie");
-	texture_reanim.Load_Texture("spritesheet/sunzeat.png", renderer, "sunzeat", "zombie");
-	texture_reanim.loadNameLevel("East Sea Dragon Palace - Day 1", renderer, "1");
-	texture_reanim.loadNameLevel("East Sea Dragon Palace - Day 2", renderer, "2");
-	texture_reanim.loadNameLevel("East Sea Dragon Palace - Day 3", renderer, "3");
-	texture_reanim.loadNameLevel("East Sea Dragon Palace - Day 4", renderer, "4");
-	texture_reanim.loadNameLevel("East Sea Dragon Palace - Day 5", renderer, "5");
-	texture_reanim.loadNameLevel("Zombotany I", renderer, "Zombotany I");
-	texture_reanim.loadNameLevel("Air Raid", renderer, "Air Raid");
-	texture_reanim.loadNameLevel("Swap I", renderer, "Swap I");
-	texture_reanim.loadNameLevel("Fog??", renderer, "Fog??");
-	texture_reanim.loadNameLevel("Dark Stormy Night", renderer, "Dark Stormy Night");
+	all_game.Load_Texture("images/mini-game1.png", renderer, "minigame1", "picture");
+	all_game.Load_Texture("images/mini-game2.png", renderer, "minigame2", "picture");
+	all_game.Load_Texture("images/level.png", renderer, "level", "picture");
+	all_game.Load_Texture("images/level2.png", renderer, "level2", "picture");
+	all_game.Load_Texture("spritesheet/peashooter.png", renderer, "peashooter", "plant");
+	all_game.Load_Texture("spritesheet/peashooter_shoot.png", renderer, "pea_shoot", "plant");
+	all_game.Load_Texture("spritesheet/snowpea.png", renderer, "snowpea", "plant");
+	all_game.Load_Texture("spritesheet/snow_shoot.png", renderer, "snow_shoot", "plant");
+	all_game.Load_Texture("spritesheet/sunflower.png", renderer, "sunflower", "plant");
+	all_game.Load_Texture("spritesheet/sunflower_product.png", renderer, "sunf_product", "plant");
+	all_game.Load_Texture("spritesheet/Explosion.png", renderer, "explosion", "plant");//effect not plant
+	all_game.Load_Texture("spritesheet/Zombie_fire.png", renderer, "zom_fire", "plant");//effect not plant
+	all_game.Load_Texture("spritesheet/cherry.png", renderer, "cherry_idle", "plant");
+	all_game.Load_Texture("spritesheet/cherry_bomb.png", renderer, "cherry_bomb", "plant");
+	all_game.Load_Texture("spritesheet/banana_tree.png", renderer, "banana_tree", "plant");
+	all_game.Load_Texture("spritesheet/normal_non.png", renderer, "normal_non", "zombie");
+	all_game.Load_Texture("spritesheet/normal_walk_1.png", renderer, "normal_walk_1", "zombie");
+	all_game.Load_Texture("spritesheet/normal_walk_2.png", renderer, "normal_walk_2", "zombie");
+	all_game.Load_Texture("spritesheet/normal_eat_1.png", renderer, "normal_eat_1", "zombie");
+	all_game.Load_Texture("spritesheet/normal_eat_2.png", renderer, "normal_eat_2", "zombie");
+	all_game.Load_Texture("spritesheet/normal_dead.png", renderer, "normal_dead", "zombie");
+	all_game.Load_Texture("spritesheet/cnon.png", renderer, "cnon", "zombie");
+	all_game.Load_Texture("spritesheet/cwalk1.png", renderer, "cwalk1", "zombie");
+	all_game.Load_Texture("spritesheet/cwalk2.png", renderer, "cwalk2", "zombie");
+	all_game.Load_Texture("spritesheet/cwalk3.png", renderer, "cwalk3", "zombie");
+	all_game.Load_Texture("spritesheet/ceat1.png", renderer, "ceat1", "zombie");
+	all_game.Load_Texture("spritesheet/ceat2.png", renderer, "ceat2", "zombie");
+	all_game.Load_Texture("spritesheet/ceat3.png", renderer, "ceat3", "zombie");
+	all_game.Load_Texture("spritesheet/light_red.png", renderer, "light_red", "plant");//effect not plant
+	all_game.Load_Texture("spritesheet/oxygen.png", renderer, "oxygen", "plant");
+	all_game.Load_Texture("images/seed_packet.png", renderer, "card_plant", "card_plant");
+	all_game.Load_Texture("spritesheet/sun.png", renderer, "sun", "item");
+	all_game.Load_Texture("spritesheet/sun.png", renderer, "sunred", "item");
+	all_game.set_color_texture("sunred", 50, 255, 50);
+	all_game.Load_Texture("spritesheet/melon_effect.png", renderer, "melon_pro", "plant");
+	all_game.Load_Texture("spritesheet/shiliu_idle.png", renderer, "shiliu_idle", "plant");
+	all_game.Load_Texture("spritesheet/shiliu_shoot.png", renderer, "shiliu_shoot", "plant");
+	all_game.Load_Texture("spritesheet/zomboni.png", renderer, "zomboni", "zombie");
+	all_game.Load_Texture("spritesheet/seafidle.png", renderer, "sfnon", "zombie");
+	all_game.Load_Texture("spritesheet/seafwalk.png", renderer, "sfwalk", "zombie");
+	all_game.Load_Texture("spritesheet/seafeat.png", renderer, "sfeat", "zombie");
+	all_game.Load_Texture("spritesheet/seafdead.png", renderer, "sfdead", "zombie");
+	all_game.Load_Texture("spritesheet/exnon.png", renderer, "exnon", "zombie");
+	all_game.Load_Texture("spritesheet/exwalk1.png", renderer, "exwalk1", "zombie");
+	all_game.Load_Texture("spritesheet/exwalk2.png", renderer, "exwalk2", "zombie");
+	all_game.Load_Texture("spritesheet/exdead.png", renderer, "exdead", "zombie");
+	all_game.Load_Texture("spritesheet/fire.png", renderer, "fire", "plant");//effect
+	all_game.Load_Texture("images/mini-game.png", renderer, "minigame", "image");
+	all_game.Load_Texture("spritesheet/potato_plant.png", renderer, "potatoplant", "plant");
+	all_game.Load_Texture("spritesheet/potato_up.png", renderer, "potatoup", "plant");
+	all_game.Load_Texture("spritesheet/potato_idle.png", renderer, "potatoidle", "plant");
+	all_game.Load_Texture("spritesheet/potato_attack.png", renderer, "potatoattack", "plant");
+	all_game.Load_Texture("spritesheet/potato_boom.png", renderer, "potatoboom", "plant");//effect
+	all_game.Load_Texture("spritesheet/peazombieidle.png", renderer, "peazombieidle", "zombie");
+	all_game.Load_Texture("spritesheet/peazombiewalk1.png", renderer, "peazombiewalk1", "zombie");
+	all_game.Load_Texture("spritesheet/peazombiewalk2.png", renderer, "peazombiewalk2", "zombie");
+	all_game.Load_Texture("spritesheet/peazombieeat.png", renderer, "peazombieeat", "zombie");
+	all_game.Load_Texture("spritesheet/ballidle.png", renderer, "ballidle", "zombie");
+	all_game.Load_Texture("spritesheet/ballwalk.png", renderer, "ballwalk", "zombie");
+	all_game.Load_Texture("spritesheet/balldead.png", renderer, "balldead", "zombie");
+	all_game.Load_Texture("spritesheet/skyidle.png", renderer, "skyidle", "zombie");
+	all_game.Load_Texture("spritesheet/skywalk.png", renderer, "skywalk", "zombie");
+	all_game.Load_Texture("spritesheet/skydead.png", renderer, "skydead", "zombie");
+	all_game.Load_Texture("spritesheet/oxy.png", renderer, "oxy", "plant");//effect
+	all_game.Load_Texture("spritesheet/twinidle.png", renderer, "twinidle", "plant");
+	all_game.Load_Texture("spritesheet/twinproduct.png", renderer, "twinproduct", "plant");
+	all_game.Load_Texture("spritesheet/reidle.png", renderer, "reidle", "plant");
+	all_game.Load_Texture("spritesheet/reattack.png", renderer, "reattack", "plant");
+	all_game.Load_Texture("spritesheet/wallidle.png", renderer, "wallidle", "plant");
+	all_game.Load_Texture("spritesheet/walldamage.png", renderer, "walldamage", "plant");
+	all_game.Load_Texture("spritesheet/walldamage2.png", renderer, "walldamage2", "plant");
+	all_game.Load_Texture("spritesheet/walldamage3.png", renderer, "walldamage3", "plant");
+	all_game.Load_Texture("spritesheet/jackidle.png", renderer, "jackidle", "zombie");
+	all_game.Load_Texture("spritesheet/jackwalk.png", renderer, "jackwalk", "zombie");
+	all_game.Load_Texture("spritesheet/jackboom.png", renderer, "jackboom", "zombie");
+	all_game.Load_Texture("spritesheet/sunzidle.png", renderer, "sunzidle", "zombie");
+	all_game.Load_Texture("spritesheet/sunzwalk.png", renderer, "sunzwalk", "zombie");
+	all_game.Load_Texture("spritesheet/sunzeat.png", renderer, "sunzeat", "zombie");
+	all_game.loadNameLevel("East Sea Dragon Palace - Day 1", renderer, "1");
+	all_game.loadNameLevel("East Sea Dragon Palace - Day 2", renderer, "2");
+	all_game.loadNameLevel("East Sea Dragon Palace - Day 3", renderer, "3");
+	all_game.loadNameLevel("East Sea Dragon Palace - Day 4", renderer, "4");
+	all_game.loadNameLevel("East Sea Dragon Palace - Day 5", renderer, "5");
+	all_game.loadNameLevel("Zombotany I", renderer, "Zombotany I");
+	all_game.loadNameLevel("Air Raid", renderer, "Air Raid");
+	all_game.loadNameLevel("Swap I", renderer, "Swap I");
+	all_game.loadNameLevel("Fog??", renderer, "Fog??");
+	all_game.loadNameLevel("Dark Stormy Night", renderer, "Dark Stormy Night");
+	all_game.Load_Texture("spritesheet/startlevel.png", renderer, "startlevel", "item");
+
+	all_game.Load_Texture("spritesheet/acidattack.png", renderer, "acidattack", "plant");
+	all_game.Load_Texture("spritesheet/acidbullet.png", renderer, "acidbullet", "effect");
+	all_game.Load_Texture("spritesheet/acideffect.png", renderer, "acideffect", "effect");
+	all_game.Load_Texture("spritesheet/acididle.png", renderer, "acididle", "plant");
+	all_game.Load_Texture("spritesheet/peasplat.png", renderer, "peasplat", "effect");
+
 }
 int get_pos_card(int mouseX, int mouseY) {
 	if (mouseX >= 90 && mouseX <= 590 && mouseY >= 5 && mouseY <= 75) {
@@ -704,6 +736,8 @@ void remote_bullet2(std::vector<Plant*>& plant_vector, std::vector<Bullet*>& bul
 						bullet->is_out = true;
 						bullet->is_hit = true;
 						plant->set_cur_blood(plant->get_cur_blood() - 30);
+						playHit();
+						all_game.call_eplant("peasplat", bullet->rect_.x - 70, bullet->rect_.y - 20, 15);
 						break;
 					}
 
@@ -739,7 +773,24 @@ void remote_bullet(std::vector<Zombie*>& zombie_vector, std::vector<Bullet*>& bu
 							}
 							
 							sound_melon.Play_Sound(22);
-							plant_manager.call_plant("melon_pro", bullet->num_row, (zombie->pos_x-30)/80, 10);
+							all_game.call_eplant("melon_pro", bullet->rect_.x - 40, zombie->pos_y - 30, 10);
+						}
+						else if (bullet->get_type() == 7) {
+							if (zombie->armor_type_1 > 0) {
+								zombie->armor_type_1 = zombie->armor_type_1 - 30;
+							}
+							else {
+								if (zombie->name_zombie == "zomboni") {
+									zombie->zom_blood = zombie->zom_blood - 30;
+								}
+								else {
+									zombie->zom_blood = zombie->zom_blood - 15;
+								}
+							}
+							playHit();
+							all_game.call_eplant("acideffect", bullet->rect_.x - 70, bullet->rect_.y - 50, 19);
+
+							
 						}
 						else if (bullet->get_type() == 2) {
 							if (zombie->armor_type_1 > 0) {
@@ -751,6 +802,17 @@ void remote_bullet(std::vector<Zombie*>& zombie_vector, std::vector<Bullet*>& bu
 							zombie->pos_x += 20;
 							playHit();
 						}
+						else if (bullet->get_type() == 1) {
+							if (zombie->armor_type_1 > 0) {
+								zombie->armor_type_1 = zombie->armor_type_1 - 20;
+							}
+							else {
+								zombie->zom_blood = zombie->zom_blood - 20;
+							}
+							playHit();
+							all_game.call_eplant("peasplat", bullet->rect_.x - 70, bullet->rect_.y - 50, 15);
+						}
+						
 						else {
 							if (zombie->armor_type_1 > 0) {
 								zombie->armor_type_1 = zombie->armor_type_1 - 20;
@@ -818,7 +880,7 @@ void remote_instakill(std::vector<Zombie*>& zombie_vector, std::vector<Plant*>& 
 						zombie->zom_blood -= (1800 - zombie->armor_type_1);
 						zombie->armor_type_1 = -1;
 						plant->set_is_dead(true);
-						plant_manager.call_plant("potatoboom", plant->get_num_row(), plant->get_num_col(), 32);
+						all_game.call_plant("potatoboom", plant->get_num_row(), plant->get_num_col(), 32);
 						potato_sound.Play_Sound(20);
 
 					}
@@ -862,11 +924,11 @@ void remote_eat(std::vector<Zombie*>& zombie_vector, std::vector<Plant*>& plant_
 				if (plant != NULL && zombie->num_row == plant->num_row && plant->get_is_dead() == false && plant->if_effect == false) {
 					if (zombie->pos_x >= plant->num_col * 80 && zombie->pos_x <= (plant->num_col + 1) * 80) {
 						if (zombie->name_zombie == "zomboni") {
-							//plant_manager.call_plant("zom_fire", plant->num_row, plant->num_col, 45);//push_back gây cấp phát lại và lỗi con trỏ
+							//all_game.call_plant("zom_fire", plant->num_row, plant->num_col, 45);//push_back gây cấp phát lại và lỗi con trỏ
 							plant->set_cur_blood(plant->get_cur_blood() - 90);
 						}
 						else if (zombie->name_zombie == "exzombie") {
-							plant_manager.call_plant("fire", plant->num_row, plant->num_col, 45);
+							all_game.call_plant("fire", plant->num_row, plant->num_col, 45);
 							plant->set_cur_blood(plant->get_cur_blood() - 400);
 						}
 						plant->set_cur_blood(plant->get_cur_blood() - 2);
@@ -950,7 +1012,7 @@ void remote_anim_zombie(std::vector<Zombie*>& zombie_vector) {
 
 				}
 				cur_zombie->currentClip = &anim_change.get_clip()[cur_zombie->cur_frame];
-				texture_reanim.Render(renderer, cur_zombie->currentClip, name_anim,
+				all_game.Render(renderer, cur_zombie->currentClip, name_anim,
 					cur_zombie->pos_x, cur_zombie->pos_y + const_,
 					3 * cur_zombie->currentClip->w / 5,
 					3 * cur_zombie->currentClip->h / 5);
@@ -1008,7 +1070,7 @@ void remote_anim_zombie(std::vector<Zombie*>& zombie_vector) {
 
 				}
 				cur_zombie->currentClip = &anim_change.get_clip()[cur_zombie->cur_frame];
-				texture_reanim.Render(renderer, cur_zombie->currentClip, name_anim,
+				all_game.Render(renderer, cur_zombie->currentClip, name_anim,
 					cur_zombie->pos_x-60, cur_zombie->pos_y + const_,
 					3 * cur_zombie->currentClip->w / 5,
 					3 * cur_zombie->currentClip->h / 5);
@@ -1023,7 +1085,7 @@ void remote_anim_zombie(std::vector<Zombie*>& zombie_vector) {
 				name_anim = "zomboni";
 				const_ = -50;
 				cur_zombie->currentClip = &anim_change.get_clip()[cur_zombie->cur_frame];
-				texture_reanim.Render(renderer, cur_zombie->currentClip, name_anim,
+				all_game.Render(renderer, cur_zombie->currentClip, name_anim,
 					cur_zombie->pos_x, cur_zombie->pos_y + const_,
 					cur_zombie->currentClip->w / 2,
 				cur_zombie->currentClip->h / 2);
@@ -1061,7 +1123,7 @@ void remote_anim_zombie(std::vector<Zombie*>& zombie_vector) {
 
 				}
 				cur_zombie->currentClip = &anim_change.get_clip()[cur_zombie->cur_frame];
-				texture_reanim.Render(renderer, cur_zombie->currentClip, name_anim,
+				all_game.Render(renderer, cur_zombie->currentClip, name_anim,
 					cur_zombie->pos_x - 60, cur_zombie->pos_y + const_,
 					cur_zombie->currentClip->w,
 					cur_zombie->currentClip->h);
@@ -1106,7 +1168,7 @@ void remote_anim_zombie(std::vector<Zombie*>& zombie_vector) {
 
 				}
 				cur_zombie->currentClip = &anim_change.get_clip()[cur_zombie->cur_frame];
-				texture_reanim.Render(renderer, cur_zombie->currentClip, name_anim,
+				all_game.Render(renderer, cur_zombie->currentClip, name_anim,
 					cur_zombie->pos_x - 70, cur_zombie->pos_y -40,
 					cur_zombie->currentClip->w,
 					cur_zombie->currentClip->h);
@@ -1148,7 +1210,7 @@ void remote_anim_zombie(std::vector<Zombie*>& zombie_vector) {
 				}
 				
 				cur_zombie->currentClip = &anim_change.get_clip()[cur_zombie->cur_frame];
-				texture_reanim.Render(renderer, cur_zombie->currentClip, name_anim,
+				all_game.Render(renderer, cur_zombie->currentClip, name_anim,
 					cur_zombie->pos_x +const_x, cur_zombie->pos_y + const_,
 					3 * cur_zombie->currentClip->w / 5,
 					3 * cur_zombie->currentClip->h / 5);
@@ -1200,7 +1262,7 @@ void remote_anim_zombie(std::vector<Zombie*>& zombie_vector) {
 					const_ = 20;
 				}
 				cur_zombie->currentClip = &anim_change.get_clip()[cur_zombie->cur_frame];
-				texture_reanim.Render(renderer, cur_zombie->currentClip, name_anim,
+				all_game.Render(renderer, cur_zombie->currentClip, name_anim,
 					cur_zombie->pos_x - 40, cur_zombie->pos_y + const_,
 					126,
 					166);
@@ -1231,7 +1293,7 @@ void remote_anim_zombie(std::vector<Zombie*>& zombie_vector) {
 
 				}
 				cur_zombie->currentClip = &anim_change.get_clip()[cur_zombie->cur_frame];
-				texture_reanim.Render(renderer, cur_zombie->currentClip, name_anim,
+				all_game.Render(renderer, cur_zombie->currentClip, name_anim,
 					cur_zombie->pos_x - 60, cur_zombie->pos_y + const_,
 					cur_zombie->currentClip->w/2,
 					cur_zombie->currentClip->h/2);
@@ -1268,7 +1330,7 @@ void remote_anim_zombie(std::vector<Zombie*>& zombie_vector) {
 
 				}
 				cur_zombie->currentClip = &anim_change.get_clip()[cur_zombie->cur_frame];
-				texture_reanim.Render(renderer, cur_zombie->currentClip, name_anim,
+				all_game.Render(renderer, cur_zombie->currentClip, name_anim,
 					cur_zombie->pos_x - 50, cur_zombie->pos_y + const_,
 					cur_zombie->currentClip->w,
 					cur_zombie->currentClip->h);
@@ -1296,7 +1358,7 @@ void remote_anim_zombie(std::vector<Zombie*>& zombie_vector) {
 
 				}
 				cur_zombie->currentClip = &anim_change.get_clip()[cur_zombie->cur_frame];
-				texture_reanim.Render(renderer, cur_zombie->currentClip, name_anim,
+				all_game.Render(renderer, cur_zombie->currentClip, name_anim,
 					cur_zombie->pos_x - 60, cur_zombie->pos_y + const_,
 					cur_zombie->currentClip->w / 2,
 					cur_zombie->currentClip->h / 2);
@@ -1324,51 +1386,67 @@ void remote_anim_(std::vector<Plant*>& plant_vector) {
 			}
 			if (cur_plant->name_plant == "peashooter") {
 				if (cur_plant->count_down == 85 && cur_plant->if_shoot == true) {
-					all_game.call_bullet(renderer, 1, (cur_plant->get_num_col() + 1) * 80 + 40, (cur_plant->get_num_row()) * 100 + 100, cur_plant->get_num_row(), cur_plant->get_num_col(), 10);
+					all_game.call_bullet(renderer, 1, (cur_plant->get_num_col() + 1) * 80 + 10, (cur_plant->get_num_row()) * 100 + 100, cur_plant->get_num_row(), cur_plant->get_num_col(), 10);
 				}
 				if (cur_plant->status == "idle") {
 					cur_plant->currentClip = &pea_idle.get_clip()[cur_plant->cur_frame];
-					texture_reanim.Render(renderer, cur_plant->currentClip, "peashooter", (cur_plant->get_num_col() + 1) * 80 - 90, (cur_plant->get_num_row()) * 100 + 40, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
+					all_game.Render(renderer, cur_plant->currentClip, "peashooter", (cur_plant->get_num_col() + 1) * 80 - 90, (cur_plant->get_num_row()) * 100 + 40, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
 				}
 				else if (cur_plant->status == "shoot") {
 					cur_plant->currentClip = &pea_shoot.get_clip()[cur_plant->cur_frame];
-					texture_reanim.Render(renderer, cur_plant->currentClip, "pea_shoot", (cur_plant->get_num_col() + 1) * 80 - 93, (cur_plant->get_num_row()) * 100 + 39, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
+					all_game.Render(renderer, cur_plant->currentClip, "pea_shoot", (cur_plant->get_num_col() + 1) * 80 - 93, (cur_plant->get_num_row()) * 100 + 39, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
 				}
 			}
 			else if (cur_plant->name_plant == "repeater") {
 				if (cur_plant->count_down == 85 && cur_plant->if_shoot == true) {
+					all_game.call_bullet(renderer, 1, (cur_plant->get_num_col() + 1) * 80 + 10, (cur_plant->get_num_row()) * 100 + 100, cur_plant->get_num_row(), cur_plant->get_num_col(), 10);
 					all_game.call_bullet(renderer, 1, (cur_plant->get_num_col() + 1) * 80 + 40, (cur_plant->get_num_row()) * 100 + 100, cur_plant->get_num_row(), cur_plant->get_num_col(), 10);
-					all_game.call_bullet(renderer, 1, (cur_plant->get_num_col() + 1) * 80 + 70, (cur_plant->get_num_row()) * 100 + 100, cur_plant->get_num_row(), cur_plant->get_num_col(), 10);
 				}
 				if (cur_plant->status == "idle") {
 					cur_plant->currentClip = &reidle.get_clip()[cur_plant->cur_frame];
-					texture_reanim.Render(renderer, cur_plant->currentClip, "reidle", (cur_plant->get_num_col() + 1) * 80 - 60, (cur_plant->get_num_row()) * 100 +60, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
+					all_game.Render(renderer, cur_plant->currentClip, "reidle", (cur_plant->get_num_col() + 1) * 80 - 60, (cur_plant->get_num_row()) * 100 + 60, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
 				}
 				else if (cur_plant->status == "shoot") {
 					cur_plant->currentClip = &reattack.get_clip()[cur_plant->cur_frame];
-					texture_reanim.Render(renderer, cur_plant->currentClip, "reattack", (cur_plant->get_num_col() + 1) * 80 - 60, (cur_plant->get_num_row()) * 100 + 60, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
+					all_game.Render(renderer, cur_plant->currentClip, "reattack", (cur_plant->get_num_col() + 1) * 80 - 60, (cur_plant->get_num_row()) * 100 + 60, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
+				}
+			}
+			else if (cur_plant->name_plant == "acidlemon") {
+				if (cur_plant->count_down == 85 && cur_plant->if_shoot == true) {
+					all_game.call_bullet(renderer, 7, (cur_plant->get_num_col() + 1) * 80, (cur_plant->get_num_row()) * 100 + 80, cur_plant->get_num_row(), cur_plant->get_num_col(), 10);
+					all_game.call_bullet(renderer, 7, (cur_plant->get_num_col() + 1) * 80 + 40, (cur_plant->get_num_row()) * 100 + 80, cur_plant->get_num_row(), cur_plant->get_num_col(), 10);
+				}
+				if (cur_plant->status == "idle") {
+					cur_plant->num_frame = 210;
+					cur_plant->currentClip = &acididle.get_clip()[cur_plant->cur_frame];
+					all_game.Render(renderer, cur_plant->currentClip, "acididle", (cur_plant->get_num_col() + 1) * 80 - 140, (cur_plant->get_num_row()) * 100 + 10, cur_plant->currentClip->w, cur_plant->currentClip->h);
+				}
+				else if (cur_plant->status == "shoot") {
+					cur_plant->num_frame = 61;
+					cur_plant->currentClip = &acididle.get_clip()[cur_plant->cur_frame];
+					all_game.Render(renderer, cur_plant->currentClip, "acidattack", (cur_plant->get_num_col() + 1) * 80 - 140, (cur_plant->get_num_row()) * 100 + 10, cur_plant->currentClip->w, cur_plant->currentClip->h);
 				}
 			}
 			else if (cur_plant->name_plant == "wallnut") {
 				if (cur_plant->get_cur_blood() > 3500) {
 					cur_plant->num_frame = 300;
 					cur_plant->currentClip = &wallidle.get_clip()[cur_plant->cur_frame];
-					texture_reanim.Render(renderer, cur_plant->currentClip, "wallidle", (cur_plant->get_num_col() + 1) * 80 - 60, (cur_plant->get_num_row()) * 100 + 60, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
+					all_game.Render(renderer, cur_plant->currentClip, "wallidle", (cur_plant->get_num_col() + 1) * 80 - 60, (cur_plant->get_num_row()) * 100 + 60, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
 				}
 				else if (cur_plant->get_cur_blood() > 2500) {
 					cur_plant->num_frame = 100;
 					cur_plant->currentClip = &walldamage.get_clip()[cur_plant->cur_frame];
-					texture_reanim.Render(renderer, cur_plant->currentClip, "walldamage", (cur_plant->get_num_col() + 1) * 80 - 60, (cur_plant->get_num_row()) * 100 + 60, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
+					all_game.Render(renderer, cur_plant->currentClip, "walldamage", (cur_plant->get_num_col() + 1) * 80 - 60, (cur_plant->get_num_row()) * 100 + 60, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
 				}
 				else if (cur_plant->get_cur_blood() > 1500) {
 					cur_plant->num_frame = 100;
 					cur_plant->currentClip = &walldamage2.get_clip()[cur_plant->cur_frame];
-					texture_reanim.Render(renderer, cur_plant->currentClip, "walldamage2", (cur_plant->get_num_col() + 1) * 80 - 60, (cur_plant->get_num_row()) * 100 + 60, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
+					all_game.Render(renderer, cur_plant->currentClip, "walldamage2", (cur_plant->get_num_col() + 1) * 80 - 60, (cur_plant->get_num_row()) * 100 + 60, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
 				}
 				else {
 					cur_plant->num_frame = 200;
 					cur_plant->currentClip = &walldamage3.get_clip()[cur_plant->cur_frame];
-					texture_reanim.Render(renderer, cur_plant->currentClip, "walldamage3", (cur_plant->get_num_col() + 1) * 80 - 60, (cur_plant->get_num_row()) * 100 + 60, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
+					all_game.Render(renderer, cur_plant->currentClip, "walldamage3", (cur_plant->get_num_col() + 1) * 80 - 60, (cur_plant->get_num_row()) * 100 + 60, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
 				}
 			}
 			else if (cur_plant->name_plant == "snowpea") {
@@ -1378,78 +1456,94 @@ void remote_anim_(std::vector<Plant*>& plant_vector) {
 				if (cur_plant->status == "idle") {
 					cur_plant->num_frame = 144;
 					cur_plant->currentClip = &snow_idle.get_clip()[cur_plant->cur_frame];
-					texture_reanim.Render(renderer, cur_plant->currentClip, "snowpea", (cur_plant->get_num_col() + 1) * 80 - 50, (cur_plant->get_num_row()) * 100 + 80-23, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
+					all_game.Render(renderer, cur_plant->currentClip, "snowpea", (cur_plant->get_num_col() + 1) * 80 - 50, (cur_plant->get_num_row()) * 100 + 80-23, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
 				}
 				else if (cur_plant->status == "shoot") {
 					cur_plant->num_frame = 48;
 					cur_plant->currentClip = &snow_shoot.get_clip()[cur_plant->cur_frame];
-					texture_reanim.Render(renderer, cur_plant->currentClip, "snow_shoot", (cur_plant->get_num_col() + 1) * 80 - 50, (cur_plant->get_num_row()) * 100 - 51 + 15 + 80, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
+					all_game.Render(renderer, cur_plant->currentClip, "snow_shoot", (cur_plant->get_num_col() + 1) * 80 - 50, (cur_plant->get_num_row()) * 100 - 51 + 15 + 80, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
 				}
 			}
 			else if (cur_plant->name_plant == "sunflower") {
 				if (cur_plant->count_down == 610) {
-					item_manager.call_item(0, (cur_plant->get_num_col() + 1) * 80 - 50 - 40, (cur_plant->get_num_row()) * 100 + 30, 30);
+					all_game.call_item(0, (cur_plant->get_num_col() + 1) * 80 - 60, (cur_plant->get_num_row()) * 100 + 30, 30);
 				}
 				if (cur_plant->status == "idle") {
 					cur_plant->num_frame = 59;
 					cur_plant->currentClip = &sunf_idle.get_clip()[cur_plant->cur_frame];
-					texture_reanim.Render(renderer, cur_plant->currentClip, "sunflower", (cur_plant->get_num_col() + 1) * 80 - 60, (cur_plant->get_num_row()) * 100 +60, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
+					all_game.Render(renderer, cur_plant->currentClip, "sunflower", (cur_plant->get_num_col() + 1) * 80 - 60, (cur_plant->get_num_row()) * 100 +60, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
 				}
 				else if (cur_plant->status == "production") {
 					cur_plant->num_frame = 60;
 					cur_plant->currentClip = &sunf_product.get_clip()[cur_plant->cur_frame];
-					texture_reanim.Render(renderer, cur_plant->currentClip, "sunf_product", (cur_plant->get_num_col() + 1) * 80 - 60 , (cur_plant->get_num_row()) * 100  + 60, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
+					all_game.Render(renderer, cur_plant->currentClip, "sunf_product", (cur_plant->get_num_col() + 1) * 80 - 60 , (cur_plant->get_num_row()) * 100  + 60, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
 				}
 			}
 			else if (cur_plant->name_plant == "twinsun") {
 				if (cur_plant->count_down == 610) {
-					item_manager.call_item(0, (cur_plant->get_num_col() + 1) * 80 - 50 - 40, (cur_plant->get_num_row()) * 100 + 30, 30);
-					item_manager.call_item(0, (cur_plant->get_num_col() + 1) * 80 - 50 - 20, (cur_plant->get_num_row()) * 100 + 30, 30);
+					all_game.call_item(0, (cur_plant->get_num_col() + 1) * 80 - 50 - 40, (cur_plant->get_num_row()) * 100 + 30, 30);
+					all_game.call_item(0, (cur_plant->get_num_col() + 1) * 80 - 50 - 20, (cur_plant->get_num_row()) * 100 + 30, 30);
 				}
 				if (cur_plant->status == "idle") {
 					cur_plant->num_frame = 60;
 					cur_plant->currentClip = &twinidle.get_clip()[cur_plant->cur_frame];
-					texture_reanim.Render(renderer, cur_plant->currentClip, "twinidle", (cur_plant->get_num_col() + 1) * 80 - 60, (cur_plant->get_num_row()) * 100 + 60, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
+					all_game.Render(renderer, cur_plant->currentClip, "twinidle", (cur_plant->get_num_col() + 1) * 80 - 60, (cur_plant->get_num_row()) * 100 + 60, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
 				}
 				else if (cur_plant->status == "production") {
 					cur_plant->num_frame = 45;
 					cur_plant->currentClip = &twinproduct.get_clip()[cur_plant->cur_frame];
-					texture_reanim.Render(renderer, cur_plant->currentClip, "twinproduct", (cur_plant->get_num_col() + 1) * 80 - 60, (cur_plant->get_num_row()) * 100 + 60, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
+					all_game.Render(renderer, cur_plant->currentClip, "twinproduct", (cur_plant->get_num_col() + 1) * 80 - 60, (cur_plant->get_num_row()) * 100 + 60, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
 				}
 			}
 			else if (cur_plant->name_plant == "explosion") {
 				cur_plant->if_effect = true;
 				cur_plant->currentClip = &explosion.get_clip()[cur_plant->cur_frame];
-				texture_reanim.Render(renderer, cur_plant->currentClip, "explosion", (cur_plant->get_num_col() + 1) * 80 - 148, (cur_plant->get_num_row()) * 100 - 31, 4 * cur_plant->currentClip->w / 8, 4 * cur_plant->currentClip->h / 8);
-				if (cur_plant->count_down == 20) {
+				all_game.Render(renderer, cur_plant->currentClip, "explosion", (cur_plant->get_num_col() + 1) * 80 - 148, (cur_plant->get_num_row()) * 100 - 31, 4 * cur_plant->currentClip->w / 8, 4 * cur_plant->currentClip->h / 8);
+				if (cur_plant->count_down >= 20) {
 					cur_plant->set_is_dead(true);
 				}
 			}
 			else if (cur_plant->name_plant == "light_red") {
 				cur_plant->if_effect = true;
 				cur_plant->currentClip = &light_red.get_clip()[cur_plant->cur_frame];
-				texture_reanim.Render(renderer, cur_plant->currentClip, "light_red", (cur_plant->get_num_col() + 1) * 80 - 148, (cur_plant->get_num_row()) * 100 - 31, 4 * cur_plant->currentClip->w / 8, 4 * cur_plant->currentClip->h / 8);
-				if (cur_plant->count_down == 20) {
+				all_game.Render(renderer, cur_plant->currentClip, "light_red", (cur_plant->get_num_col() + 1) * 80 - 148, (cur_plant->get_num_row()) * 100 - 31, 4 * cur_plant->currentClip->w / 8, 4 * cur_plant->currentClip->h / 8);
+				if (cur_plant->count_down >= 20) {
 					cur_plant->set_is_dead(true);
 				}
 			}
+			else if (cur_plant->name_plant == "acideffect") {
+				cur_plant->if_effect = true;
+				cur_plant->currentClip = &acideffect.get_clip()[cur_plant->cur_frame];
+				all_game.Render(renderer, cur_plant->currentClip, "acideffect", cur_plant->ePosX, cur_plant->ePosY, cur_plant->currentClip->w, cur_plant->currentClip->h);
+				if (cur_plant->count_down >= 17) {
+					cur_plant->set_is_dead(true);
+				}
+			}
+			else if (cur_plant->name_plant == "peasplat") {
+				cur_plant->if_effect = true;
+				cur_plant->currentClip = &peasplat.get_clip()[cur_plant->cur_frame];
+				all_game.Render(renderer, cur_plant->currentClip, "peasplat", cur_plant->ePosX, cur_plant->ePosY, cur_plant->currentClip->w, cur_plant->currentClip->h);
+				if (cur_plant->count_down >= 14) {
+					cur_plant->set_is_dead(true);
+				}
+				}
 			else if (cur_plant->name_plant == "cherrybomb") {
 				cur_plant->currentClip = &cherry_bomb.get_clip()[cur_plant->cur_frame];
-				texture_reanim.Render(renderer, cur_plant->currentClip, "cherry_bomb", (cur_plant->get_num_col() + 1) * 80 - 128, (cur_plant->get_num_row()) * 100 +20, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
-				if (cur_plant->count_down == 20) {
+				all_game.Render(renderer, cur_plant->currentClip, "cherry_bomb", (cur_plant->get_num_col() + 1) * 80 - 128, (cur_plant->get_num_row()) * 100 +20, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
+				if (cur_plant->count_down >= 20) {
 					cur_plant->set_is_dead(true);
 					cherry_sound.Play_Sound(19);
-					plant_manager.call_plant("explosion", cur_plant->get_num_row(), cur_plant->get_num_col(), 21);
-					//plant_manager.call_plant("zom_fire", 6, 0, 21);
-					plant_manager.call_plant("light_red", cur_plant->get_num_row(), cur_plant->get_num_col(), 21);
+					all_game.call_plant("explosion", cur_plant->get_num_row(), cur_plant->get_num_col(), 21);
+					//all_game.call_plant("zom_fire", 6, 0, 21);
+					all_game.call_plant("light_red", cur_plant->get_num_row(), cur_plant->get_num_col(), 21);
 				}
 
 			}
 			else if (cur_plant->name_plant == "zom_fire") {
 				cur_plant->if_effect = true;
 				cur_plant->currentClip = &zom_fire.get_clip()[cur_plant->cur_frame];
-				texture_reanim.Render(renderer, cur_plant->currentClip, "zom_fire", (cur_plant->get_num_col() + 1) * 80 - 53, (cur_plant->get_num_row() + 1) * 100 - 51, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
-				if (cur_plant->count_down == 30) {
+				all_game.Render(renderer, cur_plant->currentClip, "zom_fire", (cur_plant->get_num_col() + 1) * 80 - 53, (cur_plant->get_num_row() + 1) * 100 - 51, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
+				if (cur_plant->count_down >= 30) {
 					cur_plant->set_is_dead(true);
 				}
 
@@ -1457,8 +1551,8 @@ void remote_anim_(std::vector<Plant*>& plant_vector) {
 			else if (cur_plant->name_plant == "oxy") {
 				cur_plant->if_effect = true;
 				cur_plant->currentClip = &oxy.get_clip()[cur_plant->cur_frame];
-				texture_reanim.Render(renderer, cur_plant->currentClip, "oxy", (cur_plant->get_num_col() + 1) * 80 - 110, (cur_plant->get_num_row() + 1) * 100 -90, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
-				if (cur_plant->count_down == 45) {
+				all_game.Render(renderer, cur_plant->currentClip, "oxy", (cur_plant->get_num_col() + 1) * 80 - 110, (cur_plant->get_num_row() + 1) * 100 -90, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
+				if (cur_plant->count_down >= 45) {
 					cur_plant->set_is_dead(true);
 				}
 
@@ -1466,8 +1560,8 @@ void remote_anim_(std::vector<Plant*>& plant_vector) {
 			else if (cur_plant->name_plant == "fire") {
 				cur_plant->if_effect = true;
 				cur_plant->currentClip = &fire.get_clip()[cur_plant->cur_frame];
-				texture_reanim.Render(renderer, cur_plant->currentClip, "fire", (cur_plant->get_num_col() + 1) * 80 - 110, (cur_plant->get_num_row() + 1) * 100 - 90, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
-				if (cur_plant->count_down == 34) {
+				all_game.Render(renderer, cur_plant->currentClip, "fire", (cur_plant->get_num_col() + 1) * 80 - 110, (cur_plant->get_num_row() + 1) * 100 - 90, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
+				if (cur_plant->count_down >= 34) {
 					cur_plant->set_is_dead(true);
 				}
 
@@ -1475,8 +1569,8 @@ void remote_anim_(std::vector<Plant*>& plant_vector) {
 			else if (cur_plant->name_plant == "melon_pro") {
 				cur_plant->if_effect = true;
 				cur_plant->currentClip = &melon_pro.get_clip()[cur_plant->cur_frame];
-				texture_reanim.Render(renderer, cur_plant->currentClip, "melon_pro", (cur_plant->get_num_col() + 1) * 80, (cur_plant->get_num_row() + 1) * 100-100, 3*cur_plant->currentClip->w/2, 3*cur_plant->currentClip->h/2 );
-				if (cur_plant->count_down == 10) {
+				all_game.Render(renderer, cur_plant->currentClip, "melon_pro", cur_plant->ePosX, cur_plant->ePosY, cur_plant->currentClip->w, cur_plant->currentClip->h);
+				if (cur_plant->count_down >= 9) {
 					cur_plant->set_is_dead(true);
 				}
 
@@ -1484,15 +1578,15 @@ void remote_anim_(std::vector<Plant*>& plant_vector) {
 			else if (cur_plant->name_plant == "potatoboom") {
 				cur_plant->if_effect = true;
 				cur_plant->currentClip = &potatoboom.get_clip()[cur_plant->cur_frame];
-				texture_reanim.Render(renderer, cur_plant->currentClip, "potatoboom", (cur_plant->get_num_col()) * 80, (cur_plant->get_num_row() + 1) * 100-50, 195, 195);
-				if (cur_plant->count_down == 16) {
+				all_game.Render(renderer, cur_plant->currentClip, "potatoboom", (cur_plant->get_num_col()) * 80, (cur_plant->get_num_row() + 1) * 100-50, 195, 195);
+				if (cur_plant->count_down >= 16) {
 					cur_plant->set_is_dead(true);
 				}
 
 			}
 			else if (cur_plant->name_plant == "banana_tree") {
 				cur_plant->currentClip = &banana_tree.get_clip()[cur_plant->cur_frame];
-				texture_reanim.Render(renderer, cur_plant->currentClip, "banana_tree", (cur_plant->get_num_col() + 1) * 80 - 80, (cur_plant->get_num_row()) * 100 + 70, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
+				all_game.Render(renderer, cur_plant->currentClip, "banana_tree", (cur_plant->get_num_col() + 1) * 80 - 80, (cur_plant->get_num_row()) * 100 + 70, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
 				if ((cur_plant->count_down == 110 || cur_plant->count_down == 120) && cur_plant->if_shoot == true) {
 					all_game.call_bullet(renderer, 5, (cur_plant->get_num_col() + 1) * 80, (cur_plant->get_num_row()) * 100 + 100, cur_plant->get_num_row(), cur_plant->get_num_col(),12);
 				}
@@ -1500,7 +1594,7 @@ void remote_anim_(std::vector<Plant*>& plant_vector) {
 			else if (cur_plant->name_plant == "oxygen_algae") {
 
 				cur_plant->currentClip = &oxy_algae.get_clip()[cur_plant->cur_frame];
-				texture_reanim.Render(renderer, cur_plant->currentClip, "oxygen", (cur_plant->get_num_col() + 1) * 80 - 50, (cur_plant->get_num_row()) * 100 + 70, cur_plant->currentClip->w, cur_plant->currentClip->h);
+				all_game.Render(renderer, cur_plant->currentClip, "oxygen", (cur_plant->get_num_col() + 1) * 80 - 50, (cur_plant->get_num_row()) * 100 + 70, cur_plant->currentClip->w, cur_plant->currentClip->h);
 			}
 			else if (cur_plant->name_plant == "shiliu") {
 				if (cur_plant->count_down == 110 && cur_plant->if_shoot == true) {
@@ -1509,34 +1603,34 @@ void remote_anim_(std::vector<Plant*>& plant_vector) {
 				if (cur_plant->status == "idle") {
 					cur_plant->num_frame = 76;
 					cur_plant->currentClip = &shiliu_idle.get_clip()[cur_plant->cur_frame];
-					texture_reanim.Render(renderer, cur_plant->currentClip, "shiliu_idle", (cur_plant->get_num_col() + 1) * 80 - 85, (cur_plant->get_num_row()) * 100 + 39, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
+					all_game.Render(renderer, cur_plant->currentClip, "shiliu_idle", (cur_plant->get_num_col() + 1) * 80 - 85, (cur_plant->get_num_row()) * 100 + 39, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
 				}
 				else if (cur_plant->status == "shoot") {
 					cur_plant->num_frame = 50;
 					cur_plant->currentClip = &shiliu_shoot.get_clip()[cur_plant->cur_frame];
-					texture_reanim.Render(renderer, cur_plant->currentClip, "shiliu_shoot", (cur_plant->get_num_col() + 1) * 80 - 107, (cur_plant->get_num_row()) * 100 +34, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
+					all_game.Render(renderer, cur_plant->currentClip, "shiliu_shoot", (cur_plant->get_num_col() + 1) * 80 - 107, (cur_plant->get_num_row()) * 100 +34, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
 				}
 			}
 			else if (cur_plant->name_plant == "potato_mine") {
 				if (cur_plant->status == "idle") {
 					cur_plant->num_frame = 29;
 					cur_plant->currentClip = &potatoplant.get_clip()[cur_plant->cur_frame];
-					texture_reanim.Render(renderer, cur_plant->currentClip, "potatoplant", (cur_plant->get_num_col() + 1) * 80 - 70, (cur_plant->get_num_row()) * 100 + 80, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
+					all_game.Render(renderer, cur_plant->currentClip, "potatoplant", (cur_plant->get_num_col() + 1) * 80 - 70, (cur_plant->get_num_row()) * 100 + 80, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
 				}
 				else if (cur_plant->status == "upidle2") {
 					cur_plant->num_frame = 61;
 					cur_plant->currentClip = &potatoidle.get_clip()[cur_plant->cur_frame];
-					texture_reanim.Render(renderer, cur_plant->currentClip, "potatoidle", (cur_plant->get_num_col() + 1) * 80 - 70, (cur_plant->get_num_row()) * 100 + 80, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
+					all_game.Render(renderer, cur_plant->currentClip, "potatoidle", (cur_plant->get_num_col() + 1) * 80 - 70, (cur_plant->get_num_row()) * 100 + 80, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
 				}
 				else if (cur_plant->status == "up") {
 					cur_plant->num_frame = 25;
 					cur_plant->currentClip = &potatoup.get_clip()[cur_plant->cur_frame];
-					texture_reanim.Render(renderer, cur_plant->currentClip, "potatoup", (cur_plant->get_num_col() + 1) * 80 - 70, (cur_plant->get_num_row()) * 100 + 80, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
+					all_game.Render(renderer, cur_plant->currentClip, "potatoup", (cur_plant->get_num_col() + 1) * 80 - 70, (cur_plant->get_num_row()) * 100 + 80, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
 				}
 				else if (cur_plant->status == "attack") {
 					cur_plant->num_frame = 20;
 					cur_plant->currentClip = &potatoattack.get_clip()[cur_plant->cur_frame];
-					texture_reanim.Render(renderer, cur_plant->currentClip, "potatoattack", (cur_plant->get_num_col() + 1) * 80 - 70, (cur_plant->get_num_row()) * 100 + 80, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
+					all_game.Render(renderer, cur_plant->currentClip, "potatoattack", (cur_plant->get_num_col() + 1) * 80 - 70, (cur_plant->get_num_row()) * 100 + 80, 5 * cur_plant->currentClip->w / 8, 5 * cur_plant->currentClip->h / 8);
 				}
 			}
 		}
@@ -1550,8 +1644,8 @@ void remote_anim_item(std::vector<Item*>item_vector, int mX, int mY) {
 		if (item !=NULL) {
 			if (item->get_type() == 0) {
 				item->currentClip = &sun.get_clip()[item->cur_frame];
-				texture_reanim.Render(renderer, item->currentClip, "sun", item->rect_.x, item->rect_.y, 3 * item->currentClip->w / 5, 3 * item->currentClip->h / 5);
-				if (mX >= item->rect_.x + 25 && mX <= item->rect_.x + 80 && mY >= item->rect_.y + 25 && mY <= item->rect_.y + 80) {
+				all_game.Render(renderer, item->currentClip, "sun", item->rect_.x, item->rect_.y, 3 * item->currentClip->w / 5, 3 * item->currentClip->h / 5);
+				if (item->animation != 1 && mX >= item->rect_.x + 25 && mX <= item->rect_.x + 80 && mY >= item->rect_.y + 25 && mY <= item->rect_.y + 80) {
 					item->animation = 1;
 					sun_collected.Play_Sound(18);
 				}
@@ -1559,8 +1653,8 @@ void remote_anim_item(std::vector<Item*>item_vector, int mX, int mY) {
 			}
 			else if (item->get_type() == 1) {
 				item->currentClip = &sun.get_clip()[item->cur_frame];
-				texture_reanim.Render(renderer, item->currentClip, "sunred", item->rect_.x, item->rect_.y, 3 * item->currentClip->w / 5, 3 * item->currentClip->h / 5);
-				if (mX >= item->rect_.x + 25 && mX <= item->rect_.x + 80 && mY >= item->rect_.y + 25 && mY <= item->rect_.y + 80) {
+				all_game.Render(renderer, item->currentClip, "sunred", item->rect_.x, item->rect_.y, 3 * item->currentClip->w / 5, 3 * item->currentClip->h / 5);
+				if (item->animation != 1 && mX >= item->rect_.x + 25 && mX <= item->rect_.x + 80 && mY >= item->rect_.y + 25 && mY <= item->rect_.y + 80) {
 					item->animation = 1;
 					sun_collected.Play_Sound(18);
 				}
@@ -1619,12 +1713,16 @@ void reset_level(int parameter) {
 		cur_imformation.fogX = 800;
 		cur_imformation.type_flag = getWave(cur_imformation.cur_td_adventure != 0 ? cur_imformation.cur_td_adventure : cur_imformation.cur_mini_game);
 	}
-	plant_manager.reset_list_plant();
-	zombie_manager.reset_list_zombie();
+	all_game.reset_list_plant();
+	all_game.reset_list_zombie();
 	game_lawn.Lawn_Set();
 	timeGame.resume();
 	for (int i = 0; i < 6; i++) {
 		card[i].resetCard();
+	}
+	set_channel_on(ctx, 28, 28, 29, 29);
+	for (int i = 0; i <= 24; i = i + 4) {
+		set_channel_on(ctx, i, i + 1, i + 2, i + 3);
 	}
 }
 void loadFileLevel() {
@@ -1704,7 +1802,7 @@ void spwanZombie(int level, int wave) {
 			else if(temp == "exzombie") {
 				eSound();
 			}
-			zombie_manager.call_zombie(temp, rand() % 5, rand() % 3 + 9, list_f_frame.at(temp));
+			all_game.call_zombie(temp, rand() % 5, rand() % 3 + 9, list_f_frame.at(temp));
 
 		}
 	}
@@ -1720,7 +1818,7 @@ void spwanZombie(int level, int wave) {
 			else if (temp == "exzombie") {
 				eSound();
 			}
-			zombie_manager.call_zombie(temp, rand() % 5, rand() % 3 + 9, list_f_frame.at(temp));
+			all_game.call_zombie(temp, rand() % 5, rand() % 3 + 9, list_f_frame.at(temp));
 
 		}
 	}
@@ -1731,4 +1829,272 @@ Uint8 getRNG(int min, int max) {
 	static std::mt19937 rng(rd());
 	std::uniform_int_distribution<int> dist(min, max);
 	return dist(rng);
+}
+void RenderPreview() {
+	if (cur_imformation.cur_td_adventure == 1) {
+		pr[0].setPos(670 + (pos_bg + 550), 270);
+		pr[0].setNumFrame(63);
+		pr[0].remoteFrame();
+		pr[0].Render(renderer, &normal_non.get_clip()[pr[0].getCurFrame()], all_game.GetTexture("normal_non"), 110, 128);
+
+		pr[1].setPos(620 + (pos_bg + 550), 127);
+		pr[1].setNumFrame(63);
+		pr[1].remoteFrame();
+		pr[1].Render(renderer, &cnon.get_clip()[pr[1].getCurFrame()], all_game.GetTexture("cnon"), 173, 165);
+
+
+		pr[2].setPos(530 + (pos_bg + 550), 400);
+		pr[2].setNumFrame(63);
+		pr[2].remoteFrame();
+		pr[2].Render(renderer, &normal_non.get_clip()[pr[2].getCurFrame()], all_game.GetTexture("normal_non"), 110, 128);
+
+		pr[3].setPos(578 + (pos_bg + 550), 340);
+		pr[3].setNumFrame(63);
+		pr[3].remoteFrame();
+		pr[3].Render(renderer, &cnon.get_clip()[pr[3].getCurFrame()], all_game.GetTexture("cnon"), 173, 165);
+	}
+	else if (cur_imformation.cur_td_adventure == 2) {
+		pr[0].setPos(670 + (pos_bg + 550), 270);
+		pr[0].setNumFrame(63);
+		pr[0].remoteFrame();
+		pr[0].Render(renderer, &normal_non.get_clip()[pr[0].getCurFrame()], all_game.GetTexture("normal_non"), 110, 128);
+
+		pr[1].setPos(620 + (pos_bg + 550), 127);
+		pr[1].setNumFrame(63);
+		pr[1].remoteFrame();
+		pr[1].Render(renderer, &cnon.get_clip()[pr[1].getCurFrame()], all_game.GetTexture("cnon"), 173, 165);
+
+
+		pr[2].setPos(530 + (pos_bg + 550), 400);
+		pr[2].setNumFrame(63);
+		pr[2].remoteFrame();
+		pr[2].Render(renderer, &normal_non.get_clip()[pr[2].getCurFrame()], all_game.GetTexture("normal_non"), 110, 128);
+
+		pr[3].setPos(578 + (pos_bg + 550), 340);
+		pr[3].setNumFrame(60);
+		pr[3].remoteFrame();
+		pr[3].Render(renderer, &ballidle.get_clip()[pr[3].getCurFrame()], all_game.GetTexture("ballidle"), 151, 161);
+
+		pr[4].setPos(478 + (pos_bg + 550), 140);
+		pr[4].setNumFrame(60);
+		pr[4].remoteFrame();
+		pr[4].Render(renderer, &ballidle.get_clip()[pr[3].getCurFrame()], all_game.GetTexture("ballidle"), 151, 161);
+	}
+	else if (cur_imformation.cur_td_adventure == 3) {
+		pr[0].setPos(670 + (pos_bg + 550), 270);
+		pr[0].setNumFrame(63);
+		pr[0].remoteFrame();
+		pr[0].Render(renderer, &normal_non.get_clip()[pr[0].getCurFrame()], all_game.GetTexture("normal_non"), 110, 128);
+
+		pr[1].setPos(620 + (pos_bg + 550), 127);
+		pr[1].setNumFrame(63);
+		pr[1].remoteFrame();
+		pr[1].Render(renderer, &cnon.get_clip()[pr[1].getCurFrame()], all_game.GetTexture("cnon"), 173, 165);
+
+
+		pr[2].setPos(530 + (pos_bg + 550), 400);
+		pr[2].setNumFrame(63);
+		pr[2].remoteFrame();
+		pr[2].Render(renderer, &normal_non.get_clip()[pr[2].getCurFrame()], all_game.GetTexture("normal_non"), 110, 128);
+
+		pr[3].setPos(578 + (pos_bg + 550), 340);
+		pr[3].setNumFrame(60);
+		pr[3].remoteFrame();
+		pr[3].Render(renderer, &ballidle.get_clip()[pr[3].getCurFrame()], all_game.GetTexture("ballidle"), 151, 161);
+
+		pr[4].setPos(478 + (pos_bg + 550), 140);
+		pr[4].setNumFrame(60);
+		pr[4].remoteFrame();
+		pr[4].Render(renderer, &ballidle.get_clip()[pr[3].getCurFrame()], all_game.GetTexture("ballidle"), 151, 161);
+	}
+	else if (cur_imformation.cur_td_adventure == 4) {
+		pr[0].setPos(670 + (pos_bg + 550), 270);
+		pr[0].setNumFrame(63);
+		pr[0].remoteFrame();
+		pr[0].Render(renderer, &normal_non.get_clip()[pr[0].getCurFrame()], all_game.GetTexture("normal_non"), 110, 128);
+
+		pr[1].setPos(620 + (pos_bg + 550), 127);
+		pr[1].setNumFrame(63);
+		pr[1].remoteFrame();
+		pr[1].Render(renderer, &cnon.get_clip()[pr[1].getCurFrame()], all_game.GetTexture("cnon"), 173, 165);
+
+
+		pr[2].setPos(530 + (pos_bg + 550), 400);
+		pr[2].setNumFrame(63);
+		pr[2].remoteFrame();
+		pr[2].Render(renderer, &normal_non.get_clip()[pr[2].getCurFrame()], all_game.GetTexture("normal_non"), 110, 128);
+
+		pr[3].setPos(578 + (pos_bg + 550), 340);
+		pr[3].setNumFrame(60);
+		pr[3].remoteFrame();
+		pr[3].Render(renderer, &ballidle.get_clip()[pr[3].getCurFrame()], all_game.GetTexture("ballidle"), 151, 161);
+
+		pr[4].setPos(478 + (pos_bg + 550), 140);
+		pr[4].setNumFrame(60);
+		pr[4].remoteFrame();
+		pr[4].Render(renderer, &ballidle.get_clip()[pr[3].getCurFrame()], all_game.GetTexture("ballidle"), 151, 161);
+	}
+	else if (cur_imformation.cur_td_adventure == 5) {
+		pr[0].setPos(670 + (pos_bg + 550), 270);
+		pr[0].setNumFrame(63);
+		pr[0].remoteFrame();
+		pr[0].Render(renderer, &normal_non.get_clip()[pr[0].getCurFrame()], all_game.GetTexture("normal_non"), 110, 128);
+
+		pr[1].setPos(620 + (pos_bg + 550), 127);
+		pr[1].setNumFrame(63);
+		pr[1].remoteFrame();
+		pr[1].Render(renderer, &cnon.get_clip()[pr[1].getCurFrame()], all_game.GetTexture("cnon"), 173, 165);
+
+
+		pr[2].setPos(530 + (pos_bg + 550), 400);
+		pr[2].setNumFrame(63);
+		pr[2].remoteFrame();
+		pr[2].Render(renderer, &normal_non.get_clip()[pr[2].getCurFrame()], all_game.GetTexture("normal_non"), 110, 128);
+
+		pr[3].setPos(578 + (pos_bg + 550), 340);
+		pr[3].setNumFrame(60);
+		pr[3].remoteFrame();
+		pr[3].Render(renderer, &ballidle.get_clip()[pr[3].getCurFrame()], all_game.GetTexture("ballidle"), 151, 161);
+
+		pr[4].setPos(478 + (pos_bg + 550), 140);
+		pr[4].setNumFrame(60);
+		pr[4].remoteFrame();
+		pr[4].Render(renderer, &ballidle.get_clip()[pr[3].getCurFrame()], all_game.GetTexture("ballidle"), 151, 161);
+	}
+	else if (cur_imformation.cur_mini_game == 1) {
+		pr[0].setPos(670 + (pos_bg + 550), 270);
+		pr[0].setNumFrame(63);
+		pr[0].remoteFrame();
+		pr[0].Render(renderer, &normal_non.get_clip()[pr[0].getCurFrame()], all_game.GetTexture("normal_non"), 110, 128);
+
+		pr[1].setPos(620 + (pos_bg + 550), 127);
+		pr[1].setNumFrame(63);
+		pr[1].remoteFrame();
+		pr[1].Render(renderer, &cnon.get_clip()[pr[1].getCurFrame()], all_game.GetTexture("cnon"), 173, 165);
+
+
+		pr[2].setPos(530 + (pos_bg + 550), 400);
+		pr[2].setNumFrame(63);
+		pr[2].remoteFrame();
+		pr[2].Render(renderer, &normal_non.get_clip()[pr[2].getCurFrame()], all_game.GetTexture("normal_non"), 110, 128);
+
+		pr[3].setPos(578 + (pos_bg + 550), 340);
+		pr[3].setNumFrame(60);
+		pr[3].remoteFrame();
+		pr[3].Render(renderer, &ballidle.get_clip()[pr[3].getCurFrame()], all_game.GetTexture("ballidle"), 151, 161);
+
+		pr[4].setPos(478 + (pos_bg + 550), 140);
+		pr[4].setNumFrame(60);
+		pr[4].remoteFrame();
+		pr[4].Render(renderer, &ballidle.get_clip()[pr[3].getCurFrame()], all_game.GetTexture("ballidle"), 151, 161);
+	}
+	else if (cur_imformation.cur_mini_game == 2) {
+		pr[0].setPos(670 + (pos_bg + 550), 270);
+		pr[0].setNumFrame(63);
+		pr[0].remoteFrame();
+		pr[0].Render(renderer, &peazombieidle.get_clip()[pr[0].getCurFrame()], all_game.GetTexture("peazombieidle"), 112, 148);
+
+		pr[1].setPos(620 + (pos_bg + 550), 127);
+		pr[1].setNumFrame(63);
+		pr[1].remoteFrame();
+		pr[1].Render(renderer, &sunzidle.get_clip()[pr[1].getCurFrame()], all_game.GetTexture("sunzidle"), 157, 147);
+
+
+		pr[2].setPos(530 + (pos_bg + 550), 400);
+		pr[2].setNumFrame(63);
+		pr[2].remoteFrame();
+		pr[2].Render(renderer, &peazombieidle.get_clip()[pr[2].getCurFrame()], all_game.GetTexture("peazombieidle"), 112, 148);
+
+		pr[3].setPos(578 + (pos_bg + 550), 340);
+		pr[3].setNumFrame(60);
+		pr[3].remoteFrame();
+		pr[3].Render(renderer, &sunzidle.get_clip()[pr[3].getCurFrame()], all_game.GetTexture("sunzidle"), 157, 147);
+
+		pr[4].setPos(478 + (pos_bg + 550), 140);
+		pr[4].setNumFrame(60);
+		pr[4].remoteFrame();
+		pr[4].Render(renderer, &sunzidle.get_clip()[pr[3].getCurFrame()], all_game.GetTexture("sunzidle"), 157, 147);
+	}
+	else if (cur_imformation.cur_mini_game == 3) {
+		pr[0].setPos(670 + (pos_bg + 550), 270);
+		pr[0].setNumFrame(63);
+		pr[0].remoteFrame();
+		pr[0].Render(renderer, &normal_non.get_clip()[pr[0].getCurFrame()], all_game.GetTexture("normal_non"), 110, 128);
+
+		pr[1].setPos(620 + (pos_bg + 550), 127);
+		pr[1].setNumFrame(63);
+		pr[1].remoteFrame();
+		pr[1].Render(renderer, &cnon.get_clip()[pr[1].getCurFrame()], all_game.GetTexture("cnon"), 173, 165);
+
+
+		pr[2].setPos(530 + (pos_bg + 550), 400);
+		pr[2].setNumFrame(63);
+		pr[2].remoteFrame();
+		pr[2].Render(renderer, &normal_non.get_clip()[pr[2].getCurFrame()], all_game.GetTexture("normal_non"), 110, 128);
+
+		pr[3].setPos(578 + (pos_bg + 550), 340);
+		pr[3].setNumFrame(60);
+		pr[3].remoteFrame();
+		pr[3].Render(renderer, &ballidle.get_clip()[pr[3].getCurFrame()], all_game.GetTexture("ballidle"), 151, 161);
+
+		pr[4].setPos(478 + (pos_bg + 550), 140);
+		pr[4].setNumFrame(60);
+		pr[4].remoteFrame();
+		pr[4].Render(renderer, &ballidle.get_clip()[pr[3].getCurFrame()], all_game.GetTexture("ballidle"), 151, 161);
+	}
+	else if (cur_imformation.cur_mini_game == 4) {
+		pr[0].setPos(670 + (pos_bg + 550), 270);
+		pr[0].setNumFrame(63);
+		pr[0].remoteFrame();
+		pr[0].Render(renderer, &normal_non.get_clip()[pr[0].getCurFrame()], all_game.GetTexture("normal_non"), 110, 128);
+
+		pr[1].setPos(620 + (pos_bg + 550), 127);
+		pr[1].setNumFrame(63);
+		pr[1].remoteFrame();
+		pr[1].Render(renderer, &cnon.get_clip()[pr[1].getCurFrame()], all_game.GetTexture("cnon"), 173, 165);
+
+
+		pr[2].setPos(530 + (pos_bg + 550), 400);
+		pr[2].setNumFrame(63);
+		pr[2].remoteFrame();
+		pr[2].Render(renderer, &normal_non.get_clip()[pr[2].getCurFrame()], all_game.GetTexture("normal_non"), 110, 128);
+
+		pr[3].setPos(578 + (pos_bg + 550), 340);
+		pr[3].setNumFrame(60);
+		pr[3].remoteFrame();
+		pr[3].Render(renderer, &ballidle.get_clip()[pr[3].getCurFrame()], all_game.GetTexture("ballidle"), 151, 161);
+
+		pr[4].setPos(478 + (pos_bg + 550), 140);
+		pr[4].setNumFrame(60);
+		pr[4].remoteFrame();
+		pr[4].Render(renderer, &ballidle.get_clip()[pr[3].getCurFrame()], all_game.GetTexture("ballidle"), 151, 161);
+	}
+	else if (cur_imformation.cur_mini_game == 5) {
+		pr[0].setPos(670 + (pos_bg + 550), 270);
+		pr[0].setNumFrame(63);
+		pr[0].remoteFrame();
+		pr[0].Render(renderer, &normal_non.get_clip()[pr[0].getCurFrame()], all_game.GetTexture("normal_non"), 110, 128);
+
+		pr[1].setPos(620 + (pos_bg + 550), 127);
+		pr[1].setNumFrame(63);
+		pr[1].remoteFrame();
+		pr[1].Render(renderer, &cnon.get_clip()[pr[1].getCurFrame()], all_game.GetTexture("cnon"), 173, 165);
+
+
+		pr[2].setPos(530 + (pos_bg + 550), 400);
+		pr[2].setNumFrame(63);
+		pr[2].remoteFrame();
+		pr[2].Render(renderer, &normal_non.get_clip()[pr[2].getCurFrame()], all_game.GetTexture("normal_non"), 110, 128);
+
+		pr[3].setPos(578 + (pos_bg + 550), 340);
+		pr[3].setNumFrame(60);
+		pr[3].remoteFrame();
+		pr[3].Render(renderer, &ballidle.get_clip()[pr[3].getCurFrame()], all_game.GetTexture("ballidle"), 151, 161);
+
+		pr[4].setPos(478 + (pos_bg + 550), 140);
+		pr[4].setNumFrame(60);
+		pr[4].remoteFrame();
+		pr[4].Render(renderer, &ballidle.get_clip()[pr[3].getCurFrame()], all_game.GetTexture("ballidle"), 151, 161);
+	}
+
 }

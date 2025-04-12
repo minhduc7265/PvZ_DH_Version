@@ -17,6 +17,8 @@ Plant::Plant() {
 	if_effect = false;
 	dec_blood = 50;
 	posX = 0;
+	ePosX = 0;
+	ePosY = 0;
 
 }
 
@@ -36,5 +38,7 @@ Plant::~Plant() {
 	if_effect = false;
 	dec_blood = 0;
 	posX = 0;
+	ePosX = 0;
+	ePosY = 0;
 
 }

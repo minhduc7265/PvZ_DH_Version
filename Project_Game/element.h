@@ -11,6 +11,7 @@
 #include "item.h"
 #include "lawn.h"
 #include "music.h"
+#include "animation.h"
 extern Music gulp;
 extern Music rip;
 extern TTF_Font* font;
@@ -22,11 +23,6 @@ extern const std::map<std::string, int> armor2_bl;
 extern Cur_imf cur_imformation;
 class Element : public Bullet, public Texture_Storage, public Plant, public Zombie,public Item {
 protected:
-	
-
-
-
-
 private:
 	int mWidth;
 	int mHeight;
@@ -56,6 +52,7 @@ public:
 	void call_bullet(SDL_Renderer* ren, int type, int mx, int my, int row, int col, int vel);
 	void check_bullet(SDL_Renderer* ren);
 	Plant* call_plant(std::string name, int x, int y, int frame);
+	void call_eplant(std::string name, int x, int y, int frame);
 	void check_plant();
 	void remote_frame_plant();
 	void remote_func_plant();
@@ -90,11 +87,15 @@ public:
 	void changeColorText(std::string name, Uint8 r, Uint8 g, Uint8 b) {
 		SDL_SetTextureColorMod(listText[name]->get_ptr_texture(), r, g, b);
 	}
+	SDL_Texture* GetTexture(std::string name) {
+		return list_texture[name]->get_ptr_texture();
+	}
 };
-extern Element plant_manager;
-extern Element zombie_manager;
-extern Element item_manager;
-
+//extern Element plant_manager;
+//extern Element zombie_manager;
+//extern Element item_manager;
+//extern Element texture_reanim;
+extern Element all_game;
 
 
 #endif

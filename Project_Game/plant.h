@@ -59,6 +59,8 @@ public:
 	bool if_effect;
 	int dec_blood;
 	int posX;
+	int ePosX;
+	int ePosY;
 private:
 	int current_blood;
 	bool is_dead;

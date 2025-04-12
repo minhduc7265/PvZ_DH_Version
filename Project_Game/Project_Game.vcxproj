@@ -162,6 +162,7 @@
     <ClCompile Include="main_func.cpp" />
     <ClCompile Include="music.cpp" />
     <ClCompile Include="plant.cpp" />
+    <ClCompile Include="preview.cpp" />
     <ClCompile Include="texture_storage.cpp" />
     <ClCompile Include="time_manager.cpp" />
     <ClCompile Include="zombie.cpp" />
@@ -179,6 +180,7 @@
     <ClInclude Include="main_func.h" />
     <ClInclude Include="music.h" />
     <ClInclude Include="plant.h" />
+    <ClInclude Include="preview.h" />
     <ClInclude Include="texture_storage.h" />
     <ClInclude Include="time_manager.h" />
     <ClInclude Include="zombie.h" />

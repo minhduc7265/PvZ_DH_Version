@@ -6,11 +6,13 @@ const int NUM_FRAME_PER_ROW_PLANT = 5;
 const int NUM_FRAME_PER_ROW_ZOMBIE = 10;
 class Animation {
 private:
-	SDL_Rect* gSpriteClips = NULL;//chứa frame
+	SDL_Rect* gSpriteClips;//chứa frame
 
 public:
 	Animation();
+	~Animation();
 	int num_frame;
+	int cur_frame;
 	SDL_Rect* get_clip() const {
 		return gSpriteClips;
 	}

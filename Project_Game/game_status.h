@@ -7,6 +7,7 @@ class game_status {
 public:
 	game_status();
 	int status;
+	int cd;
 	int mg_status;
 
 };

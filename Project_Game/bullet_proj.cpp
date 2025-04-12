@@ -27,6 +27,7 @@ void Bullet::set_Pos(int x, int y) {
 
 }
 void Bullet::HandleBullet(int lim_Ox, int lim_Oy) {
+
 	delay_time++;
 	if (delay_time > 0) {
 		rect_.x += Bullet::get_vel_x();

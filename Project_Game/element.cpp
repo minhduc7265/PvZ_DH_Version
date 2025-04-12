@@ -49,9 +49,8 @@ const std::map<int, std::pair<std::string, int>> rand_zombie{
 };
 Music gulp;
 Music rip;
-Element plant_manager;
-Element zombie_manager;
-Element item_manager;
+Element all_game;
+
 TTF_Font* font;
 const int BLOOD_DEAD = 50;
 Lawn_Mana game_lawn;
@@ -93,6 +92,10 @@ void Element::call_bullet(SDL_Renderer *ren, int type, int mx, int my, int row, 
 		else if (type == 6) {
 			cre_bull->Set_Name_Path("projectiles/pea.png");
 			cre_bull->LoadImg("projectiles/pea.png", ren);
+		}
+		else if (type == 7) {
+			cre_bull->Set_Name_Path("projectiles/acid.png");
+			cre_bull->LoadImg("projectiles/acid.png", ren);
 		}
 		else {
 			cre_bull->Set_Name_Path("projectiles/pea.png");
@@ -155,7 +158,7 @@ bool Element::Load_Texture(std::string path, SDL_Renderer* screen, std::string n
 		}
 		else
 		{
-			SDL_SetColorKey(loadedSurface, SDL_TRUE, SDL_MapRGB(loadedSurface->format, 0, 0xFF, 0xFF));
+			//SDL_SetColorKey(loadedSurface, SDL_TRUE, SDL_MapRGB(loadedSurface->format, 0x0, 0x0, 0x0));
 			newTexture = SDL_CreateTextureFromSurface(screen, loadedSurface);
 			if (newTexture == NULL)
 			{
@@ -194,7 +197,7 @@ Plant* Element::call_plant(std::string name, int x, int y, int frame) {
 		new_plant->count_down = 450;
 	}
 	new_plant->num_frame = frame;
-	if (new_plant->name_plant == "fire" || new_plant->name_plant == "zom_fire" || new_plant->name_plant == "explosion" || new_plant->name_plant == "light_red" || new_plant->name_plant == "melon_pro" || new_plant->name_plant == "oxy") {
+	if (new_plant->name_plant == "fire" || new_plant->name_plant == "zom_fire" || new_plant->name_plant == "explosion" || new_plant->name_plant == "light_red" || new_plant->name_plant == "melon_pro" || new_plant->name_plant == "oxy" || new_plant->name_plant == "acideffect") {
 		new_plant->if_effect = true;
 	}
 	else {
@@ -204,6 +207,22 @@ Plant* Element::call_plant(std::string name, int x, int y, int frame) {
 
 	std::cout << "Created Plant: " << name << std::endl;
 	return new_plant;
+
+}
+void Element::call_eplant(std::string name, int x, int y, int frame) {
+	Plant* new_plant = new Plant();//con trỏ plant
+	new_plant->ePosX = x;
+	new_plant->ePosY = y;
+	new_plant->name_plant = name;
+	new_plant->set_can_eat(true);
+	new_plant->set_cur_blood(7265);
+	new_plant->status = "idle";
+	new_plant->count_down = 0;
+	new_plant->num_frame = frame;
+	new_plant->if_effect = true;
+	list_plant.push_back(new_plant);
+	std::cout << "Created Effect: " << name << std::endl;
+	return;
 
 }
 void Element::call_item(int type_, int x, int y, int frame) {
@@ -227,9 +246,9 @@ void Element::check_item() {
 
 			if ((*it)->type_anim == 1) {
 				(*it)->time_anim++;
-				(*it)->rect_.y-=8;
+				(*it)->rect_.y-=7;
 				if ((*it)->time_anim > 10 && (*it)->time_anim <=30) {
-					(*it)->rect_.y+=16;
+					(*it)->rect_.y+=11;
 				}
 				else if ((*it)->time_anim > 30) {
 					(*it)->type_anim = 0;
@@ -493,7 +512,18 @@ void Element::remote_func_plant() {
 				}
 
 			}
+			else if (cur_plant->name_plant == "acidlemon") {
+				if (cur_plant->count_down == 60 && cur_plant->if_shoot == true) {
+					cur_plant->cur_frame = 0;
+					cur_plant->status = "shoot";
+				}
+				if (cur_plant->count_down >= 90 && cur_plant->if_shoot == true) {
+					cur_plant->cur_frame = 0;
+					cur_plant->status = "idle";
+					cur_plant->count_down = 0;
+				}
 
+			}
 			else if (cur_plant->name_plant == "shiliu") {
 				if (cur_plant->count_down == 90 && cur_plant->if_shoot == true) {
 					cur_plant->cur_frame = 0;
@@ -563,6 +593,10 @@ void Element::remote_func_zombie() {
 					cur_zombie->cur_frame += 1;
 					cur_zombie->count_down = -1;
 				}
+				else if (cur_zombie->name_zombie == "ball_zombie") {
+					cur_zombie->count_down = 1;
+					cur_zombie->pos_x -= 1;
+				}
 				else {
 					cur_zombie->pos_x -= 1;
 					cur_zombie->count_down = 0;
@@ -573,7 +607,7 @@ void Element::remote_func_zombie() {
 				cur_zombie->count_down2++;
 				if (cur_zombie->count_down2 > 400) {
 					cur_zombie->count_down2 = 0;
-					item_manager.call_item(1, cur_zombie->pos_x, cur_zombie->pos_y, 30);
+					all_game.call_item(1, cur_zombie->pos_x, cur_zombie->pos_y, 30);
 				}
 
 			}

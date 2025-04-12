@@ -4,12 +4,13 @@
 #include "load_pic.h"
 #include "base_func.h"
 #include "element.h"
-#include "animation.h"
 #include "time_manager.h"
 #include <xmp.h>
 #include "game_status.h"
 #include "json.hpp"//Thư viện
 #include <fstream>//Dùng đọc file
+#include "preview.h"
+extern Preview pr[10];
 using json = nlohmann::json;
 using std::fstream;
 extern struct xmp_frame_info mod_info;
@@ -42,9 +43,6 @@ extern Music esdp;
 extern Animation sunred;
 extern SDL_Texture* textTexture;
 extern SDL_Rect renderquad_2;
-//extern Element plant_manager;
-//extern Element zombie_manager;
-
 extern Element all_game;
 extern Music game_music;
 extern Music cherry_sound;
@@ -187,11 +185,19 @@ extern LoadPIC play_but2;
 extern LoadPIC tiankong;
 extern Animation sunzidle;
 extern Animation sunzwalk;
+extern Animation startlevel;
+extern LoadPIC finalwave;
 extern Animation sunzeat;
 extern std::string mouse_status;
 extern const std::string WINDOW_NAME_N;
+extern Music rsp;
 extern const std::string WINDOW_NAME_H;
 extern LoadPIC bgtd;
+extern Animation acididle;
+extern Animation acidattack;
+extern Animation acidbullet;
+extern Animation acideffect;
+extern Animation peasplat;
 extern const std::map<int, std::string> plant_num_list;
 extern const std::map<std::string, int> plant_frame_list;
 extern const std::map<std::string, int> sun_value_p;
@@ -235,4 +241,5 @@ void playHit();
 void eSound();
 void remote_bullet2(std::vector<Plant*>& plant_vector, std::vector<Bullet*>& bullet_vector);
 Uint8 getRNG(int min, int max);
+void RenderPreview();
 #endif // !MAIN_FUNC_H_
