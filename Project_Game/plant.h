@@ -53,6 +53,7 @@ public:
 	int cur_frame;
 	SDL_Rect* currentClip;
 	std::string status;
+	std::string prev_status;
 	bool if_shoot;
 	int num_row;
 	int num_col;

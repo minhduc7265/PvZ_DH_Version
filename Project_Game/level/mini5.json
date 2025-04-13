@@ -1,6 +1,7 @@
 {
 	"level_id": 1,
 	"name_level": "Dark Stormy Night",
+	"name_level_c": "cm5",
 	"sun_init": 250,
 	"num_wave": 1,
 	"wave": [

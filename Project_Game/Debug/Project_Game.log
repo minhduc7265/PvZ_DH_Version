@@ -1,2 +1,7 @@
 ﻿  main.cpp
+  main_func.cpp
+C:\Users\hminh\Desktop\Project_Game\Project_Game\main_func.cpp(982,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\hminh\Desktop\Project_Game\Project_Game\main_func.cpp(1400,20): warning C4018: '<': signed/unsigned mismatch
+  Generating Code...
+C:\Users\hminh\Desktop\Project_Game\Project_Game\main_func.cpp(354,1): warning C4715: 'sound_init': not all control paths return a value
   Project_Game.vcxproj -> C:\Users\hminh\Desktop\Project_Game\Debug\Project_Game.exe

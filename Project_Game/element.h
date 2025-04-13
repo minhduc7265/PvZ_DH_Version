@@ -15,6 +15,7 @@
 extern Music gulp;
 extern Music rip;
 extern TTF_Font* font;
+extern TTF_Font* chuugokuFont;
 extern Lawn_Mana game_lawn;
 extern const std::map<std::string, int> body_bl;
 extern const std::map<std::string, int> armor1_bl;
@@ -68,12 +69,12 @@ public:
 	void reset_list_bullet();
 	void set_color_texture(std::string name, Uint8 r, Uint8 g, Uint8 b);
 	bool Load_Texture(std::string path, SDL_Renderer* screen, std::string name, std::string type);
-	void loadNameLevel(std::string path, SDL_Renderer* render, std::string name);
+	void loadNameLevel(std::string path, SDL_Renderer* render, std::string name, TTF_Font* font_);
 	void Render(SDL_Renderer* render, SDL_Rect* clip, std::string name,int x,int y,int z,int t) {
 		SDL_Rect renderquad = { x,y,z,t };
 		SDL_RenderCopy(render, list_texture[name]->get_ptr_texture(), clip, &renderquad);
 	}
-	void RenderText(SDL_Renderer* render, SDL_Rect* clip, std::string name) {
+	void RenderText(SDL_Renderer* render, SDL_Rect* clip, std::string name, int param) {
 		int temp = 0;
 		if (cur_imformation.wave == 0) {
 			temp = 780;
@@ -81,7 +82,14 @@ public:
 		else {
 			temp = 580;
 		}
-		SDL_Rect renderquad = { temp - 8 * listText[name]->getLength(),565,listText[name]->mW,listText[name]->mH };
+		SDL_Rect renderquad;
+		if (param == 1) {
+			renderquad = { temp - 6 * listText[name]->getLength(),550,listText[name]->mW,listText[name]->mH };
+		}
+		else {
+			renderquad = { temp - 8 * listText[name]->getLength(),565,listText[name]->mW,listText[name]->mH };
+		}
+		
 		SDL_RenderCopy(render, listText[name]->get_ptr_texture(), clip, &renderquad);
 	}
 	void changeColorText(std::string name, Uint8 r, Uint8 g, Uint8 b) {

@@ -19,6 +19,7 @@ Plant::Plant() {
 	posX = 0;
 	ePosX = 0;
 	ePosY = 0;
+	prev_status = "";
 
 }
 
@@ -40,5 +41,6 @@ Plant::~Plant() {
 	posX = 0;
 	ePosX = 0;
 	ePosY = 0;
+	prev_status = "";
 
 }

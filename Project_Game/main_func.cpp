@@ -671,18 +671,31 @@ void load_texture_element() {
 	all_game.Load_Texture("spritesheet/sunzidle.png", renderer, "sunzidle", "zombie");
 	all_game.Load_Texture("spritesheet/sunzwalk.png", renderer, "sunzwalk", "zombie");
 	all_game.Load_Texture("spritesheet/sunzeat.png", renderer, "sunzeat", "zombie");
-	all_game.loadNameLevel("East Sea Dragon Palace - Day 1", renderer, "1");
-	all_game.loadNameLevel("East Sea Dragon Palace - Day 2", renderer, "2");
-	all_game.loadNameLevel("East Sea Dragon Palace - Day 3", renderer, "3");
-	all_game.loadNameLevel("East Sea Dragon Palace - Day 4", renderer, "4");
-	all_game.loadNameLevel("East Sea Dragon Palace - Day 5", renderer, "5");
-	all_game.loadNameLevel("Zombotany I", renderer, "Zombotany I");
-	all_game.loadNameLevel("Air Raid", renderer, "Air Raid");
-	all_game.loadNameLevel("Swap I", renderer, "Swap I");
-	all_game.loadNameLevel("Fog??", renderer, "Fog??");
-	all_game.loadNameLevel("Dark Stormy Night", renderer, "Dark Stormy Night");
-	all_game.Load_Texture("spritesheet/startlevel.png", renderer, "startlevel", "item");
+	all_game.loadNameLevel("East Sea Dragon Palace - Day 1", renderer, "1", font);
+	all_game.loadNameLevel("East Sea Dragon Palace - Day 2", renderer, "2", font);
+	all_game.loadNameLevel("East Sea Dragon Palace - Day 3", renderer, "3", font);
+	all_game.loadNameLevel("East Sea Dragon Palace - Day 4", renderer, "4", font);
+	all_game.loadNameLevel("East Sea Dragon Palace - Day 5", renderer, "5", font);
 
+	all_game.loadNameLevel(u8"东海龙宫 1-1", renderer, "c1", chuugokuFont);
+	all_game.loadNameLevel(u8"东海龙宫 2-1", renderer, "c2", chuugokuFont);
+	all_game.loadNameLevel(u8"东海龙宫 3-1", renderer, "c3", chuugokuFont);
+	all_game.loadNameLevel(u8"东海龙宫 4-1", renderer, "c4", chuugokuFont);
+	all_game.loadNameLevel(u8"东海龙宫 5-1", renderer, "c5", chuugokuFont);
+
+	all_game.loadNameLevel(u8"壮植凌云", renderer, "cm1", chuugokuFont);
+	all_game.loadNameLevel(u8"植物僵尸I", renderer, "cm2", chuugokuFont);
+	all_game.loadNameLevel(u8"变换I", renderer, "cm3", chuugokuFont);
+	all_game.loadNameLevel(u8"多雾路段??", renderer, "cm4", chuugokuFont);
+	all_game.loadNameLevel(u8"暴风雨之夜", renderer, "cm5", chuugokuFont);
+
+	all_game.loadNameLevel("Zombotany I", renderer, "Zombotany I", font);
+	all_game.loadNameLevel("Air Raid", renderer, "Air Raid", font);
+	all_game.loadNameLevel("Swap I", renderer, "Swap I", font);
+	all_game.loadNameLevel("Fog??", renderer, "Fog??", font);
+	all_game.loadNameLevel("Dark Stormy Night", renderer, "Dark Stormy Night", font);
+
+	all_game.Load_Texture("spritesheet/startlevel.png", renderer, "startlevel", "item");
 	all_game.Load_Texture("spritesheet/acidattack.png", renderer, "acidattack", "plant");
 	all_game.Load_Texture("spritesheet/acidbullet.png", renderer, "acidbullet", "effect");
 	all_game.Load_Texture("spritesheet/acideffect.png", renderer, "acideffect", "effect");
@@ -849,7 +862,7 @@ void remote_bullet(std::vector<Zombie*>& zombie_vector, std::vector<Bullet*>& bu
 }
 void remote_instakill(std::vector<Zombie*>& zombie_vector, std::vector<Plant*>& plant_vector) {
 	for (Plant* plant : plant_vector) {
-		if (plant != NULL && plant->name_plant == "cherrybomb" && plant->count_down == 20) {
+		if (plant != NULL && plant->name_plant == "cherrybomb" && plant->count_down >= 19) {
 			for (Zombie* zombie : zombie_vector)
 			{
 				if (zombie->num_row == plant->num_row ||
@@ -859,6 +872,8 @@ void remote_instakill(std::vector<Zombie*>& zombie_vector, std::vector<Plant*>& 
 
 					if (zombie->pos_x >= (plant->num_col - 1) * 80 - 80 && zombie->pos_x <= (plant->num_col + 1) * 80 + 80) {
 						zombie->name_zombie = "zombie";
+						zombie->status = "dead";
+						zombie->cur_frame = 0;
 						zombie->zom_blood -= (1800 - zombie->armor_type_1);
 						zombie->armor_type_1 = -1;
 						
@@ -969,6 +984,10 @@ void remote_anim_zombie(std::vector<Zombie*>& zombie_vector) {
 			Zombie* cur_zombie = zombie_vector.at(i);
 			shadow.SetRect(cur_zombie->pos_x, cur_zombie->pos_y + 100);
 			shadow.Render(renderer, NULL);
+			if (cur_zombie->status != cur_zombie->prev_status) {
+				cur_zombie->prev_status = cur_zombie->status;
+				cur_zombie->cur_frame = 0;
+			}
 			if (cur_zombie->name_zombie == "zombie") {
 				if (cur_zombie->status == "idle") {
 					anim_change = normal_non;
@@ -1069,6 +1088,7 @@ void remote_anim_zombie(std::vector<Zombie*>& zombie_vector) {
 					}
 
 				}
+				
 				cur_zombie->currentClip = &anim_change.get_clip()[cur_zombie->cur_frame];
 				all_game.Render(renderer, cur_zombie->currentClip, name_anim,
 					cur_zombie->pos_x-60, cur_zombie->pos_y + const_,
@@ -1161,7 +1181,7 @@ void remote_anim_zombie(std::vector<Zombie*>& zombie_vector) {
 
 				}
 				else {
-					cur_zombie->num_frame = 93;
+					cur_zombie->num_frame = 40;
 					anim_change = jackidle;
 					name_anim = "jackidle";
 					const_ = 0;
@@ -1380,6 +1400,10 @@ void remote_anim_(std::vector<Plant*>& plant_vector) {
 	for (int i = 0; i < plant_vector.size(); i++) {
 		if (plant_vector.size() != NULL) {
 			Plant* cur_plant = plant_vector.at(i);
+			if (cur_plant->status != cur_plant->prev_status) {
+				cur_plant->prev_status = cur_plant->status;
+				cur_plant->cur_frame = 0;
+			}
 			if (cur_plant->if_effect == false) {
 				shadow.SetRect((cur_plant->get_num_col()) * 80 + 30, (cur_plant->get_num_row()) * 100 + 140);
 				shadow.Render(renderer, NULL);
@@ -1779,6 +1803,15 @@ std::string getNameLevel(int level) {
 		return minigame_list[level]["name_level"].template get<std::string>();
 	}
 	
+}
+std::string getNameLevelinC(int level) {
+	if (cur_imformation.cur_td_adventure != 0) {
+		return level_list[level]["name_level_c"].template get<std::string>();
+	}
+	else {
+		return minigame_list[level]["name_level_c"].template get<std::string>();
+	}
+
 }
 int getDelayTime(int level, int wave) {
 	if (cur_imformation.cur_td_adventure != 0) {

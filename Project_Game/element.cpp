@@ -52,6 +52,7 @@ Music rip;
 Element all_game;
 
 TTF_Font* font;
+TTF_Font* chuugokuFont;
 const int BLOOD_DEAD = 50;
 Lawn_Mana game_lawn;
 Cur_imf cur_imformation;
@@ -379,10 +380,11 @@ void Element::remote_frame_zombie() {
 		Zombie* cur_zombie = *it;
 		if (cur_zombie != NULL) {		
 			int num_frame_ = cur_zombie->num_frame;
-			cur_zombie->cur_frame += 1;
-			if ((cur_zombie->cur_frame) >= (num_frame_ - 1)) {
+			//cur_zombie->cur_frame += 1;
+			cur_zombie->cur_frame = (cur_zombie->cur_frame + 1) % num_frame_;
+			/*if ((cur_zombie->cur_frame) >= (num_frame_ - 1)) {
 				cur_zombie->cur_frame = 0;
-			}
+			}*/
 		}
 		
 
@@ -638,7 +640,7 @@ void Element::reset_list_bullet() {
 	}
 	list_of_bullet.clear();
 }
-void Element::loadNameLevel(std::string path, SDL_Renderer* render, std::string name) {//Load Name
+void Element::loadNameLevel(std::string path, SDL_Renderer* render, std::string name, TTF_Font* font_) {//Load Name
 	if (listText.find(name) != listText.end()) {
 		std::cout << "Found: " << name << " " << std::endl;
 		return ;
@@ -647,7 +649,7 @@ void Element::loadNameLevel(std::string path, SDL_Renderer* render, std::string 
 		Texture_Storage* new_ = new Texture_Storage();
 		SDL_Texture* newTexture = NULL;
 		SDL_Color nTextCL = { 255,255,255 };
-		SDL_Surface* newText = TTF_RenderText_Blended(font, path.c_str(), nTextCL);
+		SDL_Surface* newText = TTF_RenderUTF8_Blended(font_, path.c_str(), nTextCL);
 		if (newText == NULL)
 		{
 			cout << "Can't load text: " << path << " " << TTF_GetError() << std::endl;

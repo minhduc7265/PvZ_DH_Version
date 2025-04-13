@@ -1,6 +1,7 @@
 {
 	"level_id": 1,
 	"name_level": "Zombotany I",
+	"name_level_c": "cm2",
 	"sun_init": 450,
 	"num_wave": 1,
 	"wave": [

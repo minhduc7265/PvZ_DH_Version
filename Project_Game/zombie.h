@@ -21,6 +21,7 @@ public:
 	bool is_dead;
 	bool is_eat;
 	std::string status;
+	std::string prev_status;
 	SDL_Rect* currentClip;
 	int num_row;
 	int num_col;

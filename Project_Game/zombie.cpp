@@ -11,6 +11,7 @@ Zombie::Zombie() {
 	name_zombie = "";
 	is_eat = false;
 	status = "idle";
+	prev_status = "";
 	currentClip = NULL;
 	num_row = 0;
 	num_col = 0;
@@ -34,6 +35,7 @@ Zombie::~Zombie() {
 	name_zombie = "";
 	is_eat = false;
 	status = "";
+	prev_status = "";
 	currentClip = NULL;
 	num_row = 0;
 	num_col = 0;

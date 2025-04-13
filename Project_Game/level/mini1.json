@@ -1,6 +1,7 @@
 {
 	"level_id": 1,
 	"name_level": "Air Raid",
+	"name_level_c": "cm1",
 	"sun_init": 100,
 	"num_wave": 1,
 	"wave": [

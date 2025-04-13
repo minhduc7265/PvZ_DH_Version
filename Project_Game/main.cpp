@@ -884,10 +884,10 @@ void status_process() {
 			all_game.check_zombie();
 			all_game.check_item();
 
-			all_game.remote_frame_plant();
+			/*all_game.remote_frame_plant();
 			all_game.remote_func_plant();
 			all_game.remote_frame_zombie();
-			all_game.remote_func_zombie();
+			all_game.remote_func_zombie();*/
 			all_game.check_bullet(renderer);
 
 
@@ -897,8 +897,11 @@ void status_process() {
 			remote_instakill2(all_game.list_zombie, all_game.list_plant);
 			remote_eat(all_game.list_zombie, all_game.list_plant);
 			remote_shoot(all_game.list_zombie, all_game.list_plant);
-			
-
+			//
+			all_game.remote_frame_plant();
+			all_game.remote_func_plant();
+			all_game.remote_func_zombie();
+			all_game.remote_frame_zombie();
 
 		}
 		
@@ -995,11 +998,13 @@ void status_process() {
 			}
 		}
 		
-		all_game.RenderText(renderer, NULL, getNameLevel(cur_imformation.cur_td_adventure != 0 ? cur_imformation.cur_td_adventure : cur_imformation.cur_mini_game));
+		all_game.RenderText(renderer, NULL, getNameLevel(cur_imformation.cur_td_adventure != 0 ? cur_imformation.cur_td_adventure : cur_imformation.cur_mini_game), 0);
+		all_game.RenderText(renderer, NULL, getNameLevelinC(cur_imformation.cur_td_adventure != 0 ? cur_imformation.cur_td_adventure : cur_imformation.cur_mini_game), 1);
 		cur_imformation.cd_text++;
 		if (cur_imformation.cd_text >= 25) {
 			cur_imformation.cd_text = 0;
 			all_game.changeColorText(getNameLevel(cur_imformation.cur_td_adventure != 0 ? cur_imformation.cur_td_adventure : cur_imformation.cur_mini_game), getRNG(0, 255), getRNG(0, 255), getRNG(0, 255));
+			all_game.changeColorText(getNameLevelinC(cur_imformation.cur_td_adventure != 0 ? cur_imformation.cur_td_adventure : cur_imformation.cur_mini_game), getRNG(0, 255), getRNG(0, 255), getRNG(0, 255));
 		}
 		
 
@@ -1095,7 +1100,8 @@ int main(int argc, char* args[])
 	}
 
 	font = TTF_OpenFont("font/font_a.ttf", 24);
-	if (font == NULL) {
+	chuugokuFont = TTF_OpenFont("font/chuugoku.ttf", 18);
+	if (font == NULL || chuugokuFont == NULL) {
 		std::cout << "TTF_OpenFont Error: " << TTF_GetError() << std::endl;
 		SDL_DestroyRenderer(renderer);
 		SDL_DestroyWindow(window);

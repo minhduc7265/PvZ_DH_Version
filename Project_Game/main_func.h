@@ -234,6 +234,7 @@ int get_sun_init(int level);
 int getSunInit(int level);
 int getWave(int level);
 std::string getNameLevel(int level);
+std::string getNameLevelinC(int level);
 int getDelayTime(int level, int wave);
 void spwanZombie(int level, int wave);
 void loadFileMiniGame();
