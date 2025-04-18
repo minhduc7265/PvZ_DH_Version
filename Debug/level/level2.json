@@ -1,38 +1,39 @@
 {
 	"level_id": 1,
 	"name_level": "2",
+	"name_level_c": "c2",
 	"sun_init": 250,
 	"num_wave": 1,
 	"wave": [
 		{
 			"cur_wave": 1,
 			"delay_time": 600,
-			"enemies": ["zombie", "zombie"]
+			"enemies": [ "zombie", "zombie" ]
 		},
 		{
 			"cur_wave": 2,
 			"delay_time": 700,
-			"enemies": ["zombie", "conezombie", "conezombie", "conezombie", "zombie"]
+			"enemies": [ "zombie", "conezombie", "conezombie", "conezombie", "zombie" ]
 		},
 		{
 			"cur_wave": 3,
 			"delay_time": 800,
-			"enemies": ["conezombie", "zombie", "conezombie", "zombie", "conezombie", "conezombie"]
+			"enemies": [ "conezombie", "zombie", "conezombie", "zombie", "conezombie", "conezombie" ]
 		},
 		{
 			"cur_wave": 4,
 			"delay_time": 700,
-			"enemies": ["zombie", "zombie", "zombie", "zombie", "zombie"]
+			"enemies": [ "zombie", "zombie", "zombie", "zombie", "zombie" ]
 		},
 		{
 			"cur_wave": 5,
 			"delay_time": 600,
-			"enemies": ["zombie", "ball_zombie", "ball_zombie", "conezombie", "zombie"]
+			"enemies": [ "zombie", "ball_zombie", "ball_zombie", "conezombie", "zombie" ]
 		},
 		{
 			"cur_wave": 6,
 			"delay_time": 700,
-			"enemies": ["zombie", "ball_zombie", "zombie", "ball_zombie", "zombie", "zombie"]
+			"enemies": [ "zombie", "ball_zombie", "zombie", "ball_zombie", "zombie", "zombie" ]
 		},
 		{
 			"cur_wave": 7,

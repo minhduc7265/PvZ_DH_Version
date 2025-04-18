@@ -1,6 +1,7 @@
 {
 	"level_id": 1,
 	"name_level": "1",
+	"name_level_c": "c1",
 	"sun_init": 225,
 	"num_wave": 5,
 	"wave": [

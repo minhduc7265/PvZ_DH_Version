@@ -1,6 +1,7 @@
 {
 	"level_id": 1,
 	"name_level": "Swap I",
+	"name_level_c": "cm3",
 	"sun_init": 250,
 	"num_wave": 1,
 	"wave": [

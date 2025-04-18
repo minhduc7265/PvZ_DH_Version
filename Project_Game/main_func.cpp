@@ -60,6 +60,7 @@ Animation shiliu_idle;
 Music potato_sound;
 Music hit2;
 Music hit3;
+Music losesound;
 Animation shiliu_shoot;
 Animation normal_non;
 Animation normal_walk_1;
@@ -76,6 +77,8 @@ Animation ceat2;
 Animation ceat3;
 Animation level;
 Animation level2;
+Animation Clevel;
+Animation Clevel2;
 Animation sfnon;
 Animation sfwalk;
 Animation sfeat;
@@ -110,6 +113,7 @@ Animation twinproduct;
 Music jacksound;
 Music lightfill;
 LoadPIC huge_wave;
+LoadPIC Chuge_wave;
 LoadPIC huge_wave_black;
 LoadPIC bg_background;
 LoadPIC bg_seed_bank;
@@ -133,15 +137,22 @@ LoadPIC adventure2;
 LoadPIC bgnormal;
 LoadPIC challengebg;
 LoadPIC challengemg;
+LoadPIC Cchallengebg;
+LoadPIC Cchallengemg;
 LoadPIC background3;
 LoadPIC fog;
 LoadPIC background2;
 LoadPIC back1;
 LoadPIC back2;
-LoadPIC cyp;
+LoadPIC Cback1;
+LoadPIC Cback2;
+LoadPIC cyp; 
+LoadPIC Ccyp;
 LoadPIC star;
 LoadPIC play_but1;
 LoadPIC play_but2;
+LoadPIC Cplay_but1;
+LoadPIC Cplay_but2;
 LoadPIC tiankong;
 LoadPIC shovelblank;
 LoadPIC shovel;
@@ -155,6 +166,8 @@ Music thunder;
 Music jacksup;
 Animation minigame1;
 Animation minigame2;
+Animation Cminigame1;
+Animation Cminigame2;
 Animation sunzidle;
 Animation sunzwalk;
 Animation sunzeat;
@@ -201,14 +214,23 @@ Music hit;
 Music rsp;
 Music huge_wave_sound;
 Music sun_collected;
+Animation Cstartlevel;
 Animation startlevel;
 LoadPIC finalwave;
+LoadPIC Zombiewon;
 Music sound_melon;
 Animation acididle;
 Animation acidattack;
 Animation acidbullet;
 Animation acideffect;
 Animation peasplat;
+
+
+
+LoadPIC restart1;
+LoadPIC restart2;
+LoadPIC Crestart1;
+LoadPIC Crestart2;
 int count_zombie = 0;
 //Element all_gamez;
 //Element all_gamez;
@@ -414,12 +436,17 @@ void load_sound() {
 	e4.Load_Sound_Effect("music/e4.wav");
 	jacksound.Load_Sound_Effect("music/jacksound.wav");
 	rsp.Load_Sound_Effect("music/rsp.wav");
+	losesound.Load_Sound_Effect("music/losesound.wav");
 }
 void load_anim() {
 	level.set_clip(5, 118, 120);
 	level2.set_clip(5, 118, 120);
+	Clevel.set_clip(5, 118, 120);
+	Clevel2.set_clip(5, 118, 120);
 	minigame1.set_clip(5, 118, 120);
 	minigame2.set_clip(5, 118, 120);
+	Cminigame1.set_clip(5, 118, 120);
+	Cminigame2.set_clip(5, 118, 120);
 	pea_idle.set_clip(31, 266, 245);
 	pea_shoot.set_clip(31, 269, 244);
 	snow_idle.set_clip(144, 176, 209);
@@ -497,7 +524,7 @@ void load_anim() {
 	sunzwalk.set_clip_bonus(90, 157, 147);
 	sunzeat.set_clip_bonus(259, 157, 147);
 	startlevel.set_clip_bonus(22, 390, 172);
-
+	Cstartlevel.set_clip_bonus(22, 390, 172);
 	acididle.set_clip_bonus(210, 245, 245);
 	acidattack.set_clip_bonus(61, 245, 245);
 	acidbullet.set_clip(7, 100, 12);
@@ -505,6 +532,16 @@ void load_anim() {
 	peasplat.set_clip_bonus(15, 91, 81);
 }
 bool LoadBG() {
+	restart1.Set_Name_Path("images/restart1.png");
+	restart1.LoadImg("images/restart1.png", renderer);
+	restart2.Set_Name_Path("images/restart2.png");
+	restart2.LoadImg("images/restart2.png", renderer);
+	Crestart1.Set_Name_Path("images/Crestart1.png");
+	Crestart1.LoadImg("images/Crestart1.png", renderer);
+	Crestart2.Set_Name_Path("images/Crestart2.png");
+	Crestart2.LoadImg("images/Crestart2.png", renderer);
+	Zombiewon.Set_Name_Path("images/ZombiesWon.png");
+	Zombiewon.LoadImg("images/ZombiesWon.png", renderer);
 	bgtd.Set_Name_Path("images/bgtd.png");
 	bgtd.LoadImg("images/bgtd.png", renderer);
 	cdseed.Set_Name_Path("images/cdseed.png");
@@ -517,6 +554,8 @@ bool LoadBG() {
 	fog.LoadImg("images/fog.png", renderer);
 	cyp.Set_Name_Path("images/cyp.png");
 	cyp.LoadImg("images/cyp.png",renderer);
+	Ccyp.Set_Name_Path("images/Ccyp.png");
+	Ccyp.LoadImg("images/Ccyp.png", renderer);
 	tiankong.Set_Name_Path("images/tiankong.png");
 	tiankong.LoadImg("images/tiankong.png", renderer);
 	background3.Set_Name_Path("images/background3.png");
@@ -529,10 +568,16 @@ bool LoadBG() {
 	back1.LoadImg("images/back1.png", renderer);
 	back2.Set_Name_Path("images/back2.png");
 	back2.LoadImg("images/back2.png", renderer);
+	Cback1.Set_Name_Path("images/Cback1.png");
+	Cback1.LoadImg("images/Cback1.png", renderer);
+	Cback2.Set_Name_Path("images/Cback2.png");
+	Cback2.LoadImg("images/Cback2.png", renderer);
 	star.Set_Name_Path("images/star.png");
 	star.LoadImg("images/star.png", renderer);
 	challengebg.Set_Name_Path("images/challengebg.png");
 	challengebg.LoadImg("images/challengebg.png", renderer);
+	Cchallengebg.Set_Name_Path("images/Cchallengebg.png");
+	Cchallengebg.LoadImg("images/Cchallengebg.png", renderer);
 	adventure1.Set_Name_Path("images/adventure1.png");
 	adventure1.LoadImg("images/adventure1.png", renderer);
 	adventure2.Set_Name_Path("images/adventure2.png");
@@ -547,6 +592,8 @@ bool LoadBG() {
 	but2.LoadImg("images/but2.png", renderer);
 	huge_wave.Set_Name_Path("images/huge_1.png");
 	huge_wave.LoadImg("images/huge_1.png",renderer);
+	Chuge_wave.Set_Name_Path("images/Chuge_1.png");
+	Chuge_wave.LoadImg("images/Chuge_1.png", renderer);
 	huge_wave_black.Set_Name_Path("images/huge_2.png");
 	huge_wave_black.LoadImg("images/huge_2.png", renderer);
 	shadow.Set_Name_Path("images/shadow.png");
@@ -570,6 +617,10 @@ bool LoadBG() {
 	play_but1.Set_Name_Path("images/play_button_1.png");
 	play_but2.LoadImg("images/play_button_2.png", renderer);
 	play_but2.Set_Name_Path("images/play_button_2.png");
+	Cplay_but1.LoadImg("images/Cplay_button_1.png", renderer);
+	Cplay_but1.Set_Name_Path("images/Cplay_button_1.png");
+	Cplay_but2.LoadImg("images/Cplay_button_2.png", renderer);
+	Cplay_but2.Set_Name_Path("images/Cplay_button_2.png");
 	outlevel2.LoadImg("images/outlevel2.png", renderer);
 	outlevel2.Set_Name_Path("images/outlevel2.png");
 	outlevel.LoadImg("images/outlevel.png", renderer);
@@ -584,6 +635,8 @@ bool LoadBG() {
 	reset2.Set_Name_Path("images/reset2.png");
 	challengemg.Set_Name_Path("images/challengemg.png");
 	challengemg.LoadImg("images/challengemg.png", renderer);
+	Cchallengemg.Set_Name_Path("images/Cchallengemg.png");
+	Cchallengemg.LoadImg("images/Cchallengemg.png", renderer);
 	finalwave.Set_Name_Path("images/finalwave.png");
 	finalwave.LoadImg("images/finalwave.png", renderer);
 	bool ret = bg_background.LoadImg("images/background1.png", renderer);//
@@ -595,8 +648,12 @@ bool LoadBG() {
 void load_texture_element() {
 	all_game.Load_Texture("images/mini-game1.png", renderer, "minigame1", "picture");
 	all_game.Load_Texture("images/mini-game2.png", renderer, "minigame2", "picture");
+	all_game.Load_Texture("images/Cmini-game1.png", renderer, "Cminigame1", "picture");
+	all_game.Load_Texture("images/Cmini-game1.png", renderer, "Cminigame2", "picture");//EDIT
 	all_game.Load_Texture("images/level.png", renderer, "level", "picture");
 	all_game.Load_Texture("images/level2.png", renderer, "level2", "picture");
+	all_game.Load_Texture("images/Clevel.png", renderer, "Clevel", "picture");
+	all_game.Load_Texture("images/Clevel2.png", renderer, "Clevel2", "picture");
 	all_game.Load_Texture("spritesheet/peashooter.png", renderer, "peashooter", "plant");
 	all_game.Load_Texture("spritesheet/peashooter_shoot.png", renderer, "pea_shoot", "plant");
 	all_game.Load_Texture("spritesheet/snowpea.png", renderer, "snowpea", "plant");
@@ -694,7 +751,7 @@ void load_texture_element() {
 	all_game.loadNameLevel("Swap I", renderer, "Swap I", font);
 	all_game.loadNameLevel("Fog??", renderer, "Fog??", font);
 	all_game.loadNameLevel("Dark Stormy Night", renderer, "Dark Stormy Night", font);
-
+	all_game.Load_Texture("spritesheet/Cstartlevel.png", renderer, "Cstartlevel", "item");
 	all_game.Load_Texture("spritesheet/startlevel.png", renderer, "startlevel", "item");
 	all_game.Load_Texture("spritesheet/acidattack.png", renderer, "acidattack", "plant");
 	all_game.Load_Texture("spritesheet/acidbullet.png", renderer, "acidbullet", "effect");
@@ -984,6 +1041,9 @@ void remote_anim_zombie(std::vector<Zombie*>& zombie_vector) {
 			Zombie* cur_zombie = zombie_vector.at(i);
 			shadow.SetRect(cur_zombie->pos_x, cur_zombie->pos_y + 100);
 			shadow.Render(renderer, NULL);
+			if (cur_zombie->pos_x < -60) {
+				status_manager.status = 6;//LOSE
+			}
 			if (cur_zombie->status != cur_zombie->prev_status) {
 				cur_zombie->prev_status = cur_zombie->status;
 				cur_zombie->cur_frame = 0;
@@ -1739,6 +1799,8 @@ void reset_level(int parameter) {
 	}
 	all_game.reset_list_plant();
 	all_game.reset_list_zombie();
+	cur_imformation.color = 255;
+	cur_imformation.alpha = 255;
 	game_lawn.Lawn_Set();
 	timeGame.resume();
 	for (int i = 0; i < 6; i++) {

@@ -81,21 +81,41 @@ void set_wave_time() {
 	huge_wave.SetRect(-180, -180);
 	huge_wave.rect_.w = 1200;
 	huge_wave.rect_.h = 900;
+
+	Chuge_wave.SetRect(-180, -180);
+	Chuge_wave.rect_.w = 1200;
+	Chuge_wave.rect_.h = 900;
 }
 
 
 void render_huge_wave() {//5 loại cờ
-	if (huge_wave.rect_.x < 0) {
-		huge_wave.rect_.x+=18;
-		huge_wave.rect_.y+=18;
+	if (status_manager.cur_language == game_status::Language::ENGLISH) {
+		if (huge_wave.rect_.x < 0) {
+			huge_wave.rect_.x += 18;
+			huge_wave.rect_.y += 18;
+		}
+		if (huge_wave.rect_.w > 800) {
+			huge_wave.rect_.w -= 40;
+		}
+		if (huge_wave.rect_.h > 600) {
+			huge_wave.rect_.h -= 30;
+		}
+		huge_wave.Render(renderer, NULL);
 	}
-	if (huge_wave.rect_.w > 800) {
-		huge_wave.rect_.w-=40;
+	else {
+		if (Chuge_wave.rect_.x < 0) {
+			Chuge_wave.rect_.x += 18;
+			Chuge_wave.rect_.y += 18;
+		}
+		if (Chuge_wave.rect_.w > 800) {
+			Chuge_wave.rect_.w -= 40;
+		}
+		if (Chuge_wave.rect_.h > 600) {
+			Chuge_wave.rect_.h -= 30;
+		}
+		Chuge_wave.Render(renderer, NULL);
 	}
-	if (huge_wave.rect_.h > 600) {
-		huge_wave.rect_.h-=30;
-	}
-	huge_wave.Render(renderer, NULL);
+	
 }
 
 void remoteFlagTD() {
@@ -341,7 +361,7 @@ bool InitData() {
 	}
 
 
-	Mix_AllocateChannels(32);//Set 32 kênh
+	Mix_AllocateChannels(42);//Set 32 kênh
 
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
 	window = SDL_CreateWindow(WINDOW_NAME_N.c_str(), SDL_WINDOWPOS_UNDEFINED,
@@ -615,11 +635,24 @@ void status_process() {
 		}
 
 		if (status_manager.mg_status <= 4) {
-			challengebg.SetRect(0, 0);
-			challengebg.Render(renderer, NULL);
+			if (status_manager.cur_language == game_status::Language::ENGLISH) {
+				challengebg.SetRect(0, 0);
+				challengebg.Render(renderer, NULL);
+			}
+			else {
+				Cchallengebg.SetRect(0, 0);
+				Cchallengebg.Render(renderer, NULL);
+			}
 			for (int i = 0; i < 5; i++) {
+
 				if (mouseX >= i * 155 + 30 && mouseX <= i * 155 + 30 + 120 && mouseY >= 100 && mouseY <= 215) {
-					all_game.Render(renderer, &level2.get_clip()[i], "level", i * 155 + 30, 100, 118, 120);
+					if (status_manager.cur_language == game_status::Language::ENGLISH) {
+						all_game.Render(renderer, &level2.get_clip()[i], "level2", i * 155 + 30, 100, 118, 120);
+					}
+					else {
+						all_game.Render(renderer, &Clevel2.get_clip()[i], "Clevel2", i * 155 + 30, 100, 118, 120);
+					}
+					
 
 					if (SDL_WaitEvent(&event) && event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
 						status_manager.status = 3;
@@ -628,15 +661,33 @@ void status_process() {
 						click.Play_Sound(28);
 					}
 				}
-				all_game.Render(renderer, &level.get_clip()[i], "level", i * 155 + 30, 100, 118, 120);
+				if (status_manager.cur_language == game_status::Language::ENGLISH) {
+					all_game.Render(renderer, &level.get_clip()[i], "level", i * 155 + 30, 100, 118, 120);
+				}
+				else {
+					all_game.Render(renderer, &Clevel.get_clip()[i], "Clevel", i * 155 + 30, 100, 118, 120);
+				}
+				
 			}
 		}
 		else{
-			challengemg.SetRect(0, 0);
-			challengemg.Render(renderer, NULL);
+			if (status_manager.cur_language == game_status::Language::ENGLISH) {
+				challengemg.SetRect(0, 0);
+				challengemg.Render(renderer, NULL);
+			}
+			else {
+				Cchallengemg.SetRect(0, 0);
+				Cchallengemg.Render(renderer, NULL);
+			}
 			for (int i = 0; i < 5; i++) {
 				if (mouseX >= i * 155 + 30 && mouseX <= i * 155 + 30 + 120 && mouseY >= 100 && mouseY <= 215) {
-					all_game.Render(renderer, &minigame2.get_clip()[i], "minigame2", i * 155 + 30, 100, 118, 120);
+					if (status_manager.cur_language == game_status::Language::ENGLISH) {
+						all_game.Render(renderer, &minigame2.get_clip()[i], "minigame2", i * 155 + 30, 100, 118, 120);
+					}
+					else {
+						all_game.Render(renderer, &Cminigame2.get_clip()[i], "Cminigame2", i * 155 + 30, 100, 118, 120);
+					}
+					
 
 					if (SDL_WaitEvent(&event) && event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
 						status_manager.status = 3;
@@ -645,22 +696,39 @@ void status_process() {
 						click.Play_Sound(28);
 					}
 				}
-				all_game.Render(renderer, &minigame1.get_clip()[i], "minigame1", i * 155 + 30, 100, 118, 120);
+				if (status_manager.cur_language == game_status::Language::ENGLISH) {
+					all_game.Render(renderer, &minigame1.get_clip()[i], "minigame1", i * 155 + 30, 100, 118, 120);
+				}
+				else {
+					all_game.Render(renderer, &Cminigame1.get_clip()[i], "Cminigame1", i * 155 + 30, 100, 118, 120);
+				}
+				
 			}
 		}
 
 		if (mouseX >= 10 && mouseX <= 100 && mouseY >= 575 && mouseY <= 590) {
-			back2.SetRect(10, 575);
-			back2.Render(renderer, NULL);
-
+			if (status_manager.cur_language == game_status::Language::ENGLISH) {
+				back2.SetRect(10, 575);
+				back2.Render(renderer, NULL);
+			}
+			else {
+				Cback2.SetRect(10, 575);
+				Cback2.Render(renderer, NULL);
+			}
 			if (SDL_WaitEvent(&event) && event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
 				status_manager.status = 1;
 				click.Play_Sound(28);
 			}
 		}
 		else {
-			back1.SetRect(10, 575);
-			back1.Render(renderer, NULL);
+			if (status_manager.cur_language == game_status::Language::ENGLISH) {
+				back1.SetRect(10, 575);
+				back1.Render(renderer, NULL);
+			}
+			else {
+				Cback1.SetRect(10, 575);
+				Cback1.Render(renderer, NULL);
+			}
 		}
 
 
@@ -696,20 +764,44 @@ void status_process() {
 		}
 		if (pos_bg > -550) {
 			pos_bg -= 13;
-			cyp.SetRect(0, 630);
+			if (status_manager.cur_language == game_status::Language::ENGLISH) {
+				cyp.SetRect(0, 630);
+			}
+			else {
+				Ccyp.SetRect(0, 630);
+			}
 		}
 		if (pos_bg < -550) {
-			cyp.rect_.y = (cyp.rect_.y >= 90) ? cyp.rect_.y - 70: 70;
-			cyp.Render(renderer, NULL);
+			if (status_manager.cur_language == game_status::Language::ENGLISH) {
+				cyp.rect_.y = (cyp.rect_.y >= 90) ? cyp.rect_.y - 70 : 70;
+				cyp.Render(renderer, NULL);
+			}
+			else {
+				Ccyp.rect_.y = (Ccyp.rect_.y >= 90) ? Ccyp.rect_.y - 70 : 70;
+				Ccyp.Render(renderer, NULL);
+			}
+			
+
 			cyp_remote();
-			play_but2.SetRect(150, 530);
-			play_but2.Render(renderer, NULL);
+			if (status_manager.cur_language == game_status::Language::ENGLISH) {
+				play_but2.SetRect(150, 530);
+				play_but2.Render(renderer, NULL);
+			}
+			else {
+				Cplay_but2.SetRect(150, 530);
+				Cplay_but2.Render(renderer, NULL);
+			}
+			
 
 		}
 		if (mouseX >= 150 && mouseX <= 300 && mouseY >= 530 && mouseY <= 572) {
-			if (cyp.rect_.y == 70) {
+			if ((status_manager.cur_language == game_status::Language::ENGLISH && cyp.rect_.y == 70)) {
 				play_but1.SetRect(150, 530);
 				play_but1.Render(renderer, NULL);
+			}
+			else if ((status_manager.cur_language == game_status::Language::CHINESE && Ccyp.rect_.y == 70)) {
+				Cplay_but1.SetRect(150, 530);
+				Cplay_but1.Render(renderer, NULL);
 			}
 			if (SDL_WaitEvent(&event) && event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
 				status_manager.status = 4;
@@ -745,16 +837,23 @@ void status_process() {
 			status_manager.cd++;
 			if (status_manager.cd > 2) {
 				startlevel.cur_frame++;
+				Cstartlevel.cur_frame++;
 				status_manager.cd = 0;
 			}
-			all_game.Render(renderer, &startlevel.get_clip()[startlevel.cur_frame], "startlevel", 260, 230, 300, 132);
+			if (status_manager.cur_language == game_status::Language::ENGLISH) {
+				all_game.Render(renderer, &startlevel.get_clip()[startlevel.cur_frame], "startlevel", 260, 230, 300, 132);
+			}
+			else {
+				all_game.Render(renderer, &Cstartlevel.get_clip()[Cstartlevel.cur_frame], "Cstartlevel", 260, 230, 300, 132);
+			}
 			if (startlevel.cur_frame == 1) {
 				rsp.Play_Sound(3);
 			}
 			
-			else if (startlevel.cur_frame >= 22) {
+			else if (startlevel.cur_frame >= 22||Cstartlevel.cur_frame >= 22) {
 				status_manager.status = 5;
 				startlevel.cur_frame = 0;
+				Cstartlevel.cur_frame = 0;
 				status_manager.cd = 0;
 			}
 			
@@ -762,8 +861,8 @@ void status_process() {
 		
 	}
 
-	else if (status_manager.status == 5) {
-		if (is_music != 4) {
+	else if (status_manager.status == 5 || status_manager.status == 6) {
+		if (status_manager.status == 5 && is_music != 4) {
 			off_mainmusic(ctx);
 			esdp_c.End_Music();
 			if (cur_imformation.cur_td_adventure != 0) {
@@ -793,6 +892,14 @@ void status_process() {
 			
 			is_music = 4;
 		}
+
+		else if (status_manager.status == 6 && is_music != -1) {//When you lose
+			esdp.End_Music();
+			off_mainmusic(ctx);
+			losesound.Play_Sound(34);
+			is_music = -1;
+		}
+
 		if (cur_imformation.cur_td_adventure != 0) {
 			bg_sea.SetRect(-215, 0);
 			bg_sea.Render(renderer, NULL);
@@ -856,7 +963,7 @@ void status_process() {
 
 
 		
-		if (timeGame.is_paused() == false) {
+		if (timeGame.is_paused() == false && status_manager.status != 6) {
 			
 			if (cur_imformation.cur_td_adventure != 0) {
 				cur_imformation.type_flag = getWave(cur_imformation.cur_td_adventure);
@@ -997,9 +1104,13 @@ void status_process() {
 
 			}
 		}
+		if (status_manager.cur_language == game_status::Language::ENGLISH) {
+			all_game.RenderText(renderer, NULL, getNameLevel(cur_imformation.cur_td_adventure != 0 ? cur_imformation.cur_td_adventure : cur_imformation.cur_mini_game), 0);
+		}
+		else {
+			all_game.RenderText(renderer, NULL, getNameLevelinC(cur_imformation.cur_td_adventure != 0 ? cur_imformation.cur_td_adventure : cur_imformation.cur_mini_game), 1);
+		}
 		
-		all_game.RenderText(renderer, NULL, getNameLevel(cur_imformation.cur_td_adventure != 0 ? cur_imformation.cur_td_adventure : cur_imformation.cur_mini_game), 0);
-		all_game.RenderText(renderer, NULL, getNameLevelinC(cur_imformation.cur_td_adventure != 0 ? cur_imformation.cur_td_adventure : cur_imformation.cur_mini_game), 1);
 		cur_imformation.cd_text++;
 		if (cur_imformation.cd_text >= 25) {
 			cur_imformation.cd_text = 0;
@@ -1051,7 +1162,44 @@ void status_process() {
 			shovel.SetRect(440, 10);
 			shovel.Render(renderer, NULL);
 		}
+		if (status_manager.status == 6) {
+			bgtd.SetRect(0, 0);
+			bgtd.RenderColor(renderer, NULL, 0);
+			bgtd.RenderAlpha(renderer, 255 - (cur_imformation.alpha > 3 ? cur_imformation.alpha-=2 : cur_imformation.alpha));
+			if (cur_imformation.alpha < 10) {
+				Zombiewon.SetRect(120, 30);
+				Zombiewon.RenderColor(renderer, NULL, 255);
+				Zombiewon.RenderAlpha(renderer, 255 - (cur_imformation.color > 3 ? cur_imformation.color-=2 : cur_imformation.color));
+
+			}
+			if (cur_imformation.color < 4) {
+				if (status_manager.cur_language == game_status::Language::ENGLISH) {
+					restart1.SetRect(340, 430);
+					restart1.Render(renderer, NULL);
+				}
+				else {
+					Crestart1.SetRect(340, 430);
+					Crestart1.Render(renderer, NULL);
+				}
+				if (mouseX >= 340 && mouseX <= 450 && mouseY >= 430 && mouseY <= 450) {
+					if (status_manager.cur_language == game_status::Language::ENGLISH) {
+						restart2.SetRect(340, 430);
+						restart2.Render(renderer, NULL);
+					}
+					else {
+						Crestart2.SetRect(340, 430);
+						Crestart2.Render(renderer, NULL);
+					}
+					
+					if (SDL_WaitEvent(&event) && event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
+						status_manager.status = 3;
+						click.Play_Sound(28);
+					}
+				}
+			}
+		}
 	}
+	
 }
 
 
@@ -1068,6 +1216,8 @@ void status_process() {
 
 int main(int argc, char* args[])
 {
+	status_manager.cur_language = game_status::Language::CHINESE;
+	std::cout << "LANGUAGE: " << &status_manager.cur_language << endl;
 	game_lawn.Lawn_Set();
 	timeGame.start();
 	//test
@@ -1132,7 +1282,7 @@ int main(int argc, char* args[])
 			set_wave_time();
 
 		}
-		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 		SDL_GetMouseState(&mouseX, &mouseY);
 		mouse_x_y = get_location(mouseX, mouseY);
 		SDL_RenderClear(renderer);
@@ -1215,8 +1365,8 @@ int main(int argc, char* args[])
 
 
 				//TEST
-				all_game.call_zombie("sunzom", rand() % 5, rand() % 3 + 9, 90);
-				all_game.call_zombie("jackbox", rand() % 5, rand() % 3 + 9, 90);
+				all_game.call_zombie("sunzom", rand() % 5, -8, 90);
+				
 				//TEST
 
 			}

@@ -9,7 +9,12 @@ public:
 	int status;
 	int cd;
 	int mg_status;
+	enum class Language {
+		ENGLISH,
+		CHINESE
+	};
 
+	Language cur_language;
 };
 
 

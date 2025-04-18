@@ -84,7 +84,7 @@ public:
 		}
 		SDL_Rect renderquad;
 		if (param == 1) {
-			renderquad = { temp - 6 * listText[name]->getLength(),550,listText[name]->mW,listText[name]->mH };
+			renderquad = { temp - 6 * listText[name]->getLength(),570,listText[name]->mW,listText[name]->mH };
 		}
 		else {
 			renderquad = { temp - 8 * listText[name]->getLength(),565,listText[name]->mW,listText[name]->mH };
