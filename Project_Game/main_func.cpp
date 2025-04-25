@@ -1216,6 +1216,7 @@ void remote_anim_zombie(std::vector<Zombie*>& zombie_vector) {
 			else if (cur_zombie->name_zombie == "jackbox") {
 
 				if (cur_zombie->status == "idle") {
+					cur_zombie->num_frame = 40;
 					anim_change = jackidle;
 					const_ = 0;
 					name_anim = "jackidle";
@@ -1258,6 +1259,7 @@ void remote_anim_zombie(std::vector<Zombie*>& zombie_vector) {
 			}
 			else if (cur_zombie->name_zombie == "exzombie") {
 				if (cur_zombie->status == "idle") {
+					cur_zombie->num_frame = 64;
 					anim_change = exnon;
 					const_ = 0;
 					const_x = -60; const_x = -60;
@@ -1353,6 +1355,7 @@ void remote_anim_zombie(std::vector<Zombie*>& zombie_vector) {
 			else if (cur_zombie->name_zombie == "ball_zombie") {
 
 				if (cur_zombie->status == "idle") {
+					cur_zombie->num_frame = 60;
 					anim_change = ballidle;
 					const_ = 0;
 					name_anim = "ballidle";
@@ -1418,6 +1421,7 @@ void remote_anim_zombie(std::vector<Zombie*>& zombie_vector) {
 			else if (cur_zombie->name_zombie == "sky_zombie") {
 
 				if (cur_zombie->status == "idle") {
+					cur_zombie->num_frame = 61;
 					anim_change = skyidle;
 					const_ = 0;
 					name_anim = "skyidle";
@@ -1992,15 +1996,10 @@ void RenderPreview() {
 		pr[2].remoteFrame();
 		pr[2].Render(renderer, &normal_non.get_clip()[pr[2].getCurFrame()], all_game.GetTexture("normal_non"), 110, 128);
 
-		pr[3].setPos(578 + (pos_bg + 550), 340);
-		pr[3].setNumFrame(60);
+		pr[3].setPos(478 + (pos_bg + 550), 140);
+		pr[3].setNumFrame(12);
 		pr[3].remoteFrame();
-		pr[3].Render(renderer, &ballidle.get_clip()[pr[3].getCurFrame()], all_game.GetTexture("ballidle"), 151, 161);
-
-		pr[4].setPos(478 + (pos_bg + 550), 140);
-		pr[4].setNumFrame(60);
-		pr[4].remoteFrame();
-		pr[4].Render(renderer, &ballidle.get_clip()[pr[3].getCurFrame()], all_game.GetTexture("ballidle"), 151, 161);
+		pr[3].Render(renderer, &zomboni.get_clip()[pr[3].getCurFrame()], all_game.GetTexture("zomboni"), 188, 180);
 	}
 	else if (cur_imformation.cur_td_adventure == 4) {
 		pr[0].setPos(670 + (pos_bg + 550), 270);
@@ -2011,7 +2010,7 @@ void RenderPreview() {
 		pr[1].setPos(620 + (pos_bg + 550), 127);
 		pr[1].setNumFrame(63);
 		pr[1].remoteFrame();
-		pr[1].Render(renderer, &cnon.get_clip()[pr[1].getCurFrame()], all_game.GetTexture("cnon"), 173, 165);
+		pr[1].Render(renderer, &normal_non.get_clip()[pr[1].getCurFrame()], all_game.GetTexture("normal_non"), 110, 128);
 
 
 		pr[2].setPos(530 + (pos_bg + 550), 400);
@@ -2024,10 +2023,14 @@ void RenderPreview() {
 		pr[3].remoteFrame();
 		pr[3].Render(renderer, &ballidle.get_clip()[pr[3].getCurFrame()], all_game.GetTexture("ballidle"), 151, 161);
 
+
 		pr[4].setPos(478 + (pos_bg + 550), 140);
-		pr[4].setNumFrame(60);
+		pr[4].setNumFrame(40);
 		pr[4].remoteFrame();
-		pr[4].Render(renderer, &ballidle.get_clip()[pr[3].getCurFrame()], all_game.GetTexture("ballidle"), 151, 161);
+		pr[4].Render(renderer, &jackidle.get_clip()[pr[4].getCurFrame()], all_game.GetTexture("jackidle"), 245, 245);
+
+
+		
 	}
 	else if (cur_imformation.cur_td_adventure == 5) {
 		pr[0].setPos(670 + (pos_bg + 550), 270);
@@ -2054,24 +2057,24 @@ void RenderPreview() {
 		pr[4].setPos(478 + (pos_bg + 550), 140);
 		pr[4].setNumFrame(60);
 		pr[4].remoteFrame();
-		pr[4].Render(renderer, &ballidle.get_clip()[pr[3].getCurFrame()], all_game.GetTexture("ballidle"), 151, 161);
+		pr[4].Render(renderer, &ballidle.get_clip()[pr[4].getCurFrame()], all_game.GetTexture("ballidle"), 151, 161);
 	}
 	else if (cur_imformation.cur_mini_game == 1) {
 		pr[0].setPos(670 + (pos_bg + 550), 270);
-		pr[0].setNumFrame(63);
+		pr[0].setNumFrame(61);
 		pr[0].remoteFrame();
-		pr[0].Render(renderer, &normal_non.get_clip()[pr[0].getCurFrame()], all_game.GetTexture("normal_non"), 110, 128);
+		pr[0].Render(renderer, &skyidle.get_clip()[pr[0].getCurFrame()], all_game.GetTexture("skyidle"), 125, 172);
 
 		pr[1].setPos(620 + (pos_bg + 550), 127);
-		pr[1].setNumFrame(63);
+		pr[1].setNumFrame(61);
 		pr[1].remoteFrame();
-		pr[1].Render(renderer, &cnon.get_clip()[pr[1].getCurFrame()], all_game.GetTexture("cnon"), 173, 165);
+		pr[1].Render(renderer, &skyidle.get_clip()[pr[1].getCurFrame()], all_game.GetTexture("skyidle"), 125, 172);
 
 
 		pr[2].setPos(530 + (pos_bg + 550), 400);
-		pr[2].setNumFrame(63);
+		pr[2].setNumFrame(60);
 		pr[2].remoteFrame();
-		pr[2].Render(renderer, &normal_non.get_clip()[pr[2].getCurFrame()], all_game.GetTexture("normal_non"), 110, 128);
+		pr[2].Render(renderer, &ballidle.get_clip()[pr[2].getCurFrame()], all_game.GetTexture("ballidle"), 151, 161);
 
 		pr[3].setPos(578 + (pos_bg + 550), 340);
 		pr[3].setNumFrame(60);
@@ -2081,7 +2084,7 @@ void RenderPreview() {
 		pr[4].setPos(478 + (pos_bg + 550), 140);
 		pr[4].setNumFrame(60);
 		pr[4].remoteFrame();
-		pr[4].Render(renderer, &ballidle.get_clip()[pr[3].getCurFrame()], all_game.GetTexture("ballidle"), 151, 161);
+		pr[4].Render(renderer, &ballidle.get_clip()[pr[4].getCurFrame()], all_game.GetTexture("ballidle"), 151, 161);
 	}
 	else if (cur_imformation.cur_mini_game == 2) {
 		pr[0].setPos(670 + (pos_bg + 550), 270);
@@ -2125,17 +2128,19 @@ void RenderPreview() {
 		pr[2].setPos(530 + (pos_bg + 550), 400);
 		pr[2].setNumFrame(63);
 		pr[2].remoteFrame();
-		pr[2].Render(renderer, &normal_non.get_clip()[pr[2].getCurFrame()], all_game.GetTexture("normal_non"), 110, 128);
+		pr[2].Render(renderer, &peazombieidle.get_clip()[pr[2].getCurFrame()], all_game.GetTexture("peazombieidle"), 112, 148);
 
-		pr[3].setPos(578 + (pos_bg + 550), 340);
-		pr[3].setNumFrame(60);
+
+		pr[3].setPos(478 + (pos_bg + 550), 140);
+		pr[3].setNumFrame(12);
 		pr[3].remoteFrame();
-		pr[3].Render(renderer, &ballidle.get_clip()[pr[3].getCurFrame()], all_game.GetTexture("ballidle"), 151, 161);
+		pr[3].Render(renderer, &zomboni.get_clip()[pr[3].getCurFrame()], all_game.GetTexture("zomboni"), 188, 180);
 
-		pr[4].setPos(478 + (pos_bg + 550), 140);
-		pr[4].setNumFrame(60);
+
+		pr[4].setPos(578 + (pos_bg + 550), 440);
+		pr[4].setNumFrame(64);
 		pr[4].remoteFrame();
-		pr[4].Render(renderer, &ballidle.get_clip()[pr[3].getCurFrame()], all_game.GetTexture("ballidle"), 151, 161);
+		pr[4].Render(renderer, &exnon.get_clip()[pr[4].getCurFrame()], all_game.GetTexture("exnon"), 152, 164);
 	}
 	else if (cur_imformation.cur_mini_game == 4) {
 		pr[0].setPos(670 + (pos_bg + 550), 270);
@@ -2149,20 +2154,16 @@ void RenderPreview() {
 		pr[1].Render(renderer, &cnon.get_clip()[pr[1].getCurFrame()], all_game.GetTexture("cnon"), 173, 165);
 
 
-		pr[2].setPos(530 + (pos_bg + 550), 400);
-		pr[2].setNumFrame(63);
-		pr[2].remoteFrame();
-		pr[2].Render(renderer, &normal_non.get_clip()[pr[2].getCurFrame()], all_game.GetTexture("normal_non"), 110, 128);
-
-		pr[3].setPos(578 + (pos_bg + 550), 340);
-		pr[3].setNumFrame(60);
+		pr[3].setPos(478 + (pos_bg + 550), 140);
+		pr[3].setNumFrame(12);
 		pr[3].remoteFrame();
-		pr[3].Render(renderer, &ballidle.get_clip()[pr[3].getCurFrame()], all_game.GetTexture("ballidle"), 151, 161);
+		pr[3].Render(renderer, &zomboni.get_clip()[pr[3].getCurFrame()], all_game.GetTexture("zomboni"), 188, 180);
 
-		pr[4].setPos(478 + (pos_bg + 550), 140);
-		pr[4].setNumFrame(60);
+
+		pr[4].setPos(578 + (pos_bg + 550), 440);
+		pr[4].setNumFrame(64);
 		pr[4].remoteFrame();
-		pr[4].Render(renderer, &ballidle.get_clip()[pr[3].getCurFrame()], all_game.GetTexture("ballidle"), 151, 161);
+		pr[4].Render(renderer, &exnon.get_clip()[pr[4].getCurFrame()], all_game.GetTexture("exnon"), 152, 164);
 	}
 	else if (cur_imformation.cur_mini_game == 5) {
 		pr[0].setPos(670 + (pos_bg + 550), 270);
@@ -2177,19 +2178,20 @@ void RenderPreview() {
 
 
 		pr[2].setPos(530 + (pos_bg + 550), 400);
-		pr[2].setNumFrame(63);
+		pr[2].setNumFrame(64);
 		pr[2].remoteFrame();
-		pr[2].Render(renderer, &normal_non.get_clip()[pr[2].getCurFrame()], all_game.GetTexture("normal_non"), 110, 128);
+		pr[2].Render(renderer, &exnon.get_clip()[pr[2].getCurFrame()], all_game.GetTexture("exnon"), 152, 164);
 
 		pr[3].setPos(578 + (pos_bg + 550), 340);
 		pr[3].setNumFrame(60);
 		pr[3].remoteFrame();
 		pr[3].Render(renderer, &ballidle.get_clip()[pr[3].getCurFrame()], all_game.GetTexture("ballidle"), 151, 161);
 
+
 		pr[4].setPos(478 + (pos_bg + 550), 140);
-		pr[4].setNumFrame(60);
+		pr[4].setNumFrame(40);
 		pr[4].remoteFrame();
-		pr[4].Render(renderer, &ballidle.get_clip()[pr[3].getCurFrame()], all_game.GetTexture("ballidle"), 151, 161);
+		pr[4].Render(renderer, &jackidle.get_clip()[pr[4].getCurFrame()], all_game.GetTexture("jackidle"), 245, 245);
 	}
 
 }

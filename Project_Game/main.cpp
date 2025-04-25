@@ -66,7 +66,14 @@ std::map<int, int> set_game =
 static int time_huge = 0;
 
 
-
+void resetallow() {
+	for (int i = 0; i <= 8; i++) {
+		card_[i].is_allow = 1;
+	}
+	for (int i = 0; i <= 6; i++) {
+		card[i].status_c = 0;
+	}
+}
 
 
 
@@ -283,16 +290,13 @@ void remoteFlagMG() {
 	}
 
 }
-
 void button_in_game() {
-	//RENDER LIÊN TỤC
 	pause1.SetRect(700, 0);
 	pause1.Render(renderer, NULL);
 	reset1.SetRect(735, 0);
 	reset1.Render(renderer, NULL);
 	outlevel.SetRect(770, 0);
 	outlevel.Render(renderer, NULL);
-	//XỬ LÍ CHUỘT
 	if (mouseX >= 700 && mouseX <= 734 && mouseY >= 0 && mouseY <= 33) {
 		pause2.SetRect(700, 0);
 		pause2.Render(renderer, NULL);
@@ -327,6 +331,7 @@ void button_in_game() {
 			status_manager.status = 3;
 			esdp.End_Music();
 			click.Play_Sound(28);
+			resetallow();
 		}
 	}
 	else if (mouseX >= 770 && mouseX <= 800 && mouseY >= 0 && mouseY <= 30) {
@@ -482,6 +487,7 @@ void cyp_remote() {
 	card_[7].type = 7;
 	card_[8].type = 8;
 	card_[9].type = 14;
+	card_[9].is_allow = 0;
 	for (int i = 0; i < 7; i++) {
 		SDL_Rect* currentClip = NULL;
 		if (card_[i].is_allow == true) {
@@ -493,7 +499,7 @@ void cyp_remote() {
 			all_game.Render(renderer, currentClip, "card_plant", card_[i].card_xc, card_[i].card_yc, 50, 70);
 		}
 	}
-	for (int i = 0; i < 3; i++) {
+	for (int i = 0; i < 2; i++) {
 		SDL_Rect* currentClip = NULL;
 		if (card_[i + 7].is_allow == true) {
 			currentClip = &card_plant.get_clip()[card_[i + 7].type];
@@ -514,7 +520,6 @@ void cyp_remote() {
 			mini_ = i;
 		}
 	}
-	//sự kiện khi bấm thẻ
 	if (mini_ !=6 && CARD_LOCATE_C != -1 && card_[CARD_LOCATE_C].is_allow == true) {
 		
 		if (SDL_WaitEvent(&event) == 1 && event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
@@ -560,6 +565,7 @@ void cyp_remote() {
 
 void status_process() {
 	if (status_manager.status == 0) {
+		resetallow();
 		reset_level(0);
 		if (is_music != 1) {
 			play_mainmusic(ctx, 152);
@@ -586,7 +592,7 @@ void status_process() {
 
 	}
 	else if (status_manager.status == 1) {
-		
+		resetallow();
 		reset_level(0);
 		if (is_music != 1) {
 			mg_background.End_Music();
@@ -621,7 +627,7 @@ void status_process() {
 	}
 	else if (status_manager.status == 2) {
 		reset_level(0);
-
+		resetallow();
 		if (is_music != 2) {
 			if (status_manager.mg_status <= 4) {
 				play_mainmusic(ctx, 122);
@@ -643,7 +649,7 @@ void status_process() {
 				Cchallengebg.SetRect(0, 0);
 				Cchallengebg.Render(renderer, NULL);
 			}
-			for (int i = 0; i < 5; i++) {
+			for (int i = 0; i < 4; i++) {
 
 				if (mouseX >= i * 155 + 30 && mouseX <= i * 155 + 30 + 120 && mouseY >= 100 && mouseY <= 215) {
 					if (status_manager.cur_language == game_status::Language::ENGLISH) {
@@ -803,7 +809,11 @@ void status_process() {
 				Cplay_but1.SetRect(150, 530);
 				Cplay_but1.Render(renderer, NULL);
 			}
-			if (SDL_WaitEvent(&event) && event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
+			int checkcard = 0;
+			for (int i = 0; i <= 8; i++) {
+				if (card_[i].is_allow == 0) checkcard++;
+			}
+			if (checkcard == 6 && SDL_WaitEvent(&event) && event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
 				status_manager.status = 4;
 				click.Play_Sound(28);
 			}
@@ -921,11 +931,11 @@ void status_process() {
 				background2.SetRect(-215, 0);
 				background2.RenderColor(renderer, NULL, 255);
 			}
-			else if (cur_imformation.cur_mini_game == 5) {
+			else if (cur_imformation.cur_mini_game == 5 && status_manager.status != 6) {
 				background9.SetRect(0, 0);
 
 
-				if (cur_imformation.wave >= 3&& cur_imformation.wave <5) {
+				if (cur_imformation.wave >= 7&& cur_imformation.wave < 13) {
 					background9.RenderColor(renderer, NULL, cur_imformation.color > 100 ? cur_imformation.color-- : cur_imformation.color);
 				}
 				else {
@@ -934,7 +944,7 @@ void status_process() {
 				
 				
 			}
-			else if (cur_imformation.cur_mini_game == 3) {
+			else if (cur_imformation.cur_mini_game == 3 && status_manager.status != 6) {
 				background3.SetRect(-215, 0);
 				background3.RenderColor(renderer, NULL, 255);
 				cur_imformation.count_time++;
@@ -962,7 +972,7 @@ void status_process() {
 		}
 
 
-		
+		button_in_game();
 		if (timeGame.is_paused() == false && status_manager.status != 6) {
 			
 			if (cur_imformation.cur_td_adventure != 0) {
@@ -1024,7 +1034,7 @@ void status_process() {
 			fog.SetRect(cur_imformation.fogX, 0);
 			fog.Render(renderer, NULL);
 		}
-		if (cur_imformation.cur_mini_game == 5 && cur_imformation.wave >= 5) {
+		if (cur_imformation.cur_mini_game == 5 && status_manager.status != 6 && cur_imformation.wave >= 13) {
 			cur_imformation.count_time++;
 			if (cur_imformation.count_time > 200 && cur_imformation.count_time < 400) {
 				bgtd.SetRect(0, 0);
@@ -1043,7 +1053,6 @@ void status_process() {
 			}
 			else {
 				if (cur_imformation.count_time >= 400) {
-					
 					cur_imformation.count_time = 0;
 					cur_imformation.color = 255;
 					cur_imformation.alpha = 255;
@@ -1068,11 +1077,14 @@ void status_process() {
 		SDL_RenderCopy(renderer, textTexture, NULL, &renderquad_2);
 		SDL_DestroyTexture(sun_text);
 		set_order();
-		render_card(renderer);
+		if (cur_imformation.cur_mini_game != 1) {
+			render_card(renderer);
+		}
+		
 
 
 
-		button_in_game();
+		
 
 		render_flag_pro();
 		if (cur_imformation.cur_td_adventure != 0) {
@@ -1193,6 +1205,7 @@ void status_process() {
 					
 					if (SDL_WaitEvent(&event) && event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
 						status_manager.status = 3;
+						resetallow();
 						click.Play_Sound(28);
 					}
 				}
@@ -1216,7 +1229,7 @@ void status_process() {
 
 int main(int argc, char* args[])
 {
-	status_manager.cur_language = game_status::Language::CHINESE;
+	status_manager.cur_language = game_status::Language::ENGLISH;
 	std::cout << "LANGUAGE: " << &status_manager.cur_language << endl;
 	game_lawn.Lawn_Set();
 	timeGame.start();
@@ -1296,7 +1309,7 @@ int main(int argc, char* args[])
 			
 			if (status_manager.status == 5 && event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
 				cur_imformation.mouseButton = "LEFT";
-				if (mouse_status != "hold_plant" && CARD_LOCATE >= 0 && CARD_LOCATE <= 5 && card[CARD_LOCATE].CD<=1 &&cur_imformation.cur_sun>=sun_value_p.at(plant_num_list.at(card[CARD_LOCATE].type))) {
+				if (cur_imformation.cur_mini_game != 1 && mouse_status != "hold_plant" && CARD_LOCATE >= 0 && CARD_LOCATE <= 5 && card[CARD_LOCATE].CD<=1 &&cur_imformation.cur_sun>=sun_value_p.at(plant_num_list.at(card[CARD_LOCATE].type))) {
 					mouse_status = "hold_plant";
 					plant_m_hold = plant_num_list.at(card[CARD_LOCATE].type);
 					temp = CARD_LOCATE;
@@ -1304,7 +1317,7 @@ int main(int argc, char* args[])
 				else if (mouse_status != "hold_shovel" && mouseX >= 440 && mouseX <= 485 && mouseY >=15 && mouseY <= 50) {
 					mouse_status = "hold_shovel";
 				}
-				if (mouse_status == "hold_plant") {
+				if (cur_imformation.cur_mini_game != 1 && mouse_status == "hold_plant") {
 					if (mouse_x_y.first >= 0 && mouse_x_y.first <= 4 && mouse_x_y.second >= 0 && mouse_x_y.second <= 8) {
 						if (game_lawn.Array_Manager[mouse_x_y.first][mouse_x_y.second].getIsPlanted() == false) {
 							cout << &mouse_status << endl;
@@ -1365,7 +1378,7 @@ int main(int argc, char* args[])
 
 
 				//TEST
-				all_game.call_zombie("sunzom", rand() % 5, -8, 90);
+				//all_game.call_zombie("sunzom", rand() % 5, -8, 90);
 				
 				//TEST
 

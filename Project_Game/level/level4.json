@@ -8,17 +8,17 @@
 		{
 			"cur_wave": 1,
 			"delay_time": 500,
-			"enemies": [ "zombie", "zombie", "zombie" ]
+			"enemies": [ "ball_zombie", "zombie", "zombie" ]
 		},
 		{
 			"cur_wave": 2,
-			"delay_time": 500,
-			"enemies": [ "zombie", "zombie", "zombie", "zombie", "zombie" ]
+			"delay_time": 800,
+			"enemies": [ "zombie", "jackbox", "zombie", "zombie", "zombie" ]
 		},
 		{
 			"cur_wave": 3,
-			"delay_time": 600,
-			"enemies": [ "zombie", "zombie", "zombie", "zombie", "zombie", "zombie" ]
+			"delay_time": 800,
+			"enemies": [ "zombie", "jackbox", "zombie", "zombie", "zombie", "zombie" ]
 		},
 		{
 			"cur_wave": 4,
@@ -28,117 +28,117 @@
 		{
 			"cur_wave": 5,
 			"delay_time": 500,
-			"enemies": [ "zombie", "zombie", "zombie", "zombie", "zombie" ]
+			"enemies": [ "zombie", "zombie", "ball_zombie", "zombie", "zombie" ]
 		},
 		{
 			"cur_wave": 6,
 			"delay_time": 500,
-			"enemies": [ "zombie", "zombie", "zombie", "zombie", "zombie", "zombie" ]
+			"enemies": [ "zombie", "jackbox", "jackbox", "ball_zombie", "zombie", "zombie" ]
 		},
 		{
 			"cur_wave": 7,
 			"delay_time": 400,
-			"enemies": [ "zombie", "zombie", "zombie", "zombie", "zombie", "zombie" ]
+			"enemies": [ "jackbox", "jackbox", "ball_zombie", "zombie", "zombie", "zombie", "zombie", "zombie", "zombie" ]
 		},
 		{
 			"cur_wave": 8,
 			"delay_time": 300,
-			"enemies": [ "zombie", "zombie", "zombie", "zombie" ]
+			"enemies": [ "jackbox", "jackbox", "ball_zombie", "zombie", "zombie", "zombie", "zombie" ]
 		},
 		{
 			"cur_wave": 9,
 			"delay_time": 500,
-			"enemies": [ "zombie", "zombie", "zombie", "zombie", "zombie" ]
+			"enemies": [ "jackbox", "jackbox", "ball_zombie", "jackbox", "jackbox", "ball_zombie", "zombie", "zombie", "zombie", "zombie", "zombie" ]
 		},
 		{
 			"cur_wave": 10,
 			"delay_time": 600,
-			"enemies": [ "zombie", "zombie", "zombie", "zombie", "zombie" ]
+			"enemies": [ "jackbox", "jackbox", "ball_zombie", "jackbox", "jackbox", "ball_zombie", "zombie", "zombie", "zombie", "zombie", "zombie" ]
 		},
 		{
 			"cur_wave": 11,
 			"delay_time": 400,
-			"enemies": [ "zombie", "zombie", "zombie", "zombie", "zombie", "zombie", "zombie", "zombie" ]
+			"enemies": [ "seafzombie", "jackbox", "jackbox", "ball_zombie", "jackbox", "jackbox", "ball_zombie", "zombie", "zombie", "zombie", "zombie", "zombie", "zombie", "zombie", "zombie" ]
 		},
 		{
 			"cur_wave": 12,
 			"delay_time": 600,
-			"enemies": [ "zombie", "zombie", "zombie", "zombie", "zombie", "zombie" ]
+			"enemies": [ "zombie", "ball_zombie", "ball_zombie", "ball_zombie", "ball_zombie", "zombie" ]
 		},
 		{
 			"cur_wave": 13,
 			"delay_time": 500,
-			"enemies": [ "zombie", "zombie", "zombie", "zombie" ]
+			"enemies": [ "seafzombie", "jackbox", "jackbox", "jackbox", "jackbox", "jackbox", "jackbox", "jackbox", "jackbox" ]
 		},
 		{
 			"cur_wave": 14,
 			"delay_time": 300,
-			"enemies": [ "zombie", "zombie", "zombie", "zombie", "zombie", "zombie", "zombie", "zombie", "zombie", "zombie", "zombie" ]
+			"enemies": [ "jackbox", "jackbox", "jackbox", "jackbox", "ball_zombie", "ball_zombie", "ball_zombie", "zombie", "zombie", "zombie", "zombie" ]
 		},
 		{
 			"cur_wave": 15,
 			"delay_time": 500,
-			"enemies": [ "zombie", "zombie", "zombie", "zombie" ]
+			"enemies": [ "jackbox", "jackbox", "ball_zombie", "ball_zombie", "zombie", "zombie", "zombie", "zombie" ]
 		},
 		{
 			"cur_wave": 16,
 			"delay_time": 500,
-			"enemies": [ "zombie", "zombie", "zombie", "zombie" ]
+			"enemies": [ "jackbox", "jackbox", "ball_zombie", "ball_zombie", "jackbox", "jackbox", "ball_zombie", "ball_zombie", "zombie", "zombie", "zombie", "zombie" ]
 		},
 		{
 			"cur_wave": 17,
 			"delay_time": 500,
-			"enemies": [ "zombie", "zombie", "zombie", "zombie" ]
+			"enemies": [ "jackbox", "jackbox", "ball_zombie", "ball_zombie", "zombie", "zombie", "zombie", "zombie" ]
 		},
 		{
 			"cur_wave": 18,
 			"delay_time": 500,
-			"enemies": [ "zombie", "zombie", "zombie", "zombie" ]
+			"enemies": [ "jackbox", "jackbox", "ball_zombie", "ball_zombie", "jackbox", "jackbox", "ball_zombie", "ball_zombie", "zombie", "zombie", "zombie", "zombie" ]
 		},
 		{
 			"cur_wave": 19,
 			"delay_time": 500,
-			"enemies": [ "zombie", "zombie", "zombie", "zombie" ]
+			"enemies": [ "jackbox", "jackbox", "ball_zombie", "ball_zombie", "jackbox", "jackbox", "ball_zombie", "ball_zombie", "zombie", "zombie", "zombie", "zombie" ]
 		},
 		{
 			"cur_wave": 20,
 			"delay_time": 500,
-			"enemies": [ "zombie", "zombie", "zombie", "zombie" ]
+			"enemies": [ "jackbox", "jackbox", "ball_zombie", "ball_zombie", "jackbox", "jackbox", "ball_zombie", "ball_zombie", "jackbox", "jackbox", "ball_zombie", "ball_zombie", "jackbox", "jackbox", "ball_zombie", "ball_zombie", "zombie", "zombie", "zombie", "zombie" ]
 		},
 		{
 			"cur_wave": 21,
 			"delay_time": 500,
-			"enemies": [ "zombie", "zombie", "zombie", "zombie" ]
+			"enemies": [ "jackbox", "jackbox", "ball_zombie", "ball_zombie", "jackbox", "jackbox", "ball_zombie", "ball_zombie", "jackbox", "jackbox", "ball_zombie", "ball_zombie", "jackbox", "jackbox", "ball_zombie", "ball_zombie", "zombie", "zombie", "zombie", "zombie" ]
 		},
 		{
 			"cur_wave": 22,
 			"delay_time": 500,
-			"enemies": [ "zombie", "zombie", "zombie", "zombie" ]
+			"enemies": [ "jackbox", "jackbox", "ball_zombie", "ball_zombie", "jackbox", "jackbox", "ball_zombie", "ball_zombie", "zombie", "zombie", "zombie", "zombie" ]
 		},
 		{
 			"cur_wave": 23,
 			"delay_time": 500,
-			"enemies": [ "zombie", "zombie", "zombie", "zombie" ]
+			"enemies": [ "jackbox", "jackbox", "ball_zombie", "ball_zombie", "zombie", "zombie", "zombie", "zombie" ]
 		},
 		{
 			"cur_wave": 24,
 			"delay_time": 500,
-			"enemies": [ "zombie", "zombie", "zombie", "zombie" ]
+			"enemies": [ "jackbox", "jackbox", "ball_zombie", "ball_zombie", "zombie", "zombie", "zombie", "zombie" ]
 		},
 		{
 			"cur_wave": 25,
 			"delay_time": 500,
-			"enemies": [ "zombie", "zombie", "zombie", "zombie" ]
+			"enemies": [ "jackbox", "jackbox", "ball_zombie", "ball_zombie", "jackbox", "jackbox", "ball_zombie", "ball_zombie", "zombie", "zombie", "zombie", "zombie" ]
 		},
 		{
 			"cur_wave": 26,
-			"delay_time": 500,
-			"enemies": [ "zombie", "zombie", "zombie", "zombie" ]
+			"delay_time": 100,
+			"enemies": [ "jackbox", "jackbox", "ball_zombie", "ball_zombie", "jackbox", "jackbox", "ball_zombie", "ball_zombie", "zombie", "zombie", "zombie", "zombie" ]
 		},
 		{
 			"cur_wave": 27,
 			"delay_time": 500,
-			"enemies": [ "zombie", "zombie", "zombie", "zombie" ]
+			"enemies": [ "seafzombie", "jackbox", "ball_zombie", "jackbox", "ball_zombie", "jackbox", "ball_zombie", "jackbox", "ball_zombie", "jackbox", "ball_zombie", "jackbox", "ball_zombie", "jackbox", "ball_zombie", "zombie", "zombie", "zombie", "zombie" ]
 		}
 	]
 }

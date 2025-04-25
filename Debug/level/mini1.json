@@ -167,7 +167,7 @@
 		},
 		{
 			"cur_wave": 13,
-			"delay_time": 500,
+			"delay_time": 100,
 			"enemies": [
 				"ball_zombie",
 				"ball_zombie",

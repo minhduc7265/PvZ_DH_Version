@@ -34,8 +34,8 @@ public:
 	int card_yc;
 	int card_xce;
 	int card_yce;
-	int status;//0 là hồi xong//1 là bị bấm vào//2 là hủy k trồng, nếu trồng chuyển sang 3 là count down
-	int status_c;//0 là ở bảng// 1 là lên bảng
+	int status;
+	int status_c;
 	bool is_allow;
 	void resetCard();
 protected:
