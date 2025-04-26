@@ -1,5 +1,5 @@
 # Plants vs. Zombies DH Version
-🔷 [Video giới thiệu game](https://www.youtube.com/watch?v=0jItQVLUEfA)
+🔷 [Video giới thiệu game](https://youtu.be/xJ0dLBGDBwA)
 # Giới thiệu
 🔷 Lũ Zombie đang xâm chiếm ngôi nhà của bạn, để chống lại điều đó bạn sẽ dùng những loại cây cối! Nhiệm vụ của bạn là dùng sự sáng tạo của bản thân để chiến thắng. Ngoài những level và địa hình truyền thống, tôi sẽ cung cấp thêm nhiều điều mới để khiến game thú vị hơn. Cùng chờ đón nhé!!  
 📌 Phần 1: Tải game và tải source code  
@@ -46,7 +46,7 @@ ___
 ### Phần 3: Giới thiệu TD và Mini-Game   
 - **Phần TD**   
 Bối cảnh của phần TD là "East Sea Dragon Palace" hay dịch sang tiếng việt là "Đông Hải Long Cung"   
-Do bối cảnh lấy ở dưới biển, nên sẽ không có oxy, nếu bạn trồng cây mà không có sự hỗ trợ của 氧气藻, cây của bạn sẽ tự chết sau một thời gian [Video minh họa](https://youtube.com/)
+Do bối cảnh lấy ở dưới biển, nên sẽ không có oxy, nếu bạn trồng cây mà không có sự hỗ trợ của 氧气藻, cây của bạn sẽ tự chết sau một thời gian   
 - **Phần Mini-Game**   
 Theo thứ tự ta sẽ có 5 Mini-Game
   - Air-Raid(壮植凌云)   
@@ -56,7 +56,7 @@ Theo thứ tự ta sẽ có 5 Mini-Game
   - Dark Stormy Night(暴风雨之夜)
 
 **Tôi sẽ không giới thiệu các Mini-Game này có những gì, bạn hãy tự trải nghiệm nhé**  
-**Đối với giảng viên muốn xem thay vì tự chơi thì đây là video [Video TD](https://youtu.be/LuyEkRvgs3c) [Video Mini-Game](https://www.youtube.com/playlist?list=PLFpuWA25uKWuOtmk65pGi-wJQdsrS00Y)**   
+**Đối với giảng viên muốn xem thay vì tự chơi thì đây là video [Video TD](https://youtu.be/LuyEkRvgs3c) [Video Mini-Game](https://www.youtube.com/playlist?list=PLFpuWA25uKWuOtmk65pGi-wJQdsrS00Y_)**   
 
 
 ___
@@ -121,7 +121,7 @@ ___
       
       Xuất file gif qua **Adobe Animate**, nhớ xuất dạng Transparent.   
 
-      Nếu thấy khó hiểu thì video này dành cho bạn [Video](https://github.com/harumazzz/Sen).   
+      Nếu thấy khó hiểu thì video này dành cho bạn [Video](https://youtu.be/79KEOt21OOY).   
     - **Mục 1.2.2: Đối với texture của PVZ PC**   
       Hãy xem video vì nó liên quan đến code [Video](https://youtu.be/ulIeEyo9L1A)
       
