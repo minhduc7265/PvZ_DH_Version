@@ -7,6 +7,7 @@
 📌 Phần 3: Giới thiệu TD và Mini-Game  
 📌 Phần 4: Almanac  
 📌 Phần 5: Về texture, nhạc module và file json    
+📌 Phần 6: Về code của game       
 ___
 ### Phần 1: Tải game và tải source code
 ⚠️ Chú ý: Mặc dù game 32-bit nhưng tôi không khuyến khích chạy game trên máy 32-bit bởi vì:  
@@ -17,7 +18,8 @@ ___
 💡 Cách 1: Bạn có thể clone code về, giải nén sau đó vào thư mục Debug và chạy file exe   
 💡 Cách 2: Tải bản đóng sẵn qua đường link sau   
 📌 Đối với những người cần đọc code(như giảng viên)   
-💡 Ta vẫn clone code về máy bình thường, tuy nhiên nên dùng "Visual Studio" trong việc liên kết lại thư viện và biên dịch
+💡 Ta vẫn clone code về máy bình thường, tuy nhiên nên dùng "Visual Studio" trong việc liên kết lại thư viện và biên dịch   
+🔷 [Link download game không bao gồm code](https://drive.google.com/file/d/1aUUXsugH1gIQ2GTSaj93S3TBSs6oxckX/view?usp=sharing)
 ___
 ### Phần 2: Cách chơi game
 **Khi vào game sẽ ra màn hình sau, hãy bấm start để bắt đầu**   
@@ -48,14 +50,14 @@ ___
 Bối cảnh của phần TD là "East Sea Dragon Palace" hay dịch sang tiếng việt là "Đông Hải Long Cung"   
 Do bối cảnh lấy ở dưới biển, nên sẽ không có oxy, nếu bạn trồng cây mà không có sự hỗ trợ của 氧气藻, cây của bạn sẽ tự chết sau một thời gian   
 - **Phần Mini-Game**   
-Theo thứ tự ta sẽ có 5 Mini-Game
-  - Air-Raid(壮植凌云)   
-  - Zombotany I(植物僵尸I)   
-  - Swap I(变换I)   
-  - Fog??(多雾路段??)   
-  - Dark Stormy Night(暴风雨之夜)
+Theo thứ tự ta sẽ có 5 Mini-Game   
+Các Mini-Game sẽ có hiệu ứng hoặc đặc trưng riêng, không giống nhau đâu nhé   
+  - Air-Raid(壮植凌云): Dùng chuột bắn đạn vào zombie bay ở 天空之城(Sky City)   
+  - Zombotany I(植物僵尸I): Xuất hiện Zombotany(Zombie đầu thực vật)   
+  - Swap I(变换I): Ngày và đêm bị hoán đổi sau một khoảng thời gian, ban đêm Zombie sẽ đi nhanh hơn bình thường   
+  - Fog??(多雾路段??): Xuất hiện sương mù cản trở tầm nhìn   
+  - Dark Stormy Night(暴风雨之夜): Giữa game trời chuyển sang mưa bão sấm    
 
-**Tôi sẽ không giới thiệu các Mini-Game này có những gì, bạn hãy tự trải nghiệm nhé**  
 **Đối với giảng viên muốn xem thay vì tự chơi thì đây là video [Video TD](https://youtu.be/LuyEkRvgs3c) [Video Mini-Game](https://www.youtube.com/playlist?list=PLFpuWA25uKWuOtmk65pGi-wJQdsrS00Y_)**   
 
 
@@ -143,6 +145,26 @@ ___
   **Trong github sẽ có đầy đủ hướng dẫn cách đọc file.
   
   Mục đích tôi dùng thư viện này để đọc file json. Giúp spawn zombie dễ dàng hơn so với việc viết code cứng.
+___
+### Phần 6: Về code của game   
+Tôi sẽ trình bày dựa vào file header   
+- animation: Giúp chia spritesheet để có thể chạy animation   
+- base_func: Chứa một số biến như window, renderer, event, class "Cur_imf" giúp đọc thông tin hiện tại của level   
+- bullet_proj: Chứa class "Bullet" khiển logic của projectiles   
+- card_plant: Chứa class "PlantCard" điều khiển logic của plantcard   
+- element: Chứa class "Element" giúp lưu lại các con trỏ Plant, Zombie ,Bullet ,Item và lưu lại các texture được load vào game. Xử lí logic, chứa các hàm gọi Plant, Zombie, Item, Bullet   
+- game_status: Chứa class "game_status" lưu các thông tin như ngôn ngữ, trạng thái   
+- item: Chứa class "Item" giúp lưu lại các thông tin của item(item chính là mặt trời)   
+- lawn: Quản lí ô đất trồng   
+- load_pic: Chứa class "Texture" giúp load và render các ảnh tĩnh   
+- main_func: Chứa các hàm xử lí logic của màn chơi, các hàm load texture   
+- music: Chứa class "Music" giúp load nhạc và gọi nhạc lên khi cần   
+- plant: Chứa class "Plant" giúp lưu thông tin cơ bản của plant   
+- preview: Chứa class "Preview" giúp render zombie khi bạn chọn cây trồng   
+- texture_storage: Chứa class "Texture_Storage" lưu thồng tin của texture   
+- time_manager: Chứa class "TimeManager" xử lí thời gian trong game, pause, resume   
+- zombie: Chứa class "Zombie" giúp lưu thông tin cơ bản của zombie
+- main.cpp: Xử lí một phần của level, chứa các hàm khởi tạo game   
   
     
     
