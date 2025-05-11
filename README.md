@@ -1,5 +1,6 @@
 # Plants vs. Zombies DH Version
-🔷 [Video giới thiệu game](https://youtu.be/xJ0dLBGDBwA)
+🔷 [Video giới thiệu game](https://youtu.be/xJ0dLBGDBwA)   
+🔷🔷🔷[NEW!!Demo II(Do e bị đau họng không nói được nên hãy bật phụ đề)](https://youtu.be/3X8H4GywUmw)    
 # Giới thiệu
 🔷 Lũ Zombie đang xâm chiếm ngôi nhà của bạn, để chống lại điều đó bạn sẽ dùng những loại cây cối! Nhiệm vụ của bạn là dùng sự sáng tạo của bản thân để chiến thắng. Ngoài những level và địa hình truyền thống, tôi sẽ cung cấp thêm nhiều điều mới để khiến game thú vị hơn. Cùng chờ đón nhé!!  
 📌 Phần 1: Tải game và tải source code  
@@ -162,7 +163,7 @@ Tôi sẽ trình bày dựa vào file header
 - plant: Chứa class "Plant" giúp lưu thông tin cơ bản của plant   
 - preview: Chứa class "Preview" giúp render zombie khi bạn chọn cây trồng   
 - texture_storage: Chứa class "Texture_Storage" lưu thồng tin của texture   
-- time_manager: Chứa class "TimeManager" xử lí thời gian trong game, pause, resume   
+- time_manager: Chứa class "TimeManager" xử lí thời gian trong game, pause, resume. [Nguồn code](https://youtu.be/qhqtxum_uA0?si=TP1S7TvobuVTYJnh)   
 - zombie: Chứa class "Zombie" giúp lưu thông tin cơ bản của zombie
 - main.cpp: Xử lí một phần của level, chứa các hàm khởi tạo game   
   
